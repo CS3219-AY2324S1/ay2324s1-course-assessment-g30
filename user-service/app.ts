@@ -1,4 +1,7 @@
+import 'dotenv/config';
 import express from 'express';
+import { createUser } from './controllers/user-controller';
+import { initalize as initalize_db } from './db/init';
 
 const app = express();
 const port = 3000;
@@ -10,16 +13,10 @@ app.get('/test', (req, res) => {
 });
 
 // Create new user endpoint
-app.post('/user', (req, res) => {
-  if ('username' in req.body && 'password' in req.body && 'email' in req.body) {
-    res.send(
-      `Username: ${req.body.username} Password: ${req.body.password} Username: ${req.body.email}`
-    );
-  } else {
-    res.send("I don't know who the hell you are");
-  }
-});
+app.post('/user', createUser);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+initalize_db().then(() => {
+  app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+  });
 });
