@@ -1,13 +1,19 @@
 import { RequestHandler } from 'express';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
-import { SALT_ROUNDS } from '../constants';
+import {
+  BAD_REQUEST_STATUS_CODE,
+  INTERNAL_SERVER_ERROR_STATUS_CODE,
+  SALT_ROUNDS
+} from '../constants';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email } = req.body;
 
   if (!username || !password || !email) {
-    res.json({ err: 'Missing fields', res: '' });
+    res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json({ err: 'Missing fields', res: '' });
     return;
   }
 
@@ -18,7 +24,9 @@ const createUser: RequestHandler = async (req, res) => {
     }
   });
   if (registeredUser) {
-    res.json({ err: 'Username is in use', res: '' });
+    res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json({ err: 'Username is in use', res: '' });
     return;
   }
 
@@ -30,7 +38,9 @@ const createUser: RequestHandler = async (req, res) => {
   });
 
   if (registeredUser) {
-    res.json({ err: 'Email is in use', res: '' });
+    res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json({ err: 'Email is in use', res: '' });
     return;
   }
 
@@ -41,7 +51,7 @@ const createUser: RequestHandler = async (req, res) => {
     salt = await bcrypt.genSalt(SALT_ROUNDS);
     hashedPassword = await bcrypt.hash(password, salt);
   } catch (error) {
-    res.json({ err: 'Internal server error', res: '' });
+    res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).json({ err: '', res: '' });
     return;
   }
 
@@ -56,7 +66,9 @@ const createUser: RequestHandler = async (req, res) => {
     await newUser.save();
     res.json({ err: '', res: 'Account created successfully' });
   } catch (error) {
-    res.json({ err: 'Failed to add user to database', res: '' });
+    res
+      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+      .json({ err: 'Failed to add user to database', res: '' });
   }
 };
 
