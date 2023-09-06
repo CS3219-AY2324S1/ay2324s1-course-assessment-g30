@@ -7,8 +7,10 @@ const sequelizeConnection = new Sequelize(
 );
 
 const sync = async () => {
-  await User.sync({ force: process.env.NODE_ENV == 'development' });
-  console.log('The table for the User model was just (re)created!');
+  if (process.env.NODE_ENV == 'development') {
+    await User.sync({ force: process.env.NODE_ENV == 'development' });
+    console.log('The table for the User model was just (re)created!');
+  }
 };
 
 // Initalises user model

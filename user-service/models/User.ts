@@ -4,7 +4,8 @@ import { sequelizeConnection } from '../db/init';
 type UserAttributes = {
   username: string;
   email: string;
-  password: string;
+  hashedPassword: string;
+  salt: string;
 };
 
 const User = sequelizeConnection.define<Model<UserAttributes, UserAttributes>>(
@@ -19,7 +20,11 @@ const User = sequelizeConnection.define<Model<UserAttributes, UserAttributes>>(
       allowNull: false,
       unique: true
     },
-    password: {
+    hashedPassword: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    salt: {
       type: DataTypes.STRING,
       allowNull: false
     }
