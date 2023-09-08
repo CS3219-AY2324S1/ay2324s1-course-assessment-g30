@@ -1,13 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Spinner, HStack, BeatLoader } from "@chakra-ui/react";
+import {
+  Flex,
+  Button,
+  Spinner,
+  HStack,
+  VStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+} from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 
 function HomePage() {
+  const countdownDuration = 30;
+  const navigate = useNavigate();
+
   const [socket, setSocket] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [clickedButton, setClickedButton] = useState(null);
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [matchingFailed, setMatchingFailed] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(countdownDuration);
+  const [matchFound, setMatchFound] = useState(false);
 
   // Connect to common lobby
   useEffect(() => {
@@ -25,22 +44,57 @@ function HomePage() {
     if (socket) {
       socket.on("paired", (roomId) => {
         console.log(`You are paired in room ${roomId}`);
-        navigate(`/room/${roomId}`);
+        setMatchFound(true);
+        setTimeout(() => {
+          navigate(`/room/${roomId}`);
+        }, 2000);
       });
     }
   }, [socket]);
 
+  useEffect(() => {
+    if (showModal && remainingTime === countdownDuration) {
+      const timerInterval = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000);
+
+      const matchingTimeout = setTimeout(() => {
+        cancelMatching(clickedButton);
+      }, countdownDuration * 1000);
+
+      return () => {
+        clearInterval(timerInterval);
+        clearTimeout(matchingTimeout);
+      };
+    }
+  }, [showModal]);
+
   const handleMatchClick = (difficulty) => {
+    setMatchingFailed(false);
     setIsLoading(true);
     setClickedButton(difficulty);
-
-    if (socket) {
-      socket.emit("lets-rumble", difficulty);
-    }
+    setRemainingTime(countdownDuration);
+    setMatchFound(false);
+    setShowModal(true);
 
     setTimeout(() => {
-      setIsLoading(false);
-    }, 30000);
+      if (socket) {
+        socket.emit("lets-rumble", difficulty);
+      }
+    }, 1000);
+  };
+
+  const cancelMatching = (difficulty) => {
+    setMatchingFailed(true);
+    setIsLoading(false);
+    if (socket) {
+      socket.emit("remove-me-from-queue", difficulty);
+    }
+  };
+
+  const handleRetryClick = () => {
+    setMatchingFailed(false);
+    handleMatchClick(clickedButton);
   };
 
   return (
@@ -82,6 +136,70 @@ function HomePage() {
           Hard
         </Button>
       </HStack>
+
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          cancelMatching(clickedButton);
+          setShowModal(false);
+        }}
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {matchingFailed
+              ? "Matching Failed"
+              : matchFound
+              ? "Match Found!"
+              : "Finding a match..."}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+            >
+              {matchingFailed ? (
+                <>
+                  <Text fontSize="lg">
+                    We couldn't find a match for you. Would you like try again?
+                  </Text>
+                  <Button
+                    colorScheme="teal"
+                    variant="solid"
+                    onClick={handleRetryClick}
+                    size="lg"
+                  >
+                    Retry
+                  </Button>
+                </>
+              ) : matchFound ? (
+                <>
+                  <Text fontSize="lg">
+                    Your match has been found. Have fun!
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text fontSize="lg">
+                    Please wait while we find a match for you.
+                  </Text>
+                  <Text fontSize="1xl">{remainingTime} seconds remaining</Text>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                    size="xl"
+                  />
+                </>
+              )}
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

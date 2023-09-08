@@ -17,6 +17,17 @@ const matchingQueue = {
   medium: [],
   hard: [],
 };
+
+function removeFromQueue(socket, difficulty) {
+  const index = matchingQueue[difficulty].indexOf(socket);
+  if (index !== -1) {
+    console.log(
+      `User ${socket.id} removed from matching queue for ${difficulty}`
+    );
+    matchingQueue[difficulty].splice(index, 1);
+  }
+}
+
 // Run when client connects
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
@@ -32,27 +43,29 @@ io.on("connection", (socket) => {
       const user1 = matchingQueue[difficulty].shift();
       const user2 = matchingQueue[difficulty].shift();
 
-      // Create a unique room ID for the pair
-      const roomId = `${user1.id}-${user2.id}`;
+      if (user1 !== user2) {
+        // Create a unique room ID for the pair
+        const roomId = `${user1.id}-${user2.id}`;
 
-      // Join both users to the room
-      user1.join(roomId);
-      user2.join(roomId);
+        // Join both users to the room
+        user1.join(roomId);
+        user2.join(roomId);
 
-      // Notify both users that they are paired
-      io.to(roomId).emit("paired", roomId);
+        // Notify both users that they are paired
+        io.to(roomId).emit("paired", roomId);
+      }
     }
+  });
+
+  socket.on("remove-me-from-queue", (difficulty) => {
+    removeFromQueue(socket, difficulty);
   });
 
   socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);
 
-    // Remove the user from the queue if they disconnect
     for (const difficulty in matchingQueue) {
-      const index = matchingQueue[difficulty].indexOf(socket);
-      if (index !== -1) {
-        matchingQueue[difficulty].splice(index, 1);
-      }
+      removeFromQueue(socket, difficulty);
     }
   });
 });
