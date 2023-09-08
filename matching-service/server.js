@@ -12,22 +12,25 @@ const io = new Server(httpServer, {
   },
 });
 
-const matchingQueue = [];
-
+const matchingQueue = {
+  easy: [],
+  medium: [],
+  hard: [],
+};
 // Run when client connects
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  // Handle 'match' event when a user clicks the "Match Me!" button
-  socket.on("lets-rumble", () => {
-    console.log(`User ${socket.id} joined matching queue`);
-    matchingQueue.push(socket);
+  // Handle 'match' event when a user chooses a difficulty
+  socket.on("lets-rumble", (difficulty) => {
+    console.log(`User ${socket.id} joined matching queue for ${difficulty}`);
+    matchingQueue[difficulty].push(socket);
 
     // Check if there are at least two users in the queue
-    if (matchingQueue.length >= 2) {
+    if (matchingQueue[difficulty].length >= 2) {
       // Pair the first two users in the queue
-      const user1 = matchingQueue.shift();
-      const user2 = matchingQueue.shift();
+      const user1 = matchingQueue[difficulty].shift();
+      const user2 = matchingQueue[difficulty].shift();
 
       // Create a unique room ID for the pair
       const roomId = `${user1.id}-${user2.id}`;
@@ -45,9 +48,11 @@ io.on("connection", (socket) => {
     console.log(`User ${socket.id} disconnected`);
 
     // Remove the user from the queue if they disconnect
-    const index = matchingQueue.indexOf(socket);
-    if (index !== -1) {
-      matchingQueue.splice(index, 1);
+    for (const difficulty in matchingQueue) {
+      const index = matchingQueue[difficulty].indexOf(socket);
+      if (index !== -1) {
+        matchingQueue[difficulty].splice(index, 1);
+      }
     }
   });
 });

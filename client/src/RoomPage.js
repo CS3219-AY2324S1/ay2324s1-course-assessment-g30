@@ -6,7 +6,7 @@ function RoomPage() {
 
   return (
     <div>
-      {/* Room content and interactions go here */}
+      {/* Room content */}
       <h1>Welcome to Room: {roomId}</h1>
     </div>
   );
