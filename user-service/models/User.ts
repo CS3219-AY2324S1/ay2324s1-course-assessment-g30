@@ -1,4 +1,9 @@
-import { DataTypes, Model } from 'sequelize';
+import {
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model
+} from 'sequelize';
 import { sequelizeConnection } from '../db/init';
 
 type UserAttributes = {
@@ -8,8 +13,14 @@ type UserAttributes = {
   salt: string;
 };
 
-const User = sequelizeConnection.define<Model<UserAttributes, UserAttributes>>(
-  'User',
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare username: string;
+  declare email: string;
+  declare hashedPassword: string;
+  declare salt: string;
+}
+
+User.init(
   {
     username: {
       type: DataTypes.STRING,
@@ -29,7 +40,7 @@ const User = sequelizeConnection.define<Model<UserAttributes, UserAttributes>>(
       allowNull: false
     }
   },
-  {}
+  { sequelize: sequelizeConnection }
 );
 
 export default User;
