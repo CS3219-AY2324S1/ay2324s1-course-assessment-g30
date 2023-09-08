@@ -3,9 +3,11 @@ import User from '../models/User';
 import bcrypt from 'bcrypt';
 import {
   BAD_REQUEST_STATUS_CODE,
+  FORBIDDEN_STATUS_CODE,
   INTERNAL_SERVER_ERROR_STATUS_CODE,
   SALT_ROUNDS
 } from '../constants';
+import jsonwebtoken from 'jsonwebtoken';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email } = req.body;
@@ -72,4 +74,46 @@ const createUser: RequestHandler = async (req, res) => {
   }
 };
 
-export { createUser };
+const loginUser: RequestHandler = async (req, res) => {
+  const { password, email } = req.body;
+  if (!password || !email) {
+    res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json({ err: 'Missing fields', res: '' });
+    return;
+  }
+
+  // Fetch username, and hash password
+  const registeredUser = await User.findOne({
+    where: {
+      email
+    }
+  });
+
+  if (!registeredUser) {
+    res
+      .status(FORBIDDEN_STATUS_CODE)
+      .json({ err: 'User does not exist', res: '' });
+    return;
+  }
+  const hasCorrectPassword = await bcrypt.compare(
+    password,
+    registeredUser.hashedPassword
+  );
+
+  if (!hasCorrectPassword) {
+    res
+      .status(FORBIDDEN_STATUS_CODE)
+      .json({ err: 'Incorrect password for user account', res: '' });
+    return;
+  }
+
+  const accessToken = jsonwebtoken.sign(
+    { email: registeredUser.email },
+    process.env.JWT_SECRET as string,
+    { expiresIn: '7 days' }
+  );
+  res.json({ err: '', res: { accessToken: accessToken } });
+};
+
+export { createUser, loginUser };
