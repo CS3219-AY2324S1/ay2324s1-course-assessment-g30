@@ -11,7 +11,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import crypto from 'crypto';
 
 const createUser: RequestHandler = async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, password, email, firstName, lastName } = req.body;
 
   if (!username || !password || !email) {
     res
@@ -60,9 +60,11 @@ const createUser: RequestHandler = async (req, res) => {
 
   const newUser = User.build({
     uuid: crypto.randomUUID(),
-    username: req.body.username,
+    username,
+    firstName,
+    lastName,
     hashedPassword,
-    email: req.body.email
+    email
   });
 
   try {
@@ -117,4 +119,22 @@ const loginUser: RequestHandler = async (req, res) => {
   res.json({ err: '', res: { accessToken: accessToken } });
 };
 
-export { createUser, loginUser };
+const getUserProfile: RequestHandler = async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+
+  const userData = await User.findByPk(user.uuid);
+  if (userData) {
+    const { username, email, firstName, lastName } = userData;
+    const nonSensitiveUserData = { email, username, firstName, lastName };
+    res.json({ err: '', res: nonSensitiveUserData });
+  } else {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+};
+
+export { createUser, loginUser, getUserProfile };
