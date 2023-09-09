@@ -7,6 +7,7 @@ import {
 import { sequelizeConnection } from '../db/init';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+  declare uuid: string;
   declare username: string;
   declare email: string;
   declare hashedPassword: string;
@@ -14,9 +15,14 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
 
 User.init(
   {
-    username: {
+    uuid: {
       type: DataTypes.STRING,
       primaryKey: true
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
     },
     email: {
       type: DataTypes.STRING,

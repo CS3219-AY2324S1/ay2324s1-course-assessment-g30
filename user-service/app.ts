@@ -25,7 +25,7 @@ app.get('/user', (req, res) => {
     res.send(401);
     return;
   }
-  res.send(`You are user ${user.email}`);
+  res.send(`You are user ${user.uuid}`);
 });
 
 initalize_db().then(() => {

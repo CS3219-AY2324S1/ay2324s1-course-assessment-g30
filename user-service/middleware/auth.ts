@@ -17,7 +17,7 @@ const authJwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
         }
 
         token = token as JwtToken;
-        req.user = { ...req.user, email: token.email };
+        req.user = { ...req.user, uuid: token.uuid };
 
         next();
       }

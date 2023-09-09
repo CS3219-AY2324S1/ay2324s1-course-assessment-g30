@@ -8,6 +8,7 @@ import {
   SALT_ROUNDS
 } from '../constants';
 import jsonwebtoken from 'jsonwebtoken';
+import crypto from 'crypto';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email } = req.body;
@@ -58,6 +59,7 @@ const createUser: RequestHandler = async (req, res) => {
   }
 
   const newUser = User.build({
+    uuid: crypto.randomUUID(),
     username: req.body.username,
     hashedPassword,
     email: req.body.email
@@ -108,7 +110,7 @@ const loginUser: RequestHandler = async (req, res) => {
   }
 
   const accessToken = jsonwebtoken.sign(
-    { email: registeredUser.email },
+    { uuid: registeredUser.uuid },
     process.env.JWT_SECRET as string,
     { expiresIn: '7 days' }
   );
