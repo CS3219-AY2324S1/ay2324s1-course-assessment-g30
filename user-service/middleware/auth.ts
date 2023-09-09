@@ -20,12 +20,10 @@ const authJwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
         req.user = { ...req.user, email: token.email };
 
         next();
-        // return
       }
     );
   } else {
     res.sendStatus(401);
-    // return
   }
 };
 

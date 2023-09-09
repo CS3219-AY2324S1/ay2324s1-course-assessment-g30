@@ -59,7 +59,6 @@ const createUser: RequestHandler = async (req, res) => {
 
   const newUser = User.build({
     username: req.body.username,
-    salt,
     hashedPassword,
     email: req.body.email
   });
