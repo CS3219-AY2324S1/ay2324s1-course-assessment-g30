@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Coordinates shared state between users in a room",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon server",
     "start": "node server",

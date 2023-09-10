@@ -2,6 +2,11 @@ import express from "express";
 import cors from "cors";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import {
+  setUpRoom,
+  disconnectFromRoom,
+} from "./controllers/room-controller.js";
+import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -16,7 +21,21 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  socket.on("disconnect", () => {});
+  socket.on("set-up-room", (roomId) => {
+    setUpRoom(socket, roomId);
+  });
+
+  socket.on("join-room", (roomId) => {
+    broadcastJoin(socket, roomId, io);
+  });
+
+  socket.on("send-message", (message, roomId) => {
+    sendMessage(socket, message, roomId, io);
+  });
+
+  socket.on("disconnect", () => {
+    disconnectFromRoom(socket, io);
+  });
 });
 
 app.use(cors());
