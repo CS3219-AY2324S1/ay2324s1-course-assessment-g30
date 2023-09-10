@@ -44,7 +44,7 @@ export const pairUsers = async (socket, difficulty) => {
     const partnerId = await redis.lpop(queueName);
 
     if (socket.id !== partnerId) {
-      const roomId = uuidv4();
+      const roomId = generateUniqueRoomId();
       roomIds.push(roomId);
 
       // Notify both users that they can join the room
@@ -77,7 +77,7 @@ export const joinRoom = async (socket, roomId) => {
  * Create a room id and add it to the database
  */
 export const createRoom = async (socket, difficulty) => {
-  const roomId = uuidv4();
+  const roomId = generateUniqueRoomId();
   roomIds.push(roomId);
 
   socket.emit("room-created");
@@ -85,4 +85,21 @@ export const createRoom = async (socket, difficulty) => {
   setTimeout(() => {
     socket.emit("found-room", roomId);
   }, 2000);
+};
+
+/**
+ * Genenerate a unique room id
+ */
+export const generateUniqueRoomId = () => {
+  let roomId;
+  let isUnique = false;
+
+  while (!isUnique) {
+    roomId = uuidv4();
+
+    if (!roomIds.includes(roomId)) {
+      isUnique = true;
+    }
+  }
+  return roomId;
 };
