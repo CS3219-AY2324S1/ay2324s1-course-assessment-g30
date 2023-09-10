@@ -23,7 +23,6 @@ function MatchPanel() {
     const socket = io("http://localhost:3001");
     setSocket(socket);
 
-    // Clean up on unmount
     return () => {
       socket.disconnect();
     };
@@ -71,7 +70,7 @@ function MatchPanel() {
 
     setTimeout(() => {
       if (socket) {
-        socket.emit("lets-rumble", difficulty);
+        socket.emit("match-me-with-a-stranger", difficulty);
       }
     }, 1000);
   };
@@ -80,7 +79,7 @@ function MatchPanel() {
     setMatchingFailed(true);
     setIsLoading(false);
     if (socket) {
-      socket.emit("remove-me-from-queue", difficulty);
+      socket.emit("cancel-matching", difficulty);
     }
   };
 
