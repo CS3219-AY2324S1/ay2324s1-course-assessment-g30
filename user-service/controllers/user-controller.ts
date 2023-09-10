@@ -2,21 +2,25 @@ import { RequestHandler } from 'express';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
 import {
-  BAD_REQUEST_STATUS_CODE,
-  FORBIDDEN_STATUS_CODE,
-  INTERNAL_SERVER_ERROR_STATUS_CODE,
-  SALT_ROUNDS
+  REQUEST_ERROR_MESSAGES,
+  SALT_ROUNDS,
+  TOKEN_DURATION
 } from '../constants';
 import jsonwebtoken from 'jsonwebtoken';
 import crypto from 'crypto';
+import {
+  sendBadRequestResponse,
+  sendForbiddenErrorResponse,
+  sendInternalServerErrorResponse,
+  sendSuccessResponse,
+  sendUnexpectedMissingUserResponse
+} from '../util';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
 
   if (!username || !password || !email) {
-    res
-      .status(BAD_REQUEST_STATUS_CODE)
-      .json({ err: 'Missing fields', res: '' });
+    sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.MISSING_FIELDS_ERROR);
     return;
   }
 
@@ -27,9 +31,7 @@ const createUser: RequestHandler = async (req, res) => {
     }
   });
   if (registeredUser) {
-    res
-      .status(BAD_REQUEST_STATUS_CODE)
-      .json({ err: 'Username is in use', res: '' });
+    sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.USERNAME_IN_USE_ERROR);
     return;
   }
 
@@ -41,9 +43,7 @@ const createUser: RequestHandler = async (req, res) => {
   });
 
   if (registeredUser) {
-    res
-      .status(BAD_REQUEST_STATUS_CODE)
-      .json({ err: 'Email is in use', res: '' });
+    sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.EMAIL_IN_USE_ERROR);
     return;
   }
 
@@ -54,7 +54,10 @@ const createUser: RequestHandler = async (req, res) => {
     salt = await bcrypt.genSalt(SALT_ROUNDS);
     hashedPassword = await bcrypt.hash(password, salt);
   } catch (error) {
-    res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).json({ err: '', res: '' });
+    sendInternalServerErrorResponse(
+      res,
+      REQUEST_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
+    );
     return;
   }
 
@@ -71,18 +74,14 @@ const createUser: RequestHandler = async (req, res) => {
     await newUser.save();
     res.json({ err: '', res: 'Account created successfully' });
   } catch (error) {
-    res
-      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-      .json({ err: 'Failed to add user to database', res: '' });
+    sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
   }
 };
 
 const loginUser: RequestHandler = async (req, res) => {
   const { password, email } = req.body;
   if (!password || !email) {
-    res
-      .status(BAD_REQUEST_STATUS_CODE)
-      .json({ err: 'Missing fields', res: '' });
+    sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.MISSING_FIELDS_ERROR);
     return;
   }
 
@@ -94,9 +93,7 @@ const loginUser: RequestHandler = async (req, res) => {
   });
 
   if (!registeredUser) {
-    res
-      .status(FORBIDDEN_STATUS_CODE)
-      .json({ err: 'User does not exist', res: '' });
+    sendForbiddenErrorResponse(res, 'User does not exist');
     return;
   }
   const hasCorrectPassword = await bcrypt.compare(
@@ -105,16 +102,14 @@ const loginUser: RequestHandler = async (req, res) => {
   );
 
   if (!hasCorrectPassword) {
-    res
-      .status(FORBIDDEN_STATUS_CODE)
-      .json({ err: 'Incorrect password for user account', res: '' });
+    sendForbiddenErrorResponse(res, 'Incorrect password for user account');
     return;
   }
 
   const accessToken = jsonwebtoken.sign(
     { uuid: registeredUser.uuid },
     process.env.JWT_SECRET as string,
-    { expiresIn: '7 days' }
+    { expiresIn: TOKEN_DURATION }
   );
   res.json({ err: '', res: { accessToken: accessToken } });
 };
@@ -122,7 +117,7 @@ const loginUser: RequestHandler = async (req, res) => {
 const getUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 
@@ -132,7 +127,7 @@ const getUserProfile: RequestHandler = async (req, res) => {
     const nonSensitiveUserData = { email, username, firstName, lastName };
     res.json({ err: '', res: nonSensitiveUserData });
   } else {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 };
@@ -140,7 +135,7 @@ const getUserProfile: RequestHandler = async (req, res) => {
 const updateUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 
@@ -163,7 +158,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     try {
       await userData.save();
     } catch (err) {
-      res.status(BAD_REQUEST_STATUS_CODE).json({ err, res: '' });
+      sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
       return;
     }
 
@@ -176,9 +171,9 @@ const updateUserProfile: RequestHandler = async (req, res) => {
       firstName,
       lastName
     };
-    res.json({ err: '', res: nonSensitiveUserData });
+    sendSuccessResponse(res, nonSensitiveUserData);
   } else {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 };
@@ -186,16 +181,16 @@ const updateUserProfile: RequestHandler = async (req, res) => {
 const deleteUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 
   const userData = await User.findByPk(user.uuid);
   if (userData) {
     await userData.destroy();
-    res.json({ err: '', res: 'User account has been deleted' });
+    sendSuccessResponse(res, 'User account has been deleted');
   } else {
-    res.status(500).json({ err: 'User profile not found', res: '' });
+    sendUnexpectedMissingUserResponse(res);
     return;
   }
 };
