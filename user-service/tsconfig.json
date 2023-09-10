@@ -1,6 +1,7 @@
 {
   "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "outDir": "./build"
   }
 }

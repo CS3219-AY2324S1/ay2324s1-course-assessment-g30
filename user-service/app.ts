@@ -11,8 +11,7 @@ import { initalize as initalize_db } from './db/init';
 import authJwtMiddleware from './middleware/auth';
 
 const app = express();
-const port = 3000;
-
+const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get('/test', (req, res) => {
@@ -31,6 +30,6 @@ app.delete('/user', deleteUserProfile);
 
 initalize_db().then(() => {
   app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`User-service on port ${port}`);
   });
 });
