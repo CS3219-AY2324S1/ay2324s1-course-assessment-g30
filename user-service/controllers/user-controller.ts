@@ -183,4 +183,27 @@ const updateUserProfile: RequestHandler = async (req, res) => {
   }
 };
 
-export { createUser, loginUser, getUserProfile, updateUserProfile };
+const deleteUserProfile: RequestHandler = async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+
+  const userData = await User.findByPk(user.uuid);
+  if (userData) {
+    await userData.destroy();
+    res.json({ err: '', res: 'User account has been deleted' });
+  } else {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+};
+
+export {
+  createUser,
+  loginUser,
+  getUserProfile,
+  updateUserProfile,
+  deleteUserProfile
+};

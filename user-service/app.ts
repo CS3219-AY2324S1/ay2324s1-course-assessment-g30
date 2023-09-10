@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import {
   createUser,
+  deleteUserProfile,
   getUserProfile,
   loginUser,
   updateUserProfile
@@ -26,6 +27,7 @@ app.post('/login', loginUser);
 app.use(authJwtMiddleware);
 app.get('/user', getUserProfile);
 app.put('/user', updateUserProfile);
+app.delete('/user', deleteUserProfile);
 
 initalize_db().then(() => {
   app.listen(port, () => {
