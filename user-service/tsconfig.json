@@ -1,7 +1,10 @@
 {
   "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "outDir": "./build"
-  }
+    "rootDirs": ["./src"],
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "outDir": "./build",
+    "baseUrl": "./src"
+  },
+  "paths": { "*": "./src/*" }
 }

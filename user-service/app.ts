@@ -1,14 +1,14 @@
 import 'dotenv/config';
-import express from 'express';
 import {
   createUser,
   deleteUserProfile,
   getUserProfile,
   loginUser,
   updateUserProfile
-} from './controllers/user-controller';
-import { initalize as initalize_db } from './db/init';
-import authJwtMiddleware from './middleware/auth';
+} from './src/controllers/user-controller';
+import { initalize as initalize_db } from './src/db/init';
+import express from 'express';
+import authJwtMiddleware from './src/middleware/auth';
 
 const app = express();
 const port = process.env.PORT || 3000;
