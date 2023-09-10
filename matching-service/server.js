@@ -2,12 +2,13 @@ import express from "express";
 import cors from "cors";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import Redis from "ioredis";
 import {
   removeFromQueue,
   pairUsers,
   removeFromAllQueues,
-} from "./controllers/matchmakingController.js";
+  joinRoom,
+  createRoom,
+} from "./controllers/matchmaking-controller.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -18,15 +19,20 @@ const io = new Server(httpServer, {
   },
 });
 
-// Connect to the default Redis server running on localhost and default port 6379
-const redis = new Redis();
-
 // Run when client connects
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on("match-me-with-a-stranger", (difficulty) => {
-    pairUsers(socket, difficulty, io);
+    pairUsers(socket, difficulty);
+  });
+
+  socket.on("join-room", (roomId) => {
+    joinRoom(socket, roomId);
+  });
+
+  socket.on("create-room", (difficulty) => {
+    createRoom(socket, difficulty);
   });
 
   socket.on("cancel-matching", (difficulty) => {

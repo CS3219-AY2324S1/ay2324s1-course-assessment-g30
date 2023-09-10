@@ -3,6 +3,9 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import MatchButtons from "./MatchButtons";
 import MatchModal from ".//MatchModal";
+import JoinRoomForm from "./JoinRoomForm";
+import CreateRoomForm from "./CreateRoomForm";
+import { Grid, GridItem, Center } from "@chakra-ui/react";
 
 function MatchPanel() {
   const FINDING_MATCH_TIMEOUT = 30;
@@ -31,8 +34,8 @@ function MatchPanel() {
   // Waiting to be matched
   useEffect(() => {
     if (socket) {
-      socket.on("paired", (roomId) => {
-        console.log(`You are paired in room ${roomId}`);
+      socket.on("found-room", (roomId) => {
+        console.log(`You are joining room ${roomId}`);
         setMatchFound(true);
         setTimeout(() => {
           navigate(`/room/${roomId}`);
@@ -90,11 +93,34 @@ function MatchPanel() {
 
   return (
     <div>
-      <MatchButtons
-        isLoading={isLoading}
-        clickedButton={difficulty}
-        handleMatchClick={handleMatchClick}
-      />
+      <Center h="100vh">
+        <Grid h="15vh" w="30vw" templateRows="1fr 1fr" isDisabled={isLoading}>
+          <GridItem display="flex" alignItems="center" justifyContent="center">
+            <MatchButtons
+              isLoading={isLoading}
+              clickedButton={difficulty}
+              handleMatchClick={handleMatchClick}
+            />
+          </GridItem>
+          <GridItem display="grid" gridTemplateColumns="1fr 1fr">
+            <GridItem
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <JoinRoomForm socket={socket} />
+            </GridItem>
+            <GridItem
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <CreateRoomForm socket={socket} />
+            </GridItem>
+          </GridItem>
+        </Grid>
+      </Center>
+
       <MatchModal
         showModal={showModal}
         onClose={() => {

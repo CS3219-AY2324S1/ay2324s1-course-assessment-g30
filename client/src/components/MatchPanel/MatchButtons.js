@@ -3,12 +3,7 @@ import { Button, HStack } from "@chakra-ui/react";
 
 function MatchButtons({ isLoading, clickedButton, handleMatchClick }) {
   return (
-    <HStack
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
+    <HStack display="flex" justifyContent="center" alignItems="center">
       <Button
         isLoading={isLoading && clickedButton === "easy"}
         colorScheme="green"
