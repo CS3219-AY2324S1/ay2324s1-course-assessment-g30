@@ -137,4 +137,50 @@ const getUserProfile: RequestHandler = async (req, res) => {
   }
 };
 
-export { createUser, loginUser, getUserProfile };
+const updateUserProfile: RequestHandler = async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+
+  const userData = await User.findByPk(user.uuid);
+  if (userData) {
+    let { username, firstName, lastName } = req.body;
+
+    if (username && typeof username == 'string') {
+      userData.username = username;
+    }
+
+    if (firstName && typeof firstName == 'string') {
+      userData.firstName = firstName;
+    }
+
+    if (lastName && typeof lastName == 'string') {
+      userData.lastName = lastName;
+    }
+
+    try {
+      await userData.save();
+    } catch (err) {
+      res.status(BAD_REQUEST_STATUS_CODE).json({ err, res: '' });
+      return;
+    }
+
+    ({ username, firstName, lastName } = userData);
+    const { email } = userData;
+
+    const nonSensitiveUserData = {
+      email,
+      username,
+      firstName,
+      lastName
+    };
+    res.json({ err: '', res: nonSensitiveUserData });
+  } else {
+    res.status(500).json({ err: 'User profile not found', res: '' });
+    return;
+  }
+};
+
+export { createUser, loginUser, getUserProfile, updateUserProfile };

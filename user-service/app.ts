@@ -3,7 +3,8 @@ import express from 'express';
 import {
   createUser,
   getUserProfile,
-  loginUser
+  loginUser,
+  updateUserProfile
 } from './controllers/user-controller';
 import { initalize as initalize_db } from './db/init';
 import authJwtMiddleware from './middleware/auth';
@@ -24,6 +25,7 @@ app.post('/login', loginUser);
 // Protected routes
 app.use(authJwtMiddleware);
 app.get('/user', getUserProfile);
+app.put('/user', updateUserProfile);
 
 initalize_db().then(() => {
   app.listen(port, () => {
