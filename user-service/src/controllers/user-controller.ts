@@ -111,13 +111,21 @@ const loginUser: RequestHandler = async (req, res) => {
     process.env.JWT_SECRET as string,
     { expiresIn: TOKEN_DURATION }
   );
-  res.json({ err: '', res: { accessToken: accessToken } });
+  res.json({
+    err: '',
+    res: { accessToken: accessToken, uuid: registeredUser.uuid }
+  });
 };
 
 const getUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
     sendUnexpectedMissingUserResponse(res);
+    return;
+  }
+
+  if (user.uuid != req.body.uuid) {
+    sendForbiddenErrorResponse(res, 'Forbidden');
     return;
   }
 
@@ -136,6 +144,11 @@ const updateUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
     sendUnexpectedMissingUserResponse(res);
+    return;
+  }
+
+  if (user.uuid != req.body.uuid) {
+    sendForbiddenErrorResponse(res, 'Forbidden');
     return;
   }
 
@@ -182,6 +195,11 @@ const deleteUserProfile: RequestHandler = async (req, res) => {
   const user = req.user;
   if (!user) {
     sendUnexpectedMissingUserResponse(res);
+    return;
+  }
+
+  if (user.uuid != req.body.uuid) {
+    sendForbiddenErrorResponse(res, 'Forbidden');
     return;
   }
 
