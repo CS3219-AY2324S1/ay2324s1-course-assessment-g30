@@ -12,21 +12,25 @@ import authJwtMiddleware from './src/middleware/auth';
 
 const app = express();
 const port = process.env.PORT || 3000;
+const version = 'v1';
 app.use(express.json());
 
-app.get('/test', (req, res) => {
+const router = express.Router();
+app.use(`/${version}`, router);
+
+router.get('/test', (req, res) => {
   res.send('Hear you loud and clear');
 });
 
 // Create new user endpoint
-app.post('/user', createUser);
-app.post('/login', loginUser);
+router.post('/auth/register', createUser);
+router.post('/auth/login', loginUser);
 
 // Protected routes
-app.use(authJwtMiddleware);
-app.get('/user', getUserProfile);
-app.put('/user', updateUserProfile);
-app.delete('/user', deleteUserProfile);
+router.use(authJwtMiddleware);
+router.get('/user', getUserProfile);
+router.put('/user', updateUserProfile);
+router.delete('/user', deleteUserProfile);
 
 initalize_db().then(() => {
   app.listen(port, () => {
