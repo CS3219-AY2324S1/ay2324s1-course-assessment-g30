@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 
 const webScrapperQuestionDescription = async (link) => {
   try {
@@ -16,12 +16,11 @@ const webScrapperQuestionDescription = async (link) => {
       await browser.close();
       return outerHTML;
     } else {
-      throw new Error('Element not found');
+      throw new Error("Element not found");
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   }
 };
 
-
-module.exports = {webScrapperQuestionDescription}
+module.exports = { webScrapperQuestionDescription };
