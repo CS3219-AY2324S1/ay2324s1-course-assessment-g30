@@ -24,7 +24,7 @@ const readQuestionDescriptionController = async (req, res, next) => {
 
 const readQuestionsController = async (req, res, next) => {
   try {
-    const documents = await QuestionModel.find({});
+    const documents = await QuestionModel.find({}).sort({ question_id: 1 });
     if (documents == null) {
       res.status(404).json({ error: "Questions not found" });
     } else {
@@ -73,21 +73,23 @@ const addQuestionController = async (req, res, next) => {
 };
 
 const updateQuestionController = async (req, res, next) => {
-  const question_id = req.body.question_id;
-  const original_document = await QuestionModel.findOne({
-    question_id: question_id,
-  });
-  const original_title = original_document.question_title;
-  const original_category = original_document.question_categories;
-  const original_complexity = original_document.question_complexity;
-  const original_link = original_document.question_link;
-
-  const new_title = req.body.title || original_title;
-  const new_category = req.body.category || original_category;
-  const new_complexity = req.body.complexity || original_complexity;
-  const new_link = req.body.link || original_link;
-
   try {
+    const question_id = req.body.question_id;
+    const original_document = await QuestionModel.findOne({
+      question_id: question_id,
+    });
+    const original_title = original_document.question_title;
+    const original_category = original_document.question_categories;
+    const original_complexity = original_document.question_complexity;
+    const original_link = original_document.question_link;
+
+    const new_title = req.body.title !== null ? req.body.title : original_title;
+    const new_category =
+      req.body.category !== null ? req.body.category : original_category;
+    const new_complexity =
+      req.body.complexity !== null ? req.body.complexity : original_complexity;
+    const new_link = req.body.link !== null ? req.body.link : original_link;
+
     const newQuestionDescription =
       await webScrapperQuestionDescription(new_link);
     await QuestionModel.updateOne(
