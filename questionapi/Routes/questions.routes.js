@@ -10,12 +10,12 @@ questionRouter.get(
   "/readQuestions",
   questionController.readQuestionsController,
 );
-questionRouter.get("/addQuestion", questionController.addQuestionController);
-questionRouter.get(
+questionRouter.post("/addQuestion", questionController.addQuestionController);
+questionRouter.post(
   "/deleteQuestion",
   questionController.deleteQuestionController,
 );
-questionRouter.get(
+questionRouter.post(
   "/updateQuestion",
   questionController.updateQuestionController,
 );
