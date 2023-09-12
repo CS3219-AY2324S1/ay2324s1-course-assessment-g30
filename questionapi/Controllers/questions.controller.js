@@ -13,7 +13,9 @@ const readQuestionDescriptionController = async (req, res, next) => {
       question_id: reqQuestionid,
     });
     if (doc == null) {
-      res.status(404).json({ error: "Question description not found" });
+      res
+        .status(404)
+        .json({ error: "Question description not found" + reqQuestionid });
     } else {
       res.send(doc);
     }
@@ -37,15 +39,15 @@ const readQuestionsController = async (req, res, next) => {
 
 const addQuestionController = async (req, res, next) => {
   // Arguments: title (String), category ([String]), complexity (String), link (String)
-  // const title = req.body.title;
-  // const category = req.body.category;
-  // const complexity = req.body.complexity;
-  // const link = req.body.link;
+  const title = req.body.title;
+  const category = req.body.category;
+  const complexity = req.body.complexity;
+  const link = req.body.link;
 
-  const title = "gg";
-  const category = "[gg]";
-  const complexity = "hard";
-  const link = "https://leetcode.com/problems/maximal-network-rank/";
+  // const title = "maximal-network-rank";
+  // const category = "[]";
+  // const complexity = "hard";
+  // const link = "https://leetcode.com/problems/maximal-network-rank/";
 
   try {
     const newQuestionDescription = await webScrapperQuestionDescription(link);

@@ -5,6 +5,8 @@ const questionRouter = require("./Routes/questions.routes.js");
 const app = express();
 const port = 3001;
 
+app.use(express.json());
+
 app.use("/api", questionRouter);
 
 app.listen(port, () => {
