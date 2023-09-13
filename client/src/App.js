@@ -10,20 +10,21 @@ import { setTableStorage, getTableStorage, getQuestionStorage } from './utils/lo
 import { table1, table2 } from './data/data';
 import IndividualQuestionPage from './pages/IndividualQuestion/IndividualQuestionPage';
 import { ScrollToTop } from './utils/ScrollToTop';
+import UpdateQuestionPage from './pages/UpdateQuestion/UpdateQuestionPage';
 
 function App() {
 
-  useEffect(() => {
-    if (getTableStorage() == null) {
-      setTableStorage("tableData", table1);
+  // useEffect(() => {
+  //   if (getTableStorage() == null) {
+  //     setTableStorage("tableData", table1);
       
-      console.log('invoked')
-    }
-    if (getQuestionStorage() == null) {
-      setTableStorage("questions", table2);
-    }
+  //     console.log('invoked')
+  //   }
+  //   if (getQuestionStorage() == null) {
+  //     setTableStorage("questions", table2);
+  //   }
 
-  }, [])
+  // }, [])
 
   return (
     <>
@@ -36,6 +37,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/add_question" element={<AddQuestionForm />} />
         <Route path='/question/:questionId' element={<IndividualQuestionPage />} />
+        <Route path='/edit_question/:questionId' element={<UpdateQuestionPage />} />
         {/* <Route path="/forgot_password" element={<LoginForm />} /> */}
       </Routes>
     </Layout>
