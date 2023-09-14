@@ -6,7 +6,7 @@ import {
   SALT_ROUNDS,
   TOKEN_DURATION
 } from '../constants';
-import jsonwebtoken from 'jsonwebtoken';
+import jsonwebtoken, { Jwt, JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
 import {
   sendBadRequestResponse,
@@ -111,9 +111,19 @@ const loginUser: RequestHandler = async (req, res) => {
     process.env.JWT_SECRET as string,
     { expiresIn: TOKEN_DURATION }
   );
+  const tokenDecoded = jsonwebtoken.decode(accessToken, {
+    complete: true
+  }) as Jwt;
+  const payload = tokenDecoded.payload as JwtPayload;
+  const exp = payload.exp as number;
+
   res.json({
     err: '',
-    res: { accessToken: accessToken, uuid: registeredUser.uuid }
+    res: {
+      accessToken: accessToken,
+      uuid: registeredUser.uuid,
+      exp
+    }
   });
 };
 
