@@ -8,6 +8,8 @@ const sync = async () => {
   if (process.env.NODE_ENV == 'development') {
     await User.sync({ force: process.env.NODE_ENV == 'development' });
     console.log('The table for the User model was just (re)created!');
+  } else {
+    await User.sync();
   }
 };
 
