@@ -1,50 +1,69 @@
 import { Box, Button, Container, Divider, FormControl, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea } from '@chakra-ui/react';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import { addQuestion } from '../../api/QuestionServices';
+import { getQuestions } from '../../api/QuestionServices';
+import { updateQuestion } from '../../api/QuestionServices';
+import { useLocation } from 'react-router-dom'
 
-function AddQuestionForm() {
+
+function UpdateQuestionPage() {
+  const location = useLocation();
+  const url = window.location.pathname;
+  const question_idx = Number(url.match(/\/(\d+)$/)[1]);
 
   //question ID auto generated
   // Question Title Question Description Question Category Question Complexit
+  const [info, setInfo] = useState([]);
+
+  const prev_data = location.state;
+
+  useEffect(() => {
+    if (info.length === 0) {
+      getQuestions().then(data => setInfo(data.filter(val => {return val.question_id === question_idx})[0]));
+    }
+    }, [])
+
   const {
     register,
     handleSubmit,
     control,
+    getValues,
     formState: { errors }
-  } = useForm();
+  } = useForm({defaultValues: prev_data});
+
 
   let navigator = useNavigate()
-
-  const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link); navigator('/')};
+    
+  const onSubmit = (data, event) => {
+    updateQuestion(data).then(data => console.log(data));
+    navigator('/');
+  }
 
   return (
-    
     <Box >
       <Container maxW={'60%'} pb={20}>
-        <Heading>Add Question</Heading>
+        <Heading>Edit Question: <br/> {info.question_title}</Heading>
       </Container>
 
       <Container maxW={'60%'} mb={100}>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Title</Text>
-          <Input {...register("title", { required: true })}/>
-          {errors.title && <p style={{color: 'red'}}>This field is required</p>}
+          <Input defaultValue={prev_data.question_title} {...register("question_title")}/>
+          {/* {errors.question_title && <p style={{color: 'red'}}>This field is required</p>} */}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Category</Text>
-          <Input {...register("categories", { required: true })}/>
-          {errors.categories && <p style={{color: 'red'}}>This field is required</p>}
+          <Input defaultValue={prev_data.question_categories} {...register("question_categories")}/>
+          {/* {errors.question_categories && <p style={{color: 'red'}}>This field is required</p>} */}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Complexity</Text>
           
           <FormControl>
           <Controller
               control={control}
-              rules={{ required: "This field is required" }}
-              name="complexity"
-              defaultValue={"Easy"}
+              name="question_complexity"
               render={({ field }) => (
           <RadioGroup {...field} >
             <Stack direction='row' spacing={16}>
@@ -59,8 +78,8 @@ function AddQuestionForm() {
           
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Textarea {...register("link", { required: true })}/>
-          {errors.link && <p style={{color: 'red'}}>This field is required</p>}
+          <Textarea defaultValue={prev_data.question_link} {...register("question_link")}/>
+          {/* {errors.link && <p style={{color: 'red'}}>This field is required</p>} */}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           <Button type='submit'>Submit</Button>
           </Box>
@@ -72,4 +91,4 @@ function AddQuestionForm() {
   )
 }
 
-export default AddQuestionForm
+export default UpdateQuestionPage

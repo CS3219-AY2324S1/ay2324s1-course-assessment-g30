@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Table.css';
 import { Box, Button } from '@chakra-ui/react';
 import {AddIcon} from '@chakra-ui/icons'
-import { getTableStorage } from '../../utils/localStorage/localStorage';
+import { getQuestions, getQuestionsDescription } from '../../api/QuestionServices';
 
 function Table() {
 
@@ -17,10 +17,10 @@ function Table() {
     
     useEffect(() => {
       if (table.length === 0) {
-        setTable(getTableStorage())
+        getQuestions().then(data => setTable(data))
       }
+      
     }, [])
-
 
   return (
     <>
