@@ -28,7 +28,7 @@ router.post('/auth/login', loginUser);
 
 // Protected routes
 router.use(authJwtMiddleware);
-router.get('/user', getUserProfile);
+router.post('/user', getUserProfile);
 router.put('/user', updateUserProfile);
 router.delete('/user', deleteUserProfile);
 
