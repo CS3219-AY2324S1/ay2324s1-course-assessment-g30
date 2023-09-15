@@ -9,14 +9,20 @@ import {
 import { initalize as initalize_db } from './src/db/init';
 import express from 'express';
 import authJwtMiddleware from './src/middleware/auth';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 3000;
 const version = 'v1';
+
+app.use(cors());
+
 app.use(express.json());
 
 const router = express.Router();
 app.use(`/${version}`, router);
+
+
 
 router.get('/test', (req, res) => {
   res.send('Hear you loud and clear');

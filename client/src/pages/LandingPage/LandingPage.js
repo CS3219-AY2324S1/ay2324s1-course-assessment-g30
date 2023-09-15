@@ -112,9 +112,7 @@ export default function LandingPage() {
       </Stack>
     </Container>
     <Spacer />
-    <Container maxW={'6xl'}>
-      <Table />
-    </Container>
+    
     </VStack>
     </>
   )
