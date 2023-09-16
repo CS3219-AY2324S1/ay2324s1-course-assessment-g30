@@ -2,11 +2,11 @@
   "name": "user-service",
   "version": "1.0.0",
   "description": "",
-  "main": "app.ts",
+  "main": "server.ts",
   "scripts": {
     "build": "npm run tsc",
     "tsc": "tsc",
-    "start:prod": "node build/app.js",
+    "start:prod": "node build/server.js",
     "start:dev": "export NODE_ENV=development; nodemon",
 	  "start:dev-w": "set NODE_ENV=development && nodemon",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest",

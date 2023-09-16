@@ -6,14 +6,12 @@ import {
   loginUser,
   updateUserProfile
 } from './src/controllers/user-controller';
-import { initalize as initalize_db } from './src/db/init';
 import express from 'express';
 import authJwtMiddleware from './src/middleware/auth';
 import cors from 'cors';
 import { getUserRole } from './src/controllers/auth-controller';
 
 const app = express();
-const port = process.env.PORT || 3000;
 const version = 'v1';
 
 app.use(cors());
@@ -39,8 +37,4 @@ router.post('/user', getUserProfile);
 router.put('/user', updateUserProfile);
 router.delete('/user', deleteUserProfile);
 
-initalize_db().then(() => {
-  app.listen(port, () => {
-    console.log(`User-service on port ${port}`);
-  });
-});
+export { app };
