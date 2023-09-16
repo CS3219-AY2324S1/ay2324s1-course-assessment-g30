@@ -39,7 +39,7 @@ function IndividualQuestionPage() {
     <>
     <HStack maxW={'100%'}>
      
-      <Box padding={'10px'} borderRight={'1px'} borderColor={'#D3D3D3'} w={'55vw'} h={'100vh'}>
+      <Box padding={'10px'} borderRight={'1px'} borderColor={'#D3D3D3'} w={'50vw'} h={'100vh'}>
       
       <Tabs>
       <TabList>
@@ -74,7 +74,7 @@ function IndividualQuestionPage() {
         </MenuButton>
         <MenuList>
         <MenuItem onClick={() => navigator('/edit_question/' + question.question_id, {state: question})}>Edit Question</MenuItem>
-        <MenuItem onClick={() => {deleteQuestion(question.question_id); navigator('/')}}>Delete Question</MenuItem>
+        <MenuItem onClick={() => {deleteQuestion(question.question_id); navigator('/dashboard')}}>Delete Question</MenuItem>
         </MenuList>
         </Menu>
         {/* <Button maxWidth={'90%'} >Delete Question</Button> */}

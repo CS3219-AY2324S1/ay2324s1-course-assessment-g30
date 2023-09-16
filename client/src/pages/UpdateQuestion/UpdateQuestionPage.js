@@ -38,7 +38,7 @@ function UpdateQuestionPage() {
     
   const onSubmit = (data, event) => {
     updateQuestion(data).then(data => console.log(data));
-    navigator('/');
+    navigator('/dashboard');
   }
 
   return (
