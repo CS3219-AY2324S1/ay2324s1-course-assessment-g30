@@ -14,6 +14,7 @@ import Cookies from 'js-cookie';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { deleteProfile } from '../../api/Auth';
+import colors from '../../utils/Colors';
 
 
 
@@ -50,10 +51,10 @@ function DeleteProfileModal(props) {
         <ModalHeader fontSize={'2xl'} color={'#ff0f00'}>Delete Profile</ModalHeader>
         <ModalCloseButton />
         <ModalBody mt={5} >
-          <Text mb='20px' fontSize={'lg'} >Do you really want to delete your account? This action can't be reverted!</Text>
+          <Text mb='20px' fontSize={'lg'} >Do you really want to delete your account? <br/> This action can't be reverted!</Text>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme='blue' mr={3} onClick={props.onClose}>
+          <Button colorScheme={colors.primary} mr={3} onClick={props.onClose}>
             Close
           </Button>
           <Button type='submit' _hover={{

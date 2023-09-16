@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { Controller, useForm } from "react-hook-form";
 import { editProfile } from '../../api/Auth';
+import colors from '../../utils/Colors';
 
 
 function EditProfileModal(props) {
@@ -86,9 +87,7 @@ function EditProfileModal(props) {
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme='blue' mr={3} onClick={props.onClose}>
-            Close
-          </Button>
+          
           <Button type='submit'>Submit</Button>
         </ModalFooter>
         </form>
