@@ -1,6 +1,12 @@
 {
   "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
-  "include": ["src/**/*", "app.ts"],
+  "include": [
+    "src/*/**.ts",
+    "app.ts",
+    "server.ts",
+    "jest.config.ts",
+    "__tests__/**.test.ts"
+  ],
   "compilerOptions": {
     "typeRoots": ["./src/types", "./node_modules/@types"],
     "outDir": "./build",
