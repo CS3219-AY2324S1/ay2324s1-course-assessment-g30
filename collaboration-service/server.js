@@ -7,6 +7,7 @@ import {
   disconnectFromRoom,
 } from "./controllers/room-controller.js";
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
+import { connectToDB } from "./model/db.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -33,9 +34,11 @@ io.on("connection", (socket) => {
     sendMessage(socket, message, roomId, io);
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnecting", () => {
     disconnectFromRoom(socket, io);
   });
+
+  socket.on("disconnect", () => {});
 });
 
 app.use(cors());
@@ -43,4 +46,5 @@ app.use(express.json());
 
 httpServer.listen(3002, () => {
   console.log("collaboration-service started on port 3002");
+  connectToDB();
 });
