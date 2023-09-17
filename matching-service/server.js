@@ -9,6 +9,7 @@ import {
   joinRoom,
   createRoom,
 } from "./controllers/matchmaking-controller.js";
+import { createDB } from "./model/db.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -49,4 +50,5 @@ app.use(express.json());
 
 httpServer.listen(3001, () => {
   console.log("matching-service started on port 3001");
+  createDB();
 });

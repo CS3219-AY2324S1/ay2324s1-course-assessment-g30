@@ -1,11 +1,10 @@
 import Redis from "ioredis";
 import { v4 as uuidv4 } from "uuid";
+import Room from "../model/room-model.js";
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
 const redis = new Redis();
-
-const roomIds = []; // Will bring in DB later to do this (prob want to include roomid, difficulty)
 
 /**
  * Removes a socket ID from a matchmaking queue.
@@ -35,24 +34,28 @@ export const removeFromAllQueues = async (socket) => {
  * Pairs users from a matchmaking queue and performs necessary actions.
  */
 export const pairUsers = async (socket, difficulty) => {
-  console.log(`User ${socket.id} joined matching queue for ${difficulty}`);
+  try {
+    console.log(`User ${socket.id} joined matching queue for ${difficulty}`);
 
-  const queueName = `${difficulty}Queue`;
-  const queueSize = await redis.llen(queueName);
+    const queueName = `${difficulty}Queue`;
+    const queueSize = await redis.llen(queueName);
 
-  if (queueSize >= 1) {
-    const partnerId = await redis.lpop(queueName);
+    if (queueSize >= 1) {
+      const partnerId = await redis.lpop(queueName);
 
-    if (socket.id !== partnerId) {
-      const roomId = generateUniqueRoomId();
-      roomIds.push(roomId);
+      if (socket.id !== partnerId) {
+        const roomId = await generateUniqueRoomId();
+        await setUpRoom(roomId, difficulty);
 
-      // Notify both users that they can join the room
-      socket.emit("found-room", roomId);
-      socket.to(partnerId).emit("found-room", roomId);
+        // Notify both users that they can join the room
+        socket.emit("found-room", roomId);
+        socket.to(partnerId).emit("found-room", roomId);
+      }
+    } else {
+      redis.rpush(`${difficulty}Queue`, socket.id);
     }
-  } else {
-    redis.rpush(`${difficulty}Queue`, socket.id);
+  } catch (err) {
+    console.error("Error pairing users:", err);
   }
 };
 
@@ -60,9 +63,9 @@ export const pairUsers = async (socket, difficulty) => {
  * Check if room id exists in the database
  */
 export const joinRoom = async (socket, roomId) => {
-  const index = roomIds.indexOf(roomId);
+  const existingRoom = await Room.findOne({ room_id: roomId });
 
-  if (index != -1) {
+  if (existingRoom) {
     socket.emit("valid-room-id");
 
     setTimeout(() => {
@@ -74,30 +77,53 @@ export const joinRoom = async (socket, roomId) => {
 };
 
 /**
- * Create a room id and add it to the database
+ * Set up room and add it to the database
+ */
+export const setUpRoom = async (roomId, difficulty) => {
+  try {
+    const newRoom = new Room({
+      room_id: roomId,
+      question_difficulty: difficulty,
+    });
+
+    await newRoom.save();
+  } catch (err) {
+    console.error("Error setting up room:", err);
+    throw err;
+  }
+};
+
+/**
+ * Create a room for the user
  */
 export const createRoom = async (socket, difficulty) => {
-  const roomId = generateUniqueRoomId();
-  roomIds.push(roomId);
+  try {
+    const roomId = await generateUniqueRoomId();
+    await setUpRoom(roomId, difficulty);
 
-  socket.emit("room-created");
+    socket.emit("room-created");
 
-  setTimeout(() => {
-    socket.emit("found-room", roomId);
-  }, 2000);
+    setTimeout(() => {
+      socket.emit("found-room", roomId);
+    }, 2000);
+  } catch (err) {
+    console.error("Error creating room:", err);
+  }
 };
 
 /**
  * Genenerate a unique room id
  */
-export const generateUniqueRoomId = () => {
+export const generateUniqueRoomId = async () => {
   let roomId;
   let isUnique = false;
 
   while (!isUnique) {
     roomId = uuidv4();
 
-    if (!roomIds.includes(roomId)) {
+    const existingRoom = await Room.findOne({ room_id: roomId });
+
+    if (!existingRoom) {
       isUnique = true;
     }
   }
