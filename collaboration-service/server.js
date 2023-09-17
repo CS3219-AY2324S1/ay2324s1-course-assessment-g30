@@ -5,6 +5,7 @@ import { createServer } from "http";
 import {
   setUpRoom,
   disconnectFromRoom,
+  leaveRoom,
 } from "./controllers/room-controller.js";
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
@@ -28,6 +29,10 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", (roomId) => {
     broadcastJoin(socket, roomId, io);
+  });
+
+  socket.on("leave-room", (roomId) => {
+    leaveRoom(socket, roomId, io);
   });
 
   socket.on("send-message", (message, roomId) => {

@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Heading, Spinner, Text, Grid, GridItem } from "@chakra-ui/react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Heading,
+  Spinner,
+  Text,
+  Grid,
+  GridItem,
+  Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
+} from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../components/ChatContainer/ChatContainer";
 
@@ -8,6 +23,7 @@ function RoomPage() {
   const { roomId } = useParams();
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
+  const navigate = useNavigate();
 
   // Connect to collab lobby
   useEffect(() => {
@@ -31,6 +47,11 @@ function RoomPage() {
       });
     }
   }, [socket, roomId]);
+
+  const handleLeaveRoom = () => {
+    socket.emit("leave-room", roomId);
+    navigate(`/home`);
+  };
 
   return (
     <Box
@@ -58,14 +79,41 @@ function RoomPage() {
         >
           <GridItem pl="2" bg="green.300" area={"question"}>
             <Heading as="h1" size="2xl">
-              Welcome to Room: {roomId}
-              <Text>Share the id with your friends to join the room!</Text>
+              Question
             </Heading>
           </GridItem>
           <GridItem pl="2" area={"chat"}>
             <ChatContainer socket={socket} roomId={roomId} />
           </GridItem>
           <GridItem pl="2" bg="grey" area={"editor"}>
+            <Popover>
+              <PopoverTrigger>
+                <Button size="sm" colorScheme="teal">
+                  Info
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverHeader>Room Info</PopoverHeader>
+                <PopoverBody>
+                  <Text>
+                    RoomID: {roomId}
+                    <Text>
+                      Share the id with your friends to join the room!
+                    </Text>
+                  </Text>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+            <Button
+              colorScheme="red"
+              variant="solid"
+              onClick={() => handleLeaveRoom()}
+              size="sm"
+            >
+              Leave Room
+            </Button>
             <Heading as="h1" size="2xl">
               Editor
             </Heading>

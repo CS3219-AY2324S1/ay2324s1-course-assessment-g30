@@ -23,6 +23,15 @@ export const setUpRoom = async (socket, roomId) => {
 };
 
 /**
+ * Disconnects socket from room
+ */
+export const leaveRoom = async (socket, roomId, io) => {
+  console.log(`User ${socket.id} left room ${roomId}`);
+  socket.leave(roomId);
+  broadcastLeave(socket, roomId, io);
+};
+
+/**
  * Disconnects socket from a room. Socket leaves room upon disconnect.
  */
 export const disconnectFromRoom = async (socket, io) => {
