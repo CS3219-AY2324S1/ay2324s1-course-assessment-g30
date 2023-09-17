@@ -19,7 +19,14 @@ export const createDB = () => {
     console.error("MongoDB connection error:", err);
   });
 
-  db.once("open", () => {
+  db.once("open", async () => {
     console.log("MongoDB connection is open");
+
+    // Creates the collection if it doesn't exist and sets up a TTL index of 2 hours
+    db.collection("rooms")
+      .createIndex({ date_created: 1 }, { expireAfterSeconds: 7200 })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 };
