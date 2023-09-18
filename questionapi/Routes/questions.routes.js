@@ -2,7 +2,7 @@ const express = require("express");
 const questionController = require("../Controllers/questions.controller");
 const questionRouter = express.Router();
 
-questionRouter.get(
+questionRouter.post(
   "/readQuestionDescription",
   questionController.readQuestionDescriptionController,
 );
