@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Heading, Spinner, Grid, GridItem } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Box,
+  Heading,
+  Spinner,
+  Grid,
+  GridItem,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../components/ChatContainer/ChatContainer";
 import RoomPanel from "../components/RoomPanel/RoomPanel";
@@ -9,6 +17,8 @@ function RoomPage() {
   const { roomId } = useParams();
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
+  const [isInvalidRoom, setIsInvalidRoom] = useState(false);
+  const navigate = useNavigate();
 
   // Connect to collab lobby
   useEffect(() => {
@@ -17,21 +27,37 @@ function RoomPage() {
 
     socket.emit("set-up-room", roomId);
 
+    socket.on("room-is-ready", () => {
+      setTimeout(() => {
+        setIsRoomBeingSetUp(false);
+        socket.emit("join-room", roomId);
+      }, 3000);
+    });
+
+    socket.on("invalid-room", () => {
+      setIsRoomBeingSetUp(false);
+      setIsInvalidRoom(true);
+      setTimeout(() => {
+        navigate("/home");
+      }, 3000);
+    });
+
     return () => {
       socket.disconnect();
     };
   }, [roomId]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("room-is-ready", () => {
-        setTimeout(() => {
-          setIsRoomBeingSetUp(false);
-          socket.emit("join-room", roomId);
-        }, 3000);
-      });
-    }
-  }, [socket, roomId]);
+  if (isInvalidRoom) {
+    return (
+      <Box textAlign="center" display="flex" justifyContent="center">
+        <Alert status="error">
+          <AlertIcon />
+          Sorry, this room does not exist or has expired. Redirecting to home
+          page...
+        </Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box textAlign="center" display="flex" justifyContent="center">

@@ -18,6 +18,7 @@ export const setUpRoom = async (socket, roomId) => {
       socket.emit("room-is-ready");
     }
   } else {
+    socket.emit("invalid-room");
     console.error("Failed to join socket to room");
   }
 };

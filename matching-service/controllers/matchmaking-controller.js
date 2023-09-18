@@ -60,23 +60,6 @@ export const pairUsers = async (socket, difficulty) => {
 };
 
 /**
- * Check if room id exists in the database
- */
-export const joinRoom = async (socket, roomId) => {
-  const existingRoom = await Room.findOne({ room_id: roomId });
-
-  if (existingRoom) {
-    socket.emit("valid-room-id");
-
-    setTimeout(() => {
-      socket.emit("found-room", roomId);
-    }, 2000);
-  } else {
-    socket.emit("invalid-room-id");
-  }
-};
-
-/**
  * Set up room and add it to the database
  */
 export const setUpRoom = async (roomId, difficulty) => {

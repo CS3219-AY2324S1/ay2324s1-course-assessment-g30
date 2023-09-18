@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import MatchButtons from "./MatchButtons";
 import MatchModal from ".//MatchModal";
-import JoinRoomForm from "./JoinRoomForm";
 import CreateRoomForm from "./CreateRoomForm";
 import { Grid, GridItem, Center } from "@chakra-ui/react";
 
@@ -107,9 +106,7 @@ function MatchPanel() {
               display="flex"
               alignItems="center"
               justifyContent="center"
-            >
-              <JoinRoomForm socket={socket} />
-            </GridItem>
+            ></GridItem>
             <GridItem
               display="flex"
               alignItems="center"

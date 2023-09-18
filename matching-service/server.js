@@ -6,7 +6,6 @@ import {
   removeFromQueue,
   pairUsers,
   removeFromAllQueues,
-  joinRoom,
   createRoom,
 } from "./controllers/matchmaking-controller.js";
 import { connectToDB } from "./model/db.js";
@@ -26,10 +25,6 @@ io.on("connection", (socket) => {
 
   socket.on("match-me-with-a-stranger", (difficulty) => {
     pairUsers(socket, difficulty);
-  });
-
-  socket.on("join-room", (roomId) => {
-    joinRoom(socket, roomId);
   });
 
   socket.on("create-room", (difficulty) => {
