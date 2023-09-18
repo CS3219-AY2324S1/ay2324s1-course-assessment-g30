@@ -101,19 +101,8 @@ function MatchPanel() {
               handleMatchClick={handleMatchClick}
             />
           </GridItem>
-          <GridItem display="grid" gridTemplateColumns="1fr 1fr">
-            <GridItem
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            ></GridItem>
-            <GridItem
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-            >
-              <CreateRoomForm socket={socket} />
-            </GridItem>
+          <GridItem display="grid">
+            <CreateRoomForm socket={socket} />
           </GridItem>
         </Grid>
       </Center>
