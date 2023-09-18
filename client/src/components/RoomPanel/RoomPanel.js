@@ -11,7 +11,9 @@ import {
   PopoverHeader,
   PopoverBody,
   Text,
+  IconButton,
 } from "@chakra-ui/react";
+import { InfoIcon } from "@chakra-ui/icons";
 import LeaveRoomModal from "./LeaveRoomModal";
 
 function RoomPanel({ roomId, socket }) {
@@ -32,9 +34,11 @@ function RoomPanel({ roomId, socket }) {
       <HStack width="47vw" spacing={2} justifyContent="right">
         <Popover>
           <PopoverTrigger>
-            <Button size="sm" colorScheme="teal">
-              Info
-            </Button>
+            <IconButton
+              aria-label="Room Info"
+              colorScheme="teal"
+              icon={<InfoIcon />}
+            ></IconButton>
           </PopoverTrigger>
           <PopoverContent>
             <PopoverArrow />
@@ -52,7 +56,6 @@ function RoomPanel({ roomId, socket }) {
           colorScheme="red"
           variant="solid"
           onClick={() => handleLeaveRoom()}
-          size="sm"
         >
           Leave Room
         </Button>

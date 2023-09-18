@@ -13,19 +13,27 @@ import {
 
 function LeaveRoomModal({ isOpen, onClose, onConfirm }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
+    <Modal
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+    >
+      <ModalOverlay backdropFilter="blur(10px)" />
       <ModalContent>
-        <ModalHeader>Leave Room Confirmation</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader fontSize="2xl" fontWeight="bold">
+          Leave Room?
+        </ModalHeader>
         <ModalBody>
-          <Text>Are you sure you want to leave the room?</Text>
+          <Text>
+            We're sorry to see you go, feel free to join back anytime!
+          </Text>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={onConfirm}>
+          <Button colorScheme="red" mr={2} onClick={onConfirm}>
             Confirm
           </Button>
-          <Button variant="ghost" onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
         </ModalFooter>

@@ -6,7 +6,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  ModalCloseButton,
   Text,
   VStack,
   Button,
@@ -15,7 +14,7 @@ import {
 
 function MatchModal({
   showModal,
-  onClose,
+  handleClose,
   matchingFailed,
   matchFound,
   remainingTime,
@@ -25,7 +24,7 @@ function MatchModal({
     <Modal
       isCentered
       isOpen={showModal}
-      onClose={onClose}
+      onClose={handleClose}
       closeOnOverlayClick={false}
     >
       <ModalOverlay backdropFilter="blur(10px)" />
@@ -37,7 +36,6 @@ function MatchModal({
             ? "Match Found!"
             : "Finding a match..."}
         </ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
           <VStack alignItems="center" justifyContent="center">
             {matchingFailed ? (
@@ -48,7 +46,9 @@ function MatchModal({
               </>
             ) : matchFound ? (
               <>
-                <Text fontSize="lg">Your match has been found. Have fun!</Text>
+                <Text fontSize="lg" mb={4}>
+                  Your match has been found. Have fun!
+                </Text>
               </>
             ) : (
               <>
@@ -62,18 +62,19 @@ function MatchModal({
           </VStack>
         </ModalBody>
         {matchingFailed ? (
-          <ModalFooter>
-            {" "}
-            <Button
-              colorScheme="teal"
-              variant="solid"
-              onClick={handleRetryClick}
-              size="lg"
-            >
-              Retry
+          <ModalFooter gap={2}>
+            <Button onClick={handleClose} variant="outline" colorScheme="red">
+              Cancel
+            </Button>
+            <Button colorScheme="teal" onClick={handleRetryClick}>
+              Try Again
             </Button>
           </ModalFooter>
-        ) : null}
+        ) : matchFound ? null : (
+          <Button roundedTop={"none"} colorScheme="red" onClick={handleClose}>
+            Cancel Match
+          </Button>
+        )}
       </ModalContent>
     </Modal>
   );

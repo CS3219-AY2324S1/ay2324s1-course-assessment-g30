@@ -154,7 +154,7 @@ function MatchMeButton({ socket }) {
       </Modal>
       <MatchModal
         showModal={showMatchModal}
-        onClose={() => {
+        handleClose={() => {
           cancelMatching(difficulty);
           setShowMatchModal(false);
           setDifficulty("");

@@ -101,8 +101,10 @@ function CreateRoomButton({ socket }) {
       <Modal isOpen={showRoomCreatedModal}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Room Created!</ModalHeader>
-          <ModalBody>
+          <ModalHeader fontSize="2xl" fontWeight="bold" textAlign="center">
+            Room Created!
+          </ModalHeader>
+          <ModalBody fontSize="lg" marginBottom={4}>
             Enjoy! You'll be redirected to your room in a bit!
           </ModalBody>
         </ModalContent>
