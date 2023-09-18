@@ -26,7 +26,7 @@ function MatchMeButton({ socket }) {
   const [showModal, setShowModal] = useState(false);
   const [matchingFailed, setMatchingFailed] = useState(false);
   const [matchFound, setMatchFound] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(FINDING_MATCH_TIMEOUT);
+  const [remainingTime, setRemainingTime] = useState(0);
 
   // Waiting to be matched
   useEffect(() => {
@@ -43,22 +43,29 @@ function MatchMeButton({ socket }) {
 
   // Countdown timer
   useEffect(() => {
-    if (showMatchModal && remainingTime === FINDING_MATCH_TIMEOUT) {
+    if (remainingTime > 0) {
       const timerInterval = setInterval(() => {
-        setRemainingTime((prevTime) => prevTime - 1);
+        setRemainingTime(remainingTime - 1);
       }, 1000);
 
+      return () => {
+        clearInterval(timerInterval);
+      };
+    }
+  }, [remainingTime]);
+
+  // Timeout after FINDING_MATCH_TIMEOUT
+  useEffect(() => {
+    if (!matchingFailed && remainingTime === FINDING_MATCH_TIMEOUT) {
       const matchingTimeout = setTimeout(() => {
         cancelMatching(difficulty);
       }, FINDING_MATCH_TIMEOUT * 1000);
 
       return () => {
-        console.log("clearing interval");
-        clearInterval(timerInterval);
         clearTimeout(matchingTimeout);
       };
     }
-  }, [showMatchModal]);
+  }, [matchingFailed]);
 
   const handleMatchClick = () => {
     if (difficulty !== "") {
@@ -150,6 +157,7 @@ function MatchMeButton({ socket }) {
         onClose={() => {
           cancelMatching(difficulty);
           setShowMatchModal(false);
+          setDifficulty("");
         }}
         matchingFailed={matchingFailed}
         matchFound={matchFound}
