@@ -10,6 +10,9 @@ import {
   ModalBody,
   Select,
   useToast,
+  FormControl,
+  FormLabel,
+  ModalFooter,
 } from "@chakra-ui/react";
 import MatchModal from "./MatchModal";
 
@@ -50,6 +53,7 @@ function MatchMeButton({ socket }) {
       }, FINDING_MATCH_TIMEOUT * 1000);
 
       return () => {
+        console.log("clearing interval");
         clearInterval(timerInterval);
         clearTimeout(matchingTimeout);
       };
@@ -97,37 +101,48 @@ function MatchMeButton({ socket }) {
   return (
     <>
       <Button
-        colorScheme="blue"
+        colorScheme="whatsapp"
         variant="solid"
         onClick={() => setShowModal(true)}
-        size="lg"
+        w="100%"
+        h="50%"
       >
-        Match Me!
+        Match With Stranger!
       </Button>
       <Modal
+        isCentered
+        size="lg"
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
           setDifficulty("");
         }}
       >
-        <ModalOverlay />
+        <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent>
-          <ModalHeader>Match Settings</ModalHeader>
+          <ModalHeader fontSize="2xl" fontWeight="bold" textAlign="center">
+            Match Settings
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value)}
-              size="sm"
-              placeholder="Select difficulty"
-            >
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </Select>
-            <Button onClick={handleMatchClick}>Find Match</Button>
+            <FormControl isRequired>
+              <FormLabel>Difficulty</FormLabel>
+              <Select
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                placeholder="Select difficulty"
+              >
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </Select>
+            </FormControl>
           </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={handleMatchClick}>
+              Find Match
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
       <MatchModal

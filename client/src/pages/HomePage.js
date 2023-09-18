@@ -4,9 +4,14 @@ import { Heading, Flex, useColorModeValue } from "@chakra-ui/react";
 
 function HomePage() {
   return (
-    <Flex minH="100vh" bg={useColorModeValue("gray.50", "gray.800")}>
+    <Flex
+      h="100vh"
+      w="100%"
+      bg={useColorModeValue("gray.50", "gray.800")}
+      p={4}
+    >
       <Heading as="h2" size="xl">
-        Welcome, UserName!
+        Welcome, username!
       </Heading>
       <MatchPanel />
     </Flex>
