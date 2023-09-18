@@ -11,15 +11,15 @@ import {
   ModalCloseButton,
 } from "@chakra-ui/react";
 
-function CreateRoomForm({ socket }) {
-  const [inputDifficulty, setInputDifficulty] = useState("");
+function CreateRoomButton({ socket }) {
+  const [difficulty, setDifficulty] = useState("");
   const [showRoomCreatedModal, setShowRoomCreatedModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const toast = useToast();
 
   const handleModalSubmit = () => {
-    if (inputDifficulty !== "") {
-      socket.emit("create-room", inputDifficulty);
+    if (difficulty !== "") {
+      socket.emit("create-room", difficulty);
     } else {
       toast({
         title: "Please select a difficulty",
@@ -30,10 +30,6 @@ function CreateRoomForm({ socket }) {
         isClosable: true,
       });
     }
-  };
-
-  const handleCreateRoomClick = () => {
-    setShowModal(true);
   };
 
   // Successful Room Creation
@@ -48,7 +44,7 @@ function CreateRoomForm({ socket }) {
 
   return (
     <>
-      <Button onClick={handleCreateRoomClick}>Create Room</Button>
+      <Button onClick={() => setShowModal(true)}>Create Room</Button>
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <ModalOverlay />
         <ModalContent>
@@ -56,8 +52,8 @@ function CreateRoomForm({ socket }) {
           <ModalCloseButton />
           <ModalBody>
             <Select
-              value={inputDifficulty}
-              onChange={(e) => setInputDifficulty(e.target.value)}
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value)}
               size="sm"
               placeholder="Select difficulty"
             >
@@ -82,4 +78,4 @@ function CreateRoomForm({ socket }) {
   );
 }
 
-export default CreateRoomForm;
+export default CreateRoomButton;
