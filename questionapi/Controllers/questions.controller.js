@@ -116,10 +116,16 @@ const updateQuestionController = async (req, res, next) => {
 };
 
 const deleteQuestionController = async (req, res, next) => {
-  const question_id = req.body.question_id;
+  // const question_id = req.body.question_id;
+  const question_id = 24;
   try {
     await QuestionModel.deleteOne({ question_id: question_id });
     await QuestionDescriptionModel.deleteOne({ question_id: question_id });
+    // The query to find documents with question id greater than question_id
+    const query = { question_id: { $gt: question_id } };
+    const decrement = { $inc: { question_id: -1 } };
+    await QuestionModel.updateMany(query, decrement);
+    await QuestionDescriptionModel.updateMany(query, decrement);
     res.status(200).json({ message: "Question deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: err });
