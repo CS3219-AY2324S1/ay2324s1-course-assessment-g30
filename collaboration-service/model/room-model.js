@@ -13,6 +13,10 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  programming_language: {
+    type: String,
+    required: true,
+  },
   users: [
     {
       type: String,

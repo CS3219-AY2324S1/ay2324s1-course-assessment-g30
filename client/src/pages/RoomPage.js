@@ -19,6 +19,7 @@ function RoomPage() {
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]);
 
   // Connect to collab lobby
   useEffect(() => {
@@ -26,6 +27,14 @@ function RoomPage() {
     setSocket(socket);
 
     socket.emit("set-up-room", roomId);
+
+    // To handle chat history
+    if (socket) {
+      socket.on("chat-history", (messages) => {
+        console.log("Let's see the chat history");
+        setChatHistory(messages);
+      });
+    }
 
     socket.on("room-is-ready", () => {
       setTimeout(() => {
@@ -140,7 +149,11 @@ function RoomPage() {
             boxShadow="lg"
             area={"chat"}
           >
-            <ChatContainer socket={socket} roomId={roomId} />
+            <ChatContainer
+              socket={socket}
+              roomId={roomId}
+              chatHistory={chatHistory}
+            />
           </GridItem>
           <GridItem
             pl="2"

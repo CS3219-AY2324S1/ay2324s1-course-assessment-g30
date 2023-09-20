@@ -9,6 +9,11 @@ import {
 } from "./controllers/room-controller.js";
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
+import Redis from "ioredis";
+
+// Connect to the default Redis server running on localhost and default port 6379
+// Run redis-server locally
+const redis = new Redis();
 
 const app = express();
 const httpServer = createServer(app);
@@ -24,23 +29,23 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on("set-up-room", (roomId) => {
-    setUpRoom(socket, roomId);
+    setUpRoom(socket, roomId, redis);
   });
 
   socket.on("join-room", (roomId) => {
-    broadcastJoin(socket, roomId, io);
+    broadcastJoin(socket, roomId, io, redis);
   });
 
   socket.on("leave-room", (roomId) => {
-    leaveRoom(socket, roomId, io);
+    leaveRoom(socket, roomId, io, redis);
   });
 
   socket.on("send-message", (message, roomId) => {
-    sendMessage(socket, message, roomId, io);
+    sendMessage(socket, message, roomId, io, redis);
   });
 
   socket.on("disconnecting", () => {
-    disconnectFromRoom(socket, io);
+    disconnectFromRoom(socket, io, redis);
   });
 
   socket.on("disconnect", () => {});

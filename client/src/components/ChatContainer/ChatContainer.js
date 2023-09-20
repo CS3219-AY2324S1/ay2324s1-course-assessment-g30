@@ -3,9 +3,9 @@ import { Box, Input, IconButton, Flex } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "./ChatContainer.css";
 
-function ChatContainer({ socket, roomId }) {
+function ChatContainer({ socket, roomId, chatHistory }) {
   const [messageText, setMessageText] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(chatHistory);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   useEffect(() => {
