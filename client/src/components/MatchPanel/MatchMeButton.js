@@ -13,6 +13,7 @@ import {
   FormControl,
   FormLabel,
   ModalFooter,
+  Text,
 } from "@chakra-ui/react";
 import MatchModal from "./MatchModal";
 
@@ -22,6 +23,7 @@ function MatchMeButton({ socket }) {
   const toast = useToast();
 
   const [difficulty, setDifficulty] = useState("");
+  const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [matchingFailed, setMatchingFailed] = useState(false);
@@ -58,7 +60,7 @@ function MatchMeButton({ socket }) {
   useEffect(() => {
     if (!matchingFailed && remainingTime === FINDING_MATCH_TIMEOUT) {
       const matchingTimeout = setTimeout(() => {
-        cancelMatching(difficulty);
+        cancelMatching(difficulty, programmingLanguage);
       }, FINDING_MATCH_TIMEOUT * 1000);
 
       return () => {
@@ -68,7 +70,7 @@ function MatchMeButton({ socket }) {
   }, [matchingFailed]);
 
   const handleMatchClick = () => {
-    if (difficulty !== "") {
+    if (difficulty !== "" && programmingLanguage !== "") {
       setMatchingFailed(false);
       setMatchFound(false);
 
@@ -78,13 +80,34 @@ function MatchMeButton({ socket }) {
 
       setTimeout(() => {
         if (socket) {
-          socket.emit("match-me-with-a-stranger", difficulty);
+          socket.emit(
+            "match-me-with-a-stranger",
+            difficulty,
+            programmingLanguage
+          );
         }
       }, 1000);
     } else {
+      const errorMessages = [];
+
+      if (difficulty === "") {
+        errorMessages.push("Please select a difficulty");
+      }
+
+      if (programmingLanguage === "") {
+        errorMessages.push("Please select a programming language");
+      }
+
       toast({
-        title: "Please select a difficulty",
-        description: "We need to know how hard you want to play!",
+        title: "Please fill in all required fields.",
+        description: (
+          <>
+            {errorMessages.map((msg) => (
+              <Text>• {msg}</Text>
+            ))}
+          </>
+        ),
+
         status: "error",
         position: "top",
         duration: 3000,
@@ -93,16 +116,21 @@ function MatchMeButton({ socket }) {
     }
   };
 
-  const cancelMatching = (difficulty) => {
+  const cancelMatching = (difficulty, programmingLanguage) => {
     setMatchingFailed(true);
     if (socket) {
-      socket.emit("cancel-matching", difficulty);
+      socket.emit("cancel-matching", difficulty, programmingLanguage);
     }
   };
 
   const handleRetryClick = () => {
     setMatchingFailed(false);
     handleMatchClick(difficulty);
+  };
+
+  const clearState = () => {
+    setDifficulty("");
+    setProgrammingLanguage("");
   };
 
   return (
@@ -122,7 +150,7 @@ function MatchMeButton({ socket }) {
         isOpen={showModal}
         onClose={() => {
           setShowModal(false);
-          setDifficulty("");
+          clearState();
         }}
       >
         <ModalOverlay backdropFilter="blur(10px)" />
@@ -138,10 +166,21 @@ function MatchMeButton({ socket }) {
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
                 placeholder="Select difficulty"
+                marginBottom={4}
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
+              </Select>
+              <FormLabel>Programming Language</FormLabel>
+              <Select
+                value={programmingLanguage}
+                onChange={(e) => setProgrammingLanguage(e.target.value)}
+                placeholder="Select programming language"
+              >
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
               </Select>
             </FormControl>
           </ModalBody>
@@ -155,9 +194,9 @@ function MatchMeButton({ socket }) {
       <MatchModal
         showModal={showMatchModal}
         handleClose={() => {
-          cancelMatching(difficulty);
           setShowMatchModal(false);
-          setDifficulty("");
+          cancelMatching(difficulty, programmingLanguage);
+          clearState();
         }}
         matchingFailed={matchingFailed}
         matchFound={matchFound}

@@ -23,16 +23,16 @@ const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
-  socket.on("match-me-with-a-stranger", (difficulty) => {
-    pairUsers(socket, difficulty);
+  socket.on("match-me-with-a-stranger", (difficulty, programmingLanguage) => {
+    pairUsers(socket, difficulty, programmingLanguage);
   });
 
-  socket.on("create-room", (difficulty) => {
-    createRoom(socket, difficulty);
+  socket.on("create-room", (difficulty, programmingLanguage) => {
+    createRoom(socket, difficulty, programmingLanguage);
   });
 
-  socket.on("cancel-matching", (difficulty) => {
-    removeFromQueue(socket, difficulty);
+  socket.on("cancel-matching", (difficulty, programmingLanguage) => {
+    removeFromQueue(socket, difficulty, programmingLanguage);
   });
 
   socket.on("disconnect", () => {
