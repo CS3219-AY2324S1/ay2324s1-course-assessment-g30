@@ -60,7 +60,16 @@ function ChatContainer({ socket, roomId, chatHistory }) {
     <Flex gap={3} height="100%" flexDirection="column" width="100%">
       <Box overflowY="scroll" height="90%" textAlign="left">
         {messages.map((msg, index) => (
-          <div key={index} className={`chat-bubble ${msg.type}`}>
+          <div
+            key={index}
+            className={`chat-bubble ${msg.type} ${
+              socket.id === msg.senderId && msg.type === "chat"
+                ? "you"
+                : msg.type === "chat"
+                ? "other"
+                : ""
+            }`}
+          >
             <strong>{msg.senderId}</strong>{" "}
             {msg.type === "announcement" ? (
               msg.message
