@@ -31,7 +31,7 @@ export const setUpRoom = async (socket, roomId, redis) => {
 /**
  * Disconnects socket from room
  */
-export const leaveRoom = async (socket, roomId, io) => {
+export const leaveRoom = async (socket, roomId, io, redis) => {
   console.log(`User ${socket.id} left room ${roomId}`);
   socket.leave(roomId);
   broadcastLeave(socket, roomId, io, redis);
@@ -40,7 +40,7 @@ export const leaveRoom = async (socket, roomId, io) => {
 /**
  * Disconnects socket from a room. Socket leaves room upon disconnect.
  */
-export const disconnectFromRoom = async (socket, io) => {
+export const disconnectFromRoom = async (socket, io, redis) => {
   const roomKeysIterator = socket.rooms.keys();
 
   for (const roomId of roomKeysIterator) {
