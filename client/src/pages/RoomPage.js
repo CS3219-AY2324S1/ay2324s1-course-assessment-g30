@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   Box,
   Heading,
   Spinner,
   Grid,
   GridItem,
-  Alert,
-  AlertIcon,
+  Text,
+  Flex,
+  Divider,
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../components/ChatContainer/ChatContainer";
@@ -18,7 +19,6 @@ function RoomPage() {
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
-  const navigate = useNavigate();
 
   // Connect to collab lobby
   useEffect(() => {
@@ -37,9 +37,6 @@ function RoomPage() {
     socket.on("invalid-room", () => {
       setIsRoomBeingSetUp(false);
       setIsInvalidRoom(true);
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
     });
 
     return () => {
@@ -49,13 +46,49 @@ function RoomPage() {
 
   if (isInvalidRoom) {
     return (
-      <Box textAlign="center" display="flex" justifyContent="center">
-        <Alert status="error">
-          <AlertIcon />
-          Sorry, this room does not exist or has expired. Redirecting to home
-          page...
-        </Alert>
-      </Box>
+      <Flex
+        bg="gray.50"
+        minH={"100vh"}
+        align={"center"}
+        justify={"center"}
+        p={4}
+      >
+        <Flex
+          rounded="lg"
+          bg="white"
+          boxShadow="lg"
+          p={10}
+          textAlign="center"
+          flexDirection="column"
+        >
+          <Heading
+            as="h1"
+            fontWeight="hairline"
+            fontSize="150px"
+            letterSpacing="wide"
+            color="#E27d60"
+            mb="3"
+          >
+            404
+          </Heading>
+          <Text fontWeight="thin" letterSpacing="widest" fontSize="2xl" mb="4">
+            OOPS! ROOM NOT FOUND OR HAS EXPIRED.
+          </Text>
+          <Link to="/home">
+            <Text
+              _hover={{
+                color: "#ab5e48",
+              }}
+              borderBottom="1px dotted #E27d60"
+              as="span"
+              fontSize="md"
+              color="#E27d60"
+            >
+              Return to Homepage
+            </Text>
+          </Link>
+        </Flex>
+      </Flex>
     );
   }
 
@@ -79,18 +112,49 @@ function RoomPage() {
           templateAreas={`"question editor"
 							"chat editor"`}
           gridTemplateRows={"60vh 40vh"}
-          gridTemplateColumns={"49vw 49vw"}
+          gridTemplateColumns={"48vw 48vw"}
+          bg="gray.50"
+          gap={5}
         >
-          <GridItem pl="2" bg="green.300" area={"question"}>
+          <GridItem
+            pl="2"
+            bg="white"
+            p={3}
+            ml={3}
+            mt={3}
+            rounded="lg"
+            boxShadow="lg"
+            area={"question"}
+          >
             <Heading as="h1" size="2xl">
               Question
             </Heading>
           </GridItem>
-          <GridItem pl="2" area={"chat"}>
+          <GridItem
+            pl="2"
+            bg="white"
+            p={3}
+            ml={3}
+            mb={3}
+            rounded="lg"
+            boxShadow="lg"
+            area={"chat"}
+          >
             <ChatContainer socket={socket} roomId={roomId} />
           </GridItem>
-          <GridItem pl="2" bg="grey" area={"editor"}>
+          <GridItem
+            pl="2"
+            bg="white"
+            mt={3}
+            mb={3}
+            mr={3}
+            p={3}
+            rounded="lg"
+            boxShadow="lg"
+            area={"editor"}
+          >
             <RoomPanel roomId={roomId} socket={socket} />
+            <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
             <Heading as="h1" size="2xl">
               Editor
             </Heading>

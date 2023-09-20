@@ -21,7 +21,7 @@ function LeaveRoomModal({ isOpen, onClose, onConfirm }) {
     >
       <ModalOverlay backdropFilter="blur(10px)" />
       <ModalContent>
-        <ModalHeader fontSize="2xl" fontWeight="bold">
+        <ModalHeader textAlign="center" fontSize="2xl" fontWeight="bold">
           Leave Room?
         </ModalHeader>
         <ModalBody>

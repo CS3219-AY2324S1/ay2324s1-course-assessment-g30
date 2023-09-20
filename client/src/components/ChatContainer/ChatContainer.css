@@ -1,0 +1,25 @@
+  .chat-bubble {
+	max-width: 100%;
+	margin: 4px;
+	padding: 8px;
+	border-radius: 10px; 
+  }
+  
+  /* Styling for chat bubbles */
+  .chat-bubble.chat {
+	background-color: #1572c3;
+	color: white;
+	font-size: 15px;
+  }
+	  
+  /* Styling for announcement bubbles */
+  .chat-bubble.announcement {
+	max-width:60%;
+	background-color: #e9ecf0;
+	color: black; 
+	text-align: center;
+	padding: 5px 10px;
+	border-radius: 15px; 
+	font-size: 12px;
+	margin: 8px auto;
+  }

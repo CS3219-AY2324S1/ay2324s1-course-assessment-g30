@@ -31,23 +31,28 @@ function RoomPanel({ roomId, socket }) {
 
   return (
     <>
-      <HStack width="47vw" spacing={2} justifyContent="right">
+      <HStack spacing={2} justifyContent="right">
         <Popover>
           <PopoverTrigger>
             <IconButton
               aria-label="Room Info"
-              colorScheme="teal"
+              colorScheme="blue"
               icon={<InfoIcon />}
+              size="sm"
             ></IconButton>
           </PopoverTrigger>
           <PopoverContent>
-            <PopoverArrow />
+            <PopoverArrow bg="gray.50" />
             <PopoverCloseButton />
-            <PopoverHeader>Room Info</PopoverHeader>
+            <PopoverHeader fontSize="2xl" pt={2} fontWeight="bold">
+              Room Details
+            </PopoverHeader>
             <PopoverBody>
-              <Text>
-                RoomID: {roomId}
-                <Text>Share the id with your friends to join the room!</Text>
+              <Text color="blue.400" mb="2" fontWeight="thin">
+                {window.location.href}
+              </Text>
+              <Text fontSize="sm" letterSpacing={-0.3}>
+                Share this link with your friends to join the room!
               </Text>
             </PopoverBody>
           </PopoverContent>
@@ -56,6 +61,7 @@ function RoomPanel({ roomId, socket }) {
           colorScheme="red"
           variant="solid"
           onClick={() => handleLeaveRoom()}
+          size="sm"
         >
           Leave Room
         </Button>
