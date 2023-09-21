@@ -2,7 +2,7 @@ const express = require("express");
 const questionController = require("../Controllers/questions.controller");
 const questionRouter = express.Router();
 
-questionRouter.post(
+questionRouter.get(
   "/readQuestionDescription",
   questionController.readQuestionDescriptionController,
 );
@@ -11,11 +11,11 @@ questionRouter.get(
   questionController.readQuestionsController,
 );
 questionRouter.post("/addQuestion", questionController.addQuestionController);
-questionRouter.post(
+questionRouter.delete(
   "/deleteQuestion",
   questionController.deleteQuestionController,
 );
-questionRouter.post(
+questionRouter.put(
   "/updateQuestion",
   questionController.updateQuestionController,
 );
