@@ -46,7 +46,7 @@ export const getQuestionsDescription = async (id) => {
     }
 };
 
-export const addQuestion = async (title, category, complexity, link) => {
+export const addQuestion = async (title, category, complexity, link, description) => {
     const url = BASE_URL + "/addQuestion/";
 
     const config = {
@@ -59,7 +59,8 @@ export const addQuestion = async (title, category, complexity, link) => {
             title: title,
             category: [category],
             complexity: complexity,
-            link: link
+            link: link,
+            description: description
         })
     }
 
