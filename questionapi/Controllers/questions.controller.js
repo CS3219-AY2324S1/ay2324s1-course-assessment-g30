@@ -44,6 +44,9 @@ const addQuestionController = async (req, res, next) => {
   const complexity = req.body.complexity;
   const link = req.body.link;
   const description = req.body.description;
+  if (description != undefined) {
+    description = "<p>" + description + "</p>";
+  }
 
   // const title = "maximal-network-rank";
   // const category = "[]";
@@ -103,6 +106,9 @@ const updateQuestionController = async (req, res, next) => {
     console.log(req.body.description);
     const new_description =
       req.body.description !== undefined ? req.body.description : null;
+    if (new_description != undefined) {
+      new_description = "<p>" + new_description + "</p>";
+    }
 
     let newQuestionDescription = null;
     if ((new_description == null) & (new_link != null)) {
