@@ -46,6 +46,7 @@ const addQuestionController = async (req, res, next) => {
   const description = req.body.description;
   if (description != undefined) {
     description = "<p>" + description + "</p>";
+    description = "<div" + description + "</div>";
   }
 
   // const title = "maximal-network-rank";
@@ -108,6 +109,7 @@ const updateQuestionController = async (req, res, next) => {
       req.body.description !== undefined ? req.body.description : null;
     if (new_description != undefined) {
       new_description = "<p>" + new_description + "</p>";
+      new_description = "<div" + new_description + "</div>";
     }
 
     let newQuestionDescription = null;
