@@ -52,7 +52,7 @@ const addQuestionController = async (req, res, next) => {
 
   try {
     let newQuestionDescription = null;
-    if (description == null) {
+    if (description == undefined) {
       newQuestionDescription = await webScrapperQuestionDescription(link);
     }
     const documentWithHighestIndex = await QuestionModel.find()
