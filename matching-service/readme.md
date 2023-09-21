@@ -6,6 +6,6 @@
 
 # Setup
 
-1. Open a new Unix-based terminal window and start the redis server by running `redis-server`. By default, Redis runs on port 6379. 
+1. Open a new Unix-based terminal window and start the redis server by running `redis-server`. By default, Redis runs on port 6379.
 2. In the project directory, run `npm install`
 3. Then run `npm run dev` to start the development server
