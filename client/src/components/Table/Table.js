@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import './Table.css';
 import { Box, Button } from '@chakra-ui/react';
-import {AddIcon} from '@chakra-ui/icons'
+import {AddIcon, RepeatIcon} from '@chakra-ui/icons'
 import { getQuestions, getQuestionsDescription } from '../../api/QuestionServices';
 
 function Table() {
@@ -27,7 +27,8 @@ function Table() {
     <Box>
       
     </Box>
-    <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
+    <Box display={'flex'} justifyContent={'space-between'}>
+    <Button onClick={() => window.location.reload()} rightIcon={<RepeatIcon />}>Refresh</Button>
     <Button onClick={() => navigator('/add_question')} leftIcon={<AddIcon />}>Add Question</Button>
     </Box>
     <div class="container">

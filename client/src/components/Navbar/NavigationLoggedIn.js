@@ -1,32 +1,52 @@
-'use client'
-
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  CloseIcon,
-  HamburgerIcon,
-} from '@chakra-ui/icons'
 import {
   Box,
-  Button,
-  Collapse,
   Flex,
-  Icon,
-  IconButton,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Stack,
   Text,
+  IconButton,
+  Button,
+  Stack,
+  Collapse,
+  Icon,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
   useColorModeValue,
+  Link,
   useDisclosure,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
 } from '@chakra-ui/react'
-import colors from '../../utils/Colors'
+import {
+  HamburgerIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from '@chakra-ui/icons'
 import { Logo } from '../Footer/Footer'
+import colors from '../../utils/Colors'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { deleteToken } from '../../api/Auth'
 
-export default function WithSubnavigation() {
+export default function NavigationLoggedIn() {
   const { isOpen, onToggle } = useDisclosure()
+
+  
+
+  const navigator = useNavigate();
+
+  const handleLogOut = () => {
+    deleteToken().then(() => {
+        navigator('/')
+    });
+    
+  }
   
   return (
     <Box>
@@ -52,7 +72,7 @@ export default function WithSubnavigation() {
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Link href={'/'}>
+          <Link href={'/dashboard'}>
           <Logo />
           </Link>
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -65,22 +85,21 @@ export default function WithSubnavigation() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
-            Sign In
-          </Button>
-          <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
-            bg={colors.primary}
-            href={'/register'}
-            _hover={{
-              bg: colors.darkerPrimary,
-            }}>
-            Sign Up
-          </Button>
+          <Menu>
+          <MenuButton
+          fontSize={'sm'} 
+          fontWeight={400} 
+          variant={'solid'} 
+          as={Button}
+          rightIcon={<ChevronDownIcon />}>
+            Settings
+          </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => navigator('/view_profile')}>View Profile</MenuItem>
+            <MenuItem onClick={() => {handleLogOut()}}>Log Out</MenuItem>
+            
+          </MenuList>
+        </Menu>
         </Stack>
       </Flex>
 
