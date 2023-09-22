@@ -9,7 +9,7 @@ function MatchPanel() {
 
   // Connect to common lobby
   useEffect(() => {
-    const socket = io("http://localhost:3001");
+    const socket = io("http://localhost:3003");
     setSocket(socket);
 
     return () => {

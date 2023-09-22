@@ -23,7 +23,7 @@ function RoomPage() {
 
   // Connect to collab lobby
   useEffect(() => {
-    const socket = io("http://localhost:3002");
+    const socket = io("http://localhost:3004");
     setSocket(socket);
 
     socket.emit("set-up-room", roomId);

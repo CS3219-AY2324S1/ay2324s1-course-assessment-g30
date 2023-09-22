@@ -36,10 +36,10 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/room/:roomId" element={<RoomPage />} />
 
           <Route element={<ProtectedRoutes />}>
-            <Route path="/home" element={<HomePage />} />
-            <Route path="/room/:roomId" element={<RoomPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add_question" element={<AddQuestionForm />} />
             <Route
