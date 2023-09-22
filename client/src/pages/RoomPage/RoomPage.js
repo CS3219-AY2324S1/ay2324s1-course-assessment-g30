@@ -11,8 +11,8 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
-import ChatContainer from "../components/ChatContainer/ChatContainer";
-import RoomPanel from "../components/RoomPanel/RoomPanel";
+import ChatContainer from "../../components/ChatContainer/ChatContainer";
+import RoomPanel from "../../components/RoomPanel/RoomPanel";
 
 function RoomPage() {
   const { roomId } = useParams();

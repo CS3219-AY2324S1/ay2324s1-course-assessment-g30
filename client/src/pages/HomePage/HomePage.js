@@ -1,5 +1,5 @@
 import React from "react";
-import MatchPanel from "../components/MatchPanel/MatchPanel";
+import MatchPanel from "../../components/MatchPanel/MatchPanel";
 import { Heading, Flex, useColorModeValue } from "@chakra-ui/react";
 
 function HomePage() {
