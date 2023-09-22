@@ -14,7 +14,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
 });
@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
 app.use(cors());
 app.use(express.json());
 
-httpServer.listen(3001, () => {
-  console.log("matching-service started on port 3001");
+httpServer.listen(3003, () => {
+  console.log("matching-service started on port 3003");
   connectToDB();
 });

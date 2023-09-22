@@ -19,7 +19,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
 });
@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
 app.use(cors());
 app.use(express.json());
 
-httpServer.listen(3002, () => {
-  console.log("collaboration-service started on port 3002");
+httpServer.listen(3004, () => {
+  console.log("collaboration-service started on port 3004");
   connectToDB();
 });
