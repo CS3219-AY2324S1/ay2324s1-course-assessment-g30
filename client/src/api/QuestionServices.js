@@ -113,7 +113,8 @@ export const updateQuestion = async (data) => {
             title: d.question_title,
             category: d.question_categories,
             complexity: d.question_complexity,
-            link: d.question_link
+            link: d.question_link,
+            description: d.question_description
         })
     }
 
