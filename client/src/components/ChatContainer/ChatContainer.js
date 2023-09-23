@@ -108,8 +108,7 @@ function ChatContainer({ socket, roomId, chatHistory }) {
           icon={<ChevronRightIcon />}
           onClick={() => handleSubmitMessageClick()}
           isActive={isButtonClicked}
-          bg="#E27d60"
-          color="white"
+          colorScheme="blue"
         />
       </Flex>
     </Flex>

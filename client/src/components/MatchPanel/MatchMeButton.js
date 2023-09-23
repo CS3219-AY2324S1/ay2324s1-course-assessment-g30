@@ -151,8 +151,7 @@ function MatchMeButton({ socket, uuid }) {
   return (
     <>
       <Button
-        color="white"
-        bg="#E27d60"
+        colorScheme="whatsapp"
         variant="solid"
         onClick={() => setShowModal(true)}
         w="100%"

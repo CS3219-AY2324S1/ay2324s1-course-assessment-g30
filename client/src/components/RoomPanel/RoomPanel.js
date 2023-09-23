@@ -58,12 +58,7 @@ function RoomPanel({ roomId, socket }) {
             </PopoverBody>
           </PopoverContent>
         </Popover>
-        <Button
-          bg="#E27d60"
-          color="white"
-          onClick={() => handleLeaveRoom()}
-          size="sm"
-        >
+        <Button colorScheme="red" onClick={() => handleLeaveRoom()} size="sm">
           Leave Room
         </Button>
       </HStack>
