@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import Table from "../../components/Table/Table";
 import { getUserProfile } from "../../api/Auth";
 import MatchPanel from "../../components/MatchPanel/MatchPanel";
+import RoomList from "../../components/RoomList/RoomList";
 
 function Dashboard() {
   const [user, setUser] = useState([]);
@@ -72,16 +73,18 @@ function Dashboard() {
 
       <Divider />
       <Box justifyContent={"center"} display={"flex"} flexWrap={"wrap"}>
-        <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
-          <CardBody>
-            <Table />
-          </CardBody>
-        </Card>
-        <Card maxH={"500px"} my={10} mx={5}>
-          <CardBody>
-            <Text>For matching service usage</Text>
-          </CardBody>
-        </Card>
+        <Stack spacing={"5"} direction={["column", "row"]}>
+          <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
+            <CardBody>
+              <Table />
+            </CardBody>
+          </Card>
+          <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
+            <CardBody>
+              <RoomList />
+            </CardBody>
+          </Card>
+        </Stack>
       </Box>
     </>
   );
