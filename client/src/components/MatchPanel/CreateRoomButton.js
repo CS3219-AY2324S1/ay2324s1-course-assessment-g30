@@ -15,7 +15,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-function CreateRoomButton({ socket }) {
+function CreateRoomButton({ socket, uuid }) {
   const [difficulty, setDifficulty] = useState("");
   const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [showRoomCreatedModal, setShowRoomCreatedModal] = useState(false);

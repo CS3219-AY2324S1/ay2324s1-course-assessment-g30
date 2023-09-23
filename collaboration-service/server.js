@@ -26,7 +26,9 @@ const io = new Server(httpServer, {
 
 // Run when client connects
 io.on("connection", (socket) => {
-  console.log(`User ${socket.id} connected`);
+  const uuid = socket.handshake.query.uuid;
+  socket.uuid = uuid;
+  console.log(`User ${socket.uuid} connected`);
 
   socket.on("set-up-room", (roomId) => {
     setUpRoom(socket, roomId, redis);

@@ -9,6 +9,7 @@ import {
   createRoom,
 } from "./controllers/matchmaking-controller.js";
 import { connectToDB } from "./model/db.js";
+import { getJoinedRooms } from "./controllers/room-controller.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,7 +22,9 @@ const io = new Server(httpServer, {
 
 // Run when client connects
 io.on("connection", (socket) => {
-  console.log(`User ${socket.id} connected`);
+  const uuid = socket.handshake.query.uuid;
+  socket.uuid = uuid;
+  console.log(`User ${socket.uuid}|${socket.id} connected`);
 
   socket.on("match-me-with-a-stranger", (difficulty, programmingLanguage) => {
     pairUsers(socket, difficulty, programmingLanguage);
@@ -42,6 +45,8 @@ io.on("connection", (socket) => {
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/joinedRooms", getJoinedRooms);
 
 httpServer.listen(3003, () => {
   console.log("matching-service started on port 3003");

@@ -26,7 +26,7 @@ function RoomPanel({ roomId, socket }) {
 
   const confirmLeaveRoom = () => {
     socket.emit("leave-room", roomId);
-    navigate(`/home`);
+    navigate(`/dashboard`);
   };
 
   return (
@@ -36,9 +36,10 @@ function RoomPanel({ roomId, socket }) {
           <PopoverTrigger>
             <IconButton
               aria-label="Room Info"
-              colorScheme="blue"
+              variant="outline"
               icon={<InfoIcon />}
               size="sm"
+              color="gray"
             ></IconButton>
           </PopoverTrigger>
           <PopoverContent>
@@ -58,8 +59,8 @@ function RoomPanel({ roomId, socket }) {
           </PopoverContent>
         </Popover>
         <Button
-          colorScheme="red"
-          variant="solid"
+          bg="#E27d60"
+          color="white"
           onClick={() => handleLeaveRoom()}
           size="sm"
         >

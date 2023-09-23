@@ -7,7 +7,7 @@ import Room from "../model/room-model.js";
 const redis = new Redis();
 
 /**
- * Removes a socket ID from a matchmaking queue.
+ * Removes a user from a matchmaking queue.
  */
 export const removeFromQueue = async (
   socket,
@@ -15,29 +15,29 @@ export const removeFromQueue = async (
   programmingLanguage
 ) => {
   const queueName = `${difficulty}-${programmingLanguage}Queue`;
-  const socketId = socket.id;
+  const userId = socket.uuid + "|" + socket.id;
 
-  await redis.lrem(queueName, 0, socketId);
+  await redis.lrem(queueName, 0, userId);
 
   console.log(
-    `User ${socketId} removed from matching queue for ${difficulty} and with language ${programmingLanguage}`
+    `User ${userId} removed from matching queue for ${difficulty} and with language ${programmingLanguage}`
   );
 };
 
 /**
- * Removes a socket ID from all matchmaking queues.
+ * Removes a user from all matchmaking queues.
  */
 export const removeFromAllQueues = async (socket) => {
   const queueNamePattern = "*Queue"; // Adjust the pattern as needed
   try {
-    console.log(`User ${socket.id} disconnected`);
     const queueNames = await redis.keys(queueNamePattern);
-    const socketId = socket.id;
+    const userId = socket.uuid + "|" + socket.id;
+    console.log(`User ${userId} disconnected`);
 
     for (const queueName of queueNames) {
-      await redis.lrem(queueName, 0, socketId);
+      await redis.lrem(queueName, 0, userId);
       console.log(
-        `User ${socketId} removed from matching queue for ${queueName}`
+        `User ${userId} removed from matching queue for ${queueName}`
       );
     }
   } catch (err) {
@@ -50,26 +50,34 @@ export const removeFromAllQueues = async (socket) => {
  */
 export const pairUsers = async (socket, difficulty, programmingLanguage) => {
   try {
+    const userId = socket.uuid + "|" + socket.id;
     console.log(
-      `User ${socket.id} joined matching queue for ${difficulty} and with language ${programmingLanguage}`
+      `User ${userId} joined matching queue for ${difficulty} and with language ${programmingLanguage}`
     );
 
     const queueName = `${difficulty}-${programmingLanguage}Queue`;
     const queueSize = await redis.llen(queueName);
 
     if (queueSize >= 1) {
-      const partnerId = await redis.lpop(queueName);
+      const partnerUserId = await redis.lpop(queueName);
+      const pair = partnerUserId.split("|");
+      const partnerUUID = pair[0];
+      const partnerSocketId = pair[1];
 
-      if (socket.id !== partnerId) {
+      if (socket.uuid !== partnerUUID) {
         const roomId = await generateUniqueRoomId();
         await setUpRoom(roomId, difficulty, programmingLanguage);
 
         // Notify both users that they can join the room
         socket.emit("found-room", roomId);
-        socket.to(partnerId).emit("found-room", roomId);
+        socket.to(partnerSocketId).emit("found-room", roomId);
+      } else {
+        // Put the first matching back into the queue
+        redis.rpush(queueName, partnerUserId);
+        socket.emit("you-joined-queue-twice");
       }
     } else {
-      redis.rpush(queueName, socket.id);
+      redis.rpush(queueName, userId);
     }
   } catch (err) {
     console.error("Error pairing users:", err);

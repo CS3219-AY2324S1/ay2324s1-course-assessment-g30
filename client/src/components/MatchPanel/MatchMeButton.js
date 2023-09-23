@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import MatchModal from "./MatchModal";
 
-function MatchMeButton({ socket }) {
+function MatchMeButton({ socket, uuid }) {
   const FINDING_MATCH_TIMEOUT = 30;
   const navigate = useNavigate();
   const toast = useToast();
@@ -30,15 +30,29 @@ function MatchMeButton({ socket }) {
   const [matchFound, setMatchFound] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
 
-  // Waiting to be matched
   useEffect(() => {
     if (socket) {
+      // Waiting to be matched
       socket.on("found-room", (roomId) => {
         console.log(`You are joining room ${roomId}`);
         setMatchFound(true);
         setTimeout(() => {
           navigate(`/room/${roomId}`);
         }, 2000);
+      });
+
+      // If user joins same queue twice (Buggy AF)
+      socket.on("you-joined-queue-twice", () => {
+        setShowMatchModal(false);
+        clearState();
+        toast({
+          title: "Matching Error",
+          description: "Sorry, you can't join the same queue twice",
+          status: "error",
+          position: "top",
+          duration: 3000,
+          isClosable: true,
+        });
       });
     }
   }, [socket]);
@@ -64,6 +78,7 @@ function MatchMeButton({ socket }) {
       }, FINDING_MATCH_TIMEOUT * 1000);
 
       return () => {
+        console.log("Clearing timeout");
         clearTimeout(matchingTimeout);
       };
     }
@@ -136,7 +151,8 @@ function MatchMeButton({ socket }) {
   return (
     <>
       <Button
-        colorScheme="whatsapp"
+        color="white"
+        bg="#E27d60"
         variant="solid"
         onClick={() => setShowModal(true)}
         w="100%"

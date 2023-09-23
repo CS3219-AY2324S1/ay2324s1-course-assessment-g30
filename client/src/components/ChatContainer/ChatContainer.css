@@ -7,13 +7,13 @@
   
   /* Styling for chat bubbles */
   .chat-bubble.chat.you {
-	background-color: #7bbceb;
+	background-color: #60C5E2;
 	color: black;
 	font-size: 15px;
   }
 
   .chat-bubble.chat.other{
-	background-color: #c4e5f5;
+	background-color: #a4d6e4;
 	color: black;
 	font-size: 15px;
   }

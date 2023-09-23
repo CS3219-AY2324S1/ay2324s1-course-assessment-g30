@@ -2,14 +2,21 @@ import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import MatchMeButton from "./MatchMeButton";
 import CreateRoomButton from "./CreateRoomButton";
-import { Flex, useColorModeValue } from "@chakra-ui/react";
+import { Card } from "@chakra-ui/react";
+import Cookies from "js-cookie";
+import { matchingServiceURL } from "../../api/config";
 
 function MatchPanel() {
   const [socket, setSocket] = useState(null);
 
-  // Connect to common lobby
   useEffect(() => {
-    const socket = io("http://localhost:3003");
+    // Connect to common lobby
+    const uuid = Cookies.get("uuid");
+    const socket = io(matchingServiceURL, {
+      query: {
+        uuid: uuid,
+      },
+    });
     setSocket(socket);
 
     return () => {
@@ -18,14 +25,11 @@ function MatchPanel() {
   }, []);
 
   return (
-    <Flex
-      rounded="lg"
-      bg={useColorModeValue("white", "gray.700")}
-      boxShadow="lg"
+    <Card
       p={5}
+      m={100}
+      w="25%"
       ml="auto"
-      w="20%"
-      h="15%"
       align="center"
       justifyContent="center"
       flexDirection="column"
@@ -33,7 +37,7 @@ function MatchPanel() {
     >
       <MatchMeButton socket={socket} />
       <CreateRoomButton socket={socket} />
-    </Flex>
+    </Card>
   );
 }
 

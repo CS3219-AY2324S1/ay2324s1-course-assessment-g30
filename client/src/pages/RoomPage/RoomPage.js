@@ -13,6 +13,8 @@ import {
 import { io } from "socket.io-client";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
 import RoomPanel from "../../components/RoomPanel/RoomPanel";
+import Cookies from "js-cookie";
+import { collaborationServiceURL } from "../../api/config";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -21,9 +23,14 @@ function RoomPage() {
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
 
-  // Connect to collab lobby
   useEffect(() => {
-    const socket = io("http://localhost:3004");
+    // Connect to collab lobby
+    const uuid = Cookies.get("uuid");
+    const socket = io(collaborationServiceURL, {
+      query: {
+        uuid: uuid,
+      },
+    });
     setSocket(socket);
 
     socket.emit("set-up-room", roomId);
@@ -83,7 +90,7 @@ function RoomPage() {
           <Text fontWeight="thin" letterSpacing="widest" fontSize="2xl" mb="4">
             OOPS! ROOM NOT FOUND OR HAS EXPIRED.
           </Text>
-          <Link to="/home">
+          <Link to="/dashboard">
             <Text
               _hover={{
                 color: "#ab5e48",
@@ -110,11 +117,12 @@ function RoomPage() {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          flexDirection={"column"}
         >
+          <Spinner w="100px" h="100px" color="#E27d60" m={6} />
           <Heading as="h2" size="xl">
             Setting up the room...
           </Heading>
-          <Spinner size="xl" mt={4} />
         </Box>
       ) : (
         <Grid

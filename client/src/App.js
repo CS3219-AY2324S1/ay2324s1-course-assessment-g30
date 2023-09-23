@@ -12,7 +12,6 @@ import ProtectedRoutes from "./protectedRoutes";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import EditProfile from "./pages/Authentication/EditProfile";
 import ViewProfile from "./pages/Authentication/ViewProfile";
-import HomePage from "./pages/HomePage/HomePage";
 import RoomPage from "./pages/RoomPage/RoomPage";
 
 function App() {
@@ -36,7 +35,6 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/home" element={<HomePage />} />
           <Route path="/room/:roomId" element={<RoomPage />} />
 
           <Route element={<ProtectedRoutes />}>
