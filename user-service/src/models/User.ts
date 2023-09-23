@@ -5,9 +5,11 @@ import {
   Model
 } from 'sequelize';
 import { sequelizeConnection } from '../db/init';
+import { UserRole } from 'types/roles';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare uuid: string;
+  declare role: UserRole;
   declare username: string;
   declare firstName: string;
   declare lastName: string;
@@ -20,6 +22,10 @@ User.init(
     uuid: {
       type: DataTypes.STRING,
       primaryKey: true
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     username: {
       type: DataTypes.STRING,
