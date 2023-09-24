@@ -42,7 +42,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
 
   try {
     const reqQuestionid = req.body.question_id;
-    const doc = await QuestionDescriptionModel.findOne({
+    const doc = await QuestionModel.findOne({
       question_id: reqQuestionid,
     });
     if (doc == null) {
