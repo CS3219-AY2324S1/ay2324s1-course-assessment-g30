@@ -6,14 +6,21 @@ import { createClient } from 'redis';
 import {
   setUpRoom,
   disconnectFromRoom,
+  leaveRoom,
 } from "./controllers/room-controller.js";
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
+import { connectToDB } from "./model/db.js";
+import Redis from "ioredis";
+
+// Connect to the default Redis server running on localhost and default port 6379
+// Run redis-server locally
+const redis = new Redis();
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
 });
@@ -29,23 +36,28 @@ client
 
 // Run when client connects
 io.on("connection", (socket) => {
-  console.log(`User ${socket.id} connected`);
+  const uuid = socket.handshake.query.uuid;
+  socket.uuid = uuid;
+  console.log(`User ${socket.uuid} connected`);
 
   socket.on("set-up-room", (roomId) => {
-    setUpRoom(socket, roomId);
+    setUpRoom(socket, roomId, redis);
   });
 
   socket.on("join-room", (roomId) => {
-    broadcastJoin(socket, roomId, io);
+    broadcastJoin(socket, roomId, io, redis);
+  });
+
+  socket.on("leave-room", (roomId) => {
+    leaveRoom(socket, roomId, io, redis);
   });
 
   socket.on("send-message", (message, roomId) => {
-    sendMessage(socket, message, roomId, io);
+    sendMessage(socket, message, roomId, io, redis);
   });
 
-  socket.on("disconnect", async () => {
-    disconnectFromRoom(socket, io);
-
+  socket.on("disconnecting", () => {
+    disconnectFromRoom(socket, io, redis);
     // TODO move to controller
     const { roomId, username } = await client.hGetAll(socket.id)
     const users = await client.lRange(`${roomId}:users`, 0, -1)
@@ -58,6 +70,8 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("disconnect", () => {});
+
   socket.on('CODE_CHANGED', async (code) => {
     // TODO move to controller
     const { roomId, username } = await client.hGetAll(socket.id)
@@ -65,6 +79,7 @@ io.on("connection", (socket) => {
     // io.emit('CODE_CHANGED', code)
     socket.to(roomName).emit('CODE_CHANGED', code)
   })
+
 });
 
 app.use(cors());
@@ -86,6 +101,8 @@ app.post('/create-room', async (req, res) => {
 
   res.status(201).send({ roomId })
 })
-httpServer.listen(3002, () => {
-  console.log("collaboration-service started on port 3002");
+httpServer.listen(3004, () => {
+  console.log("collaboration-service started on port 3004");
+  connectToDB();
+
 });

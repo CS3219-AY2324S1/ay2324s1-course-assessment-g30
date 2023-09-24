@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Table.css";
 import { Box, Button } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import { getTableStorage } from "../../utils/localStorage/localStorage";
+import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
+import {
+  getQuestions,
+  getQuestionsDescription,
+} from "../../api/QuestionServices";
 
 function Table() {
   // Question Id
@@ -15,14 +18,20 @@ function Table() {
 
   useEffect(() => {
     if (table.length === 0) {
-      setTable(getTableStorage());
+      getQuestions().then((data) => setTable(data));
     }
   }, []);
 
   return (
     <>
       <Box></Box>
-      <Box style={{ display: "flex", justifyContent: "flex-end" }}>
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Button
+          onClick={() => window.location.reload()}
+          rightIcon={<RepeatIcon />}
+        >
+          Refresh
+        </Button>
         <Button
           onClick={() => navigator("/add_question")}
           leftIcon={<AddIcon />}

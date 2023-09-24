@@ -1,8 +1,8 @@
-import { Container, Input, FormErrorMessage, FormControl, Radio, RadioGroup, Stack, Divider, Heading, Box, Text, Textarea, Spacer, Button } from '@chakra-ui/react'
-import React, {useEffect, useState} from 'react'
-import { useForm, Controller } from "react-hook-form";
+import { Box, Button, Container, Divider, FormControl, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea } from '@chakra-ui/react';
+import React from 'react';
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import { addTableStorage } from '../../utils/localStorage/localStorage';
+import { addQuestion } from '../../api/QuestionServices';
 
 function AddQuestionForm() {
 
@@ -15,11 +15,9 @@ function AddQuestionForm() {
     formState: { errors }
   } = useForm();
 
-  let nagivator = useNavigate()
+  let navigator = useNavigate()
 
-  
-
-  const onSubmit = data => {addTableStorage(data.title, data.categories, data.description, data.complexity); nagivator('/')};
+  const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
 
   return (
     
@@ -60,11 +58,14 @@ function AddQuestionForm() {
           </FormControl>
           
           <Divider my={10} />
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
+          <Input {...register("link", { required: true })}/>
+          {errors.link && <p style={{color: 'red'}}>This field is required</p>}
+          <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>
-          <Textarea {...register("description", { required: true })}/>
-          {errors.description && <p style={{color: 'red'}}>This field is required</p>}
+          <Textarea {...register("description")}/>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
-          <Button type='submit' >Submit</Button>
+          <Button type='submit'>Submit</Button>
           </Box>
         </form>
       </Container>

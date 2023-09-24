@@ -1,28 +1,48 @@
 import { broadcastLeave } from "./chat-controller.js";
-
-const socketRoomMap = {}; // Will bring in DB later
+import Room from "../model/room-model.js";
 
 /**
- * Connects socket to a room.
+ * Connects socket to a room and fetches the state of chat and editor for user
  */
-export const setUpRoom = async (socket, roomId) => {
-  console.log(`Setting up room ${roomId} for user ${socket.id}`);
-  socket.join(roomId);
-  socketRoomMap[socket.id] = roomId;
-  socket.emit("room-is-ready");
+export const setUpRoom = async (socket, roomId, redis) => {
+  console.log(`Setting up room ${roomId} for user ${socket.uuid}`);
+  const existingRoom = await Room.findOne({ room_id: roomId });
+
+  if (existingRoom) {
+    if (!existingRoom.users.includes(socket.uuid)) {
+      existingRoom.users.push(socket.uuid);
+      await Room.updateOne({ room_id: roomId }, { users: existingRoom.users });
+    }
+    const chatKey = `chat:${roomId}`;
+    const chatHistory = await redis.lrange(chatKey, 0, -1);
+    const messages = chatHistory.map((message) => JSON.parse(message));
+
+    socket.emit("chat-history", messages);
+
+    socket.join(roomId);
+    socket.emit("room-is-ready");
+  } else {
+    socket.emit("invalid-room");
+    console.error("Failed to join socket to room");
+  }
 };
 
 /**
- * Disconnects socket from a room.
+ * Disconnects socket from room
  */
-export const disconnectFromRoom = async (socket, io) => {
-  // Get the room ID associated with the socket
-  const roomId = socketRoomMap[socket.id];
+export const leaveRoom = async (socket, roomId, io, redis) => {
+  console.log(`User ${socket.uuid} left room ${roomId}`);
+  socket.leave(roomId);
+  broadcastLeave(socket, roomId, io, redis);
+};
 
-  if (roomId) {
-    // Emit a farewell message to the room
-    broadcastLeave(socket, roomId, io);
-    socket.leave(roomId);
-    delete socketRoomMap[socket.id];
+/**
+ * Disconnects socket from a room. Socket leaves room upon disconnect.
+ */
+export const disconnectFromRoom = async (socket, io, redis) => {
+  const roomKeysIterator = socket.rooms.keys();
+
+  for (const roomId of roomKeysIterator) {
+    broadcastLeave(socket, roomId, io, redis);
   }
 };
