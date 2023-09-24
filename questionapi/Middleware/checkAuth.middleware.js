@@ -23,7 +23,7 @@ const checkAuth = async (req, res, next) => {
     if (userRole === "USER" || userRole === "ADMIN") {
       // Attach userRole to the req object
       req.userRole = userRole;
-      next();
+      return next();
     } else {
       throw new Error("User is not authorized to perform this action");
     }
@@ -37,7 +37,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
   const userRole = req.userRole;
   const uuid = req.body.uuid;
   if (userRole === "ADMIN") {
-    next();
+    return next();
   }
 
   try {
@@ -50,7 +50,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
     } else {
       const questionUuid = doc.uuid;
       if (questionUuid === uuid) {
-        next();
+        return next();
       } else {
         throw new Error("User is not authorized to amend this question");
       }
