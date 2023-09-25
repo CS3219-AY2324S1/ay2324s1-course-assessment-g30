@@ -10,6 +10,7 @@ import { initalize as initalize_db } from './src/db/init';
 import express from 'express';
 import authJwtMiddleware from './src/middleware/auth';
 import cors from 'cors';
+import { getUserRole } from './src/controllers/auth-controller';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,8 +23,6 @@ app.use(express.json());
 const router = express.Router();
 app.use(`/${version}`, router);
 
-
-
 router.get('/test', (req, res) => {
   res.send('Hear you loud and clear');
 });
@@ -32,14 +31,18 @@ router.get('/test', (req, res) => {
 router.post('/auth/register', createUser);
 router.post('/auth/login', loginUser);
 
+router.post('/user/role', getUserRole);
+
 // Protected routes
 router.use(authJwtMiddleware);
 router.post('/user', getUserProfile);
 router.put('/user', updateUserProfile);
 router.delete('/user', deleteUserProfile);
 
-initalize_db().then(() => {
-  app.listen(port, () => {
-    console.log(`User-service on port ${port}`);
-  });
-});
+initalize_db()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`User-service on port ${port}`);
+    });
+  })
+  .catch((err) => console.log(err.message));
