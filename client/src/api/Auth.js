@@ -35,6 +35,7 @@ export const getAuthToken = async (email, password) => {
         }
     };
     const response = await axios(config)
+    console.log(response)
     const data = response.data.res
     if (response.status === 200) {
         let curr_user_token = data.accessToken;
