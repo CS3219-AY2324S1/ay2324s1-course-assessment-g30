@@ -1,90 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import 'codemirror/lib/codemirror.css'
-// import 'codemirror/lib/codemirror'
-import 'codemirror/theme/material-ocean.css'
-import 'codemirror/mode/javascript/javascript'
-import 'codemirror/keymap/sublime'
-import CodeMirror from 'codemirror'
-import io from 'socket.io-client'
-import { Text, Code } from '@chakra-ui/react'
-import { useStore } from './store'
+import { useState, useRef } from 'react'
+import reactLogo from './assets/react.svg'
+import Editor from "@monaco-editor/react"
+import * as Y from "yjs"
+import { WebrtcProvider } from "y-webrtc"
+import { MonacoBinding } from "y-monaco"
 
-
-const EditorContainer = () => {
-  const [users, setUsers] = useState([])
-  const { username, roomId } = useStore(({ username, roomId }) => ({
-    username,
-    roomId,
-  }))
-
-  useEffect(() => {
-    const editor = CodeMirror.fromTextArea(document.getElementById('ds'), {
-      lineNumbers: true,
-      keyMap: 'sublime',
-      theme: 'material-ocean',
-      mode: 'javascript',
-    })
-
-    const widget = document.createElement('span')
-    widget.textContent = 'hmmm?'
-    widget.style.cssText =
-        'background: #F37381; padding: 0px 3px; color: #F3F5F1; cursor: pointer;'
-
-    // const bookMark = editor.setBookmark({ line: 1, pos: 1 }, { widget })
-    // widget.onclick = () => bookMark.clear()
-    // console.log(editor.getAllMarks())
-
-    const socket = io('http://localhost:3001/', {
-      transports: ['websocket'],
-    })
-
-    socket.on('CODE_CHANGED', (code) => {
-      console.log(code)
-      editor.setValue(code)
-    })
-
-    socket.on('connect_error', (err) => {
-      console.log(`connect_error due to ${err.message}`)
-    })
-
-    socket.on('connect', () => {
-      socket.emit('CONNECTED_TO_ROOM', { roomId, username })
-    })
-
-    socket.on('disconnect', () => {
-      socket.emit('DISSCONNECT_FROM_ROOM', { roomId, username })
-    })
-
-    socket.on('ROOM:CONNECTION', (users) => {
-      setUsers(users)
-      console.log(users)
-    })
-
-    editor.on('change', (instance, changes) => {
-      const { origin } = changes
-      // if (origin === '+input' || origin === '+delete' || origin === 'cut') {
-      if (origin !== 'setValue') {
-        socket.emit('CODE_CHANGED', instance.getValue())
-      }
-    })
-    editor.on('cursorActivity', (instance) => {
-      // console.log(instance.cursorCoords())
-    })
-
-    return () => {
-      socket.emit('DISSCONNECT_FROM_ROOM', { roomId, username })
-    }
-  }, [])
+function EditorContainer() {
+  const editorRef = useRef(null);
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
+    // Initialize YJS
+    const doc = new Y.Doc(); // a collection of shared objects -> Text
+    // Connect to peers (or start connection) with WebRTC
+    const provider = new WebrtcProvider("test-room", doc); // room1, room2
+    const ytext = doc.getText("monaco"); // doc { "monaco": "what our IDE is showing" }
+    // Bind YJS to Monaco
+    // ytext.insert(0,editorState);
+    const binding = new MonacoBinding(ytext, editorRef.current.getModel(), new Set([editorRef.current]), provider.awareness);
+    console.log(provider.awareness);
+  }
+  function executeCode() {
+  }
 
   return (
-      <>
-        <Text fontSize="2xl">Username : {username}</Text>
-        <Text fontSize="2xl">Room ID : {roomId}</Text>
-        <Text fontSize="2xl">
-          Total connected: <b> {users.length}</b>
-        </Text>
+      <div>
+        <button onClick={()=> executeCode}>Run</button>
+        <Editor
+            height="100vh"
+            width="100vw"
+            theme="vs-dark"
 
-        <textarea id="ds" />
-      </>
+            onMount={handleEditorDidMount}
+            defaultLanguage="javascript"
+        />
+      </div>
   )
 }
+
+export default EditorContainer

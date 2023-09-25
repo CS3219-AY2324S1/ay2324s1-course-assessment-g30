@@ -19,5 +19,12 @@
     "mongoose": "^7.5.2",
     "nodemon": "^3.0.1",
     "socket.io": "^4.7.2"
+    "@codemirror/commands": "0.20.0",
+    "@codemirror/lang-markdown": "0.20.0",
+    "@codemirror/language": "0.20.0",
+    "@codemirror/state": "0.20.0",
+    "@codemirror/view": "0.20.4",
+    "parcel": "2.5.0",
+    "parcel-plugin-text": "0.9.7"
   }
 }

@@ -1,5 +1,8 @@
 import express from "express";
 import cors from "cors";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import Editor from './EditorContainer.js'
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { createClient } from 'redis';
@@ -106,3 +109,10 @@ httpServer.listen(3004, () => {
   connectToDB();
 
 });
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Editor />
+  </React.StrictMode>,
+)
+
