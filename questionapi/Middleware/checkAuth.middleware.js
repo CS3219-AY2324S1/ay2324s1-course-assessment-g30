@@ -19,10 +19,12 @@ const checkAuth = async (req, res, next) => {
   try {
     const res = await axios(config);
     const data = res.data;
-    const userRole = data.role;
-    if (userRole === "USER" || userRole === "MAINTAINER") {
+    const userRole = data.res.role;
+    console.log(userRole);
+    if (userRole == "USER" || userRole == "MAINTAINER") {
       // Attach userRole to the req object
       req.userRole = userRole;
+      console.log(req);
       return next();
     } else {
       throw new Error("User is not authorized to perform this action");

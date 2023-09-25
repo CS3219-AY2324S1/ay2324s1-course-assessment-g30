@@ -39,7 +39,8 @@ export const getQuestionsDescription = async (id) => {
             'Content-Type': 'application/json',
         },
         data: JSON.stringify({
-            question_id: id
+            question_id: id,
+            token : Cookies.get('token')
         })
     }
 
