@@ -14,7 +14,8 @@ import {
   sendInternalServerErrorResponse,
   sendSuccessResponse,
   sendUnexpectedMissingUserResponse
-} from '../util';
+} from '../utils';
+import { UserRole } from '../types/roles';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -63,6 +64,7 @@ const createUser: RequestHandler = async (req, res) => {
 
   const newUser = User.build({
     uuid: crypto.randomUUID(),
+    role: UserRole.registeredUser,
     username,
     firstName,
     lastName,
