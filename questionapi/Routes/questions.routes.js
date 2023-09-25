@@ -11,7 +11,7 @@ questionRouter.post(
   checkAuth,
   questionController.readQuestionDescriptionController,
 );
-questionRouter.get(
+questionRouter.post(
   "/readQuestions",
   checkAuth,
   questionController.readQuestionsController,

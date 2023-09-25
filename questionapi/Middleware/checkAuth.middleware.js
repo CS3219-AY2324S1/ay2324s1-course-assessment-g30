@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const { QuestionModel } = require("../Models/Question");
 
-const USER_SERVICE_BASE_URL = "http://localhost:3002/v1";
+const USER_SERVICE_BASE_URL = "http://localhost:3000/v1";
 
 const checkAuth = async (req, res, next) => {
   const URL = USER_SERVICE_BASE_URL + "/user/role";
@@ -20,7 +20,7 @@ const checkAuth = async (req, res, next) => {
     const res = await axios(config);
     const data = res.data;
     const userRole = data.role;
-    if (userRole === "USER" || userRole === "ADMIN") {
+    if (userRole === "USER" || userRole === "MAINTAINER") {
       // Attach userRole to the req object
       req.userRole = userRole;
       return next();
