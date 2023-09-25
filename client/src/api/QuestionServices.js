@@ -67,7 +67,9 @@ export const addQuestion = async (title, category, complexity, link) => {
             title: title,
             category: [category],
             complexity: complexity,
-            link: link
+            link: link,
+            token : Cookies.get('token'),
+            uuid: Cookies.get('uuid')
         })
     }
 
@@ -91,7 +93,9 @@ export const deleteQuestion = async (id) => {
             'Content-Type': 'application/json',
         },
         data: JSON.stringify({
-            question_id: id
+            question_id: id,
+            token : Cookies.get('token'),
+            uuid: Cookies.get('uuid')
         })
     }
 
@@ -120,7 +124,9 @@ export const updateQuestion = async (data) => {
             title: d.question_title,
             category: d.question_categories,
             complexity: d.question_complexity,
-            link: d.question_link
+            link: d.question_link,
+            token : Cookies.get('token'),
+            uuid: Cookies.get('uuid')
         })
     }
 

@@ -44,6 +44,7 @@ const addQuestionController = async (req, res, next) => {
   const complexity = req.body.complexity;
   const link = req.body.link;
   const description = req.body.description;
+  const uuid = req.body.uuid;
   if (description != null) {
     description = "<p>" + description + "</p>";
     description = "<div" + description + "</div>";
@@ -69,6 +70,7 @@ const addQuestionController = async (req, res, next) => {
       question_categories: category,
       question_complexity: complexity,
       question_link: link,
+      uuid: uuid,
     });
     const newQuestionDescriptionDocument = new QuestionDescriptionModel({
       question_id: newIndex,

@@ -20,7 +20,6 @@ const checkAuth = async (req, res, next) => {
     const res = await axios(config);
     const data = res.data;
     const userRole = data.res.role;
-    console.log(userRole);
     if (userRole == "USER" || userRole == "MAINTAINER") {
       // Attach userRole to the req object
       req.userRole = userRole;
@@ -38,7 +37,7 @@ const checkAuth = async (req, res, next) => {
 const checkUpdateResourceAuth = async (req, res, next) => {
   const userRole = req.userRole;
   const uuid = req.body.uuid;
-  if (userRole === "ADMIN") {
+  if (userRole == "MAINTAINER") {
     return next();
   }
 
