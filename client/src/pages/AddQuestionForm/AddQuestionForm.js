@@ -17,7 +17,7 @@ function AddQuestionForm() {
 
   let navigator = useNavigate()
 
-  const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link); navigator('/dashboard')};
+  const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
 
   return (
     
@@ -59,8 +59,11 @@ function AddQuestionForm() {
           
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Textarea {...register("link", { required: true })}/>
+          <Input {...register("link", { required: true })}/>
           {errors.link && <p style={{color: 'red'}}>This field is required</p>}
+          <Divider my={10} />
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>
+          <Textarea {...register("description")}/>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           <Button type='submit'>Submit</Button>
           </Box>

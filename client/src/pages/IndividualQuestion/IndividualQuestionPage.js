@@ -23,12 +23,18 @@ function IndividualQuestionPage() {
         }
     }, [])
 
-
+    console.log(info)
 
     const parser = new DOMParser();
     
     function formatQuestionInfo() {
-      const html = parser.parseFromString(info.question_description, 'text/html'); 
+      let html = null;
+      if (info.question_description) {
+        html = parser.parseFromString(info.question_description, 'text/html'); 
+      } else if (info.description !== null || info.description.length !== 0) {
+        html = parser.parseFromString(info.description, 'text/html')
+      }
+      
       const formattedHtml = html.documentElement.innerHTML;
       return formattedHtml;
     }

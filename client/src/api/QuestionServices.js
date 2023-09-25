@@ -54,7 +54,7 @@ export const getQuestionsDescription = async (id) => {
     }
 };
 
-export const addQuestion = async (title, category, complexity, link) => {
+export const addQuestion = async (title, category, complexity, link, description) => {
     const url = BASE_URL + "/addQuestion/";
 
     const config = {
