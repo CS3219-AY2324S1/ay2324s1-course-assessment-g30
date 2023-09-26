@@ -16,7 +16,13 @@ const sync = async () => {
   }
 };
 
+// Create admin account if not created already
 const createAdminAccount = async () => {
+  const adminEmail = 'admin@test.com';
+  const adminAccountExist = (await User.getUserByEmail(adminEmail)) !== null;
+  if (adminAccountExist) {
+    return;
+  }
   const hashedPassword = await hashPassword(
     process.env.ADMIN_PASSWORD as string
   );
@@ -27,7 +33,7 @@ const createAdminAccount = async () => {
     firstName: 'admin',
     lastName: 'admin',
     hashedPassword,
-    email: 'admin@test.com'
+    email: adminEmail
   });
   console.log('Created admin account');
 };
