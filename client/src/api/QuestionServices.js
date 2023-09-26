@@ -87,7 +87,7 @@ export const deleteQuestion = async (id) => {
     const url = BASE_URL + "/deleteQuestion/";
 
     const config = {
-        method: 'post',
+        method: 'delete',
         url: url,
         headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export const updateQuestion = async (data) => {
 
     const d = data;
     const config = {
-        method: 'post',
+        method: 'put',
         url: url,
         headers: {
             'Content-Type': 'application/json',
