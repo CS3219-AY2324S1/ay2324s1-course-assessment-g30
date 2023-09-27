@@ -1,22 +1,36 @@
 const express = require("express");
 const questionController = require("../Controllers/questions.controller");
+const {
+  checkAuth,
+  checkUpdateResourceAuth,
+} = require("../Middleware/checkAuth.middleware.js");
 const questionRouter = express.Router();
 
-questionRouter.get(
+questionRouter.post(
   "/readQuestionDescription",
+  checkAuth,
   questionController.readQuestionDescriptionController,
 );
-questionRouter.get(
+questionRouter.post(
   "/readQuestions",
+  checkAuth,
   questionController.readQuestionsController,
 );
-questionRouter.post("/addQuestion", questionController.addQuestionController);
+questionRouter.post(
+  "/addQuestion",
+  checkAuth,
+  questionController.addQuestionController,
+);
 questionRouter.delete(
   "/deleteQuestion",
+  checkAuth,
+  checkUpdateResourceAuth,
   questionController.deleteQuestionController,
 );
 questionRouter.put(
   "/updateQuestion",
+  checkAuth,
+  checkUpdateResourceAuth,
   questionController.updateQuestionController,
 );
 

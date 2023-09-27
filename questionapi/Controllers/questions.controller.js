@@ -44,7 +44,8 @@ const addQuestionController = async (req, res, next) => {
   const complexity = req.body.complexity;
   const link = req.body.link;
   const description = req.body.description;
-  if (description != undefined) {
+  const uuid = req.body.uuid;
+  if (description != null) {
     description = "<p>" + description + "</p>";
     description = "<div" + description + "</div>";
   }
@@ -56,7 +57,7 @@ const addQuestionController = async (req, res, next) => {
 
   try {
     let newQuestionDescription = null;
-    if (description == undefined) {
+    if (description == null) {
       newQuestionDescription = await webScrapperQuestionDescription(link);
     }
     const documentWithHighestIndex = await QuestionModel.find()
@@ -69,6 +70,7 @@ const addQuestionController = async (req, res, next) => {
       question_categories: category,
       question_complexity: complexity,
       question_link: link,
+      uuid: uuid,
     });
     const newQuestionDescriptionDocument = new QuestionDescriptionModel({
       question_id: newIndex,
@@ -94,28 +96,26 @@ const updateQuestionController = async (req, res, next) => {
     const original_complexity = original_document.question_complexity;
     const original_link = original_document.question_link;
 
-    const new_title =
-      req.body.title !== undefined ? req.body.title : original_title;
+    const new_title = req.body.title !== null ? req.body.title : original_title;
     const new_category =
-      req.body.category !== undefined ? req.body.category : original_category;
+      req.body.category !== null ? req.body.category : original_category;
     const new_complexity =
-      req.body.complexity !== undefined
-        ? req.body.complexity
-        : original_complexity;
-    const new_link =
-      req.body.link !== undefined ? req.body.link : original_link;
-    console.log(req.body.description);
-    const new_description =
-      req.body.description !== undefined ? req.body.description : null;
-    if (new_description != undefined) {
+      req.body.complexity !== null ? req.body.complexity : original_complexity;
+    const new_link = req.body.link !== null ? req.body.link : original_link;
+    let new_description =
+      req.body.description !== null ? req.body.description : null;
+
+    if (new_description != null) {
       new_description = "<p>" + new_description + "</p>";
-      new_description = "<div" + new_description + "</div>";
+      new_description = "<div>" + new_description + "</div>";
     }
 
     let newQuestionDescription = null;
+    console.log("hello", new_description);
     if ((new_description == null) & (new_link != null)) {
       newQuestionDescription = await webScrapperQuestionDescription(new_link);
     }
+
     await QuestionModel.updateOne(
       { question_id: question_id },
       {
@@ -125,7 +125,7 @@ const updateQuestionController = async (req, res, next) => {
         question_link: new_link,
       },
     );
-    if (new_description != null || newQuestionDescription != null) {
+    if ((new_description == null) & (new_link != null)) {
       await QuestionDescriptionModel.updateOne(
         { question_id: question_id },
         {
