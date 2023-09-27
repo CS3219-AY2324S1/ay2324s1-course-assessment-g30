@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import Editor from './EditorContainer.js'
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { createClient } from 'redis';
+import { createClient } from "redis";
 import {
   setUpRoom,
   disconnectFromRoom,
@@ -28,20 +25,19 @@ const io = new Server(httpServer, {
   },
 });
 const client = createClient();
-client.on('error', console.error)
+client.on("error", console.error);
 client
-    .connect()
-    .then(() => console.log(blueBright.bold('Connected to redis locally!')))
-    .catch(() => {
-      console.error(redBright.bold('Error connecting to redis'))
-    })
-
+  .connect()
+  .then(() => console.log("Connected to redis locally!"))
+  .catch(() => {
+    console.error("Error connecting to redis");
+  });
 
 // Run when client connects
 io.on("connection", (socket) => {
-  const uuid = socket.handshake.query.uuid;
-  socket.uuid = uuid;
-  console.log(`User ${socket.uuid} connected`);
+  socket.uuid = socket.handshake.query.uuid;
+  socket.username = socket.handshake.query.username;
+  console.log(`User ${socket.username} connected`);
 
   socket.on("set-up-room", (roomId) => {
     setUpRoom(socket, roomId, redis);
@@ -59,60 +55,52 @@ io.on("connection", (socket) => {
     sendMessage(socket, message, roomId, io, redis);
   });
 
-  socket.on("disconnecting", () => {
+  socket.on("disconnecting", async () => {
     disconnectFromRoom(socket, io, redis);
     // TODO move to controller
-    const { roomId, username } = await client.hGetAll(socket.id)
-    const users = await client.lRange(`${roomId}:users`, 0, -1)
-    const newUsers = users.filter((user) => username !== user)
+    const { roomId, username } = await client.hGetAll(socket.id);
+    const users = await client.lRange(`${roomId}:users`, 0, -1);
+    const newUsers = users.filter((user) => username !== user);
     if (newUsers.length) {
-      await client.del(`${roomId}:users`)
-      await client.lPush(`${roomId}:users`, newUsers)
+      await client.del(`${roomId}:users`);
+      await client.lPush(`${roomId}:users`, newUsers);
     } else {
-      await client.del(`${roomId}:users`)
+      await client.del(`${roomId}:users`);
     }
   });
 
   socket.on("disconnect", () => {});
 
-  socket.on('CODE_CHANGED', async (code) => {
+  socket.on("CODE_CHANGED", async (code) => {
     // TODO move to controller
-    const { roomId, username } = await client.hGetAll(socket.id)
-    const roomName = `ROOM:${roomId}`
+    const { roomId, username } = await client.hGetAll(socket.id);
+    const roomName = `ROOM:${roomId}`;
     // io.emit('CODE_CHANGED', code)
-    socket.to(roomName).emit('CODE_CHANGED', code)
-  })
-
+    socket.to(roomName).emit("CODE_CHANGED", code);
+  });
 });
 
 app.use(cors());
 app.use(express.json());
-app.post('/create-room', async (req, res) => {
-  const { username } = req.body
-  const roomId = v4()
-  console.log('17err')
+app.post("/create-room", async (req, res) => {
+  const { username } = req.body;
+  const roomId = v4();
+  console.log("17err");
   await client
-      .hSet(`${roomId}:info`, {
-        created: moment(),
-        updated: moment(),
-      })
-      .catch((err) => {
-        console.error(1, err)
-      })
+    .hSet(`${roomId}:info`, {
+      created: moment(),
+      updated: moment(),
+    })
+    .catch((err) => {
+      console.error(1, err);
+    });
 
-  await client.lSet(`${roomId}:users`, [])
+  await client.lSet(`${roomId}:users`, []);
 
-  res.status(201).send({ roomId })
-})
+  res.status(201).send({ roomId });
+});
+
 httpServer.listen(3004, () => {
   console.log("collaboration-service started on port 3004");
   connectToDB();
-
 });
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Editor />
-  </React.StrictMode>,
-)
-
