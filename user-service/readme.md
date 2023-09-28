@@ -1,9 +1,14 @@
 # Postgres setup using docker
 
 1. Install docker desktop
-2. In the root dir user-service/ run `docker build -t user-service-psql .`
-3. Amend the password, container name and port as needed and run the command
-   `docker run -p <port>:5432 -e POSTGRES_PASSWORD=<db_password> --name <container_name> -d user-service-psql`
+2. In the root dir user-service/ run the following commands
+
+- `docker build -f Dockerfile.postgres-db -t user-service-psql .`
+- `docker build -f Dockerfile.userservice-backend -t user-service-backend .`
+- `docker network create user-service`
+- `docker run -p 1111:5432 -e POSTGRES_PASSWORD=<FILL PASSWORD> --name user-service-db -d --network=user-service user-service-psql`
+- `docker inspect user-service-db | grep IPAddress` # copy this value into DB_ADDR in .env
+- `docker run -p <FILL THIS TO LOCALMACHINE PORT>:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
 
 Note: To connect to docker container
 docker exec -it <container_num> bash
@@ -11,7 +16,7 @@ docker exec -it <container_num> bash
 To verify docker container has db:
 
 1. docker exec -it <container_num> bash
-2. Once connected to the container run `psql -U posgres` to connect to the docker postgres instance
+2. Once connected to the container run `psql -U postgres` to connect to the docker postgres instance
 3. Type `\c` and verify that the userservice database has been created
 
 # Setup

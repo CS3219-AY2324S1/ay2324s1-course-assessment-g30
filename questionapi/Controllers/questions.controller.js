@@ -43,7 +43,7 @@ const addQuestionController = async (req, res, next) => {
   const category = req.body.category;
   const complexity = req.body.complexity;
   const link = req.body.link;
-  const description = req.body.description;
+  let description = req.body.description;
   const uuid = req.body.uuid;
   if (description != null) {
     description = "<p>" + description + "</p>";
@@ -77,8 +77,11 @@ const addQuestionController = async (req, res, next) => {
       question_description: newQuestionDescription,
       description: description,
     });
+    console.log("Before question save")
     await newQuestionDocument.save();
+    console.log("Before description save")
     await newQuestionDescriptionDocument.save();
+    console.log("after description save")
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
     res.status(500).json({ error: err });
@@ -102,18 +105,20 @@ const updateQuestionController = async (req, res, next) => {
     const new_complexity =
       req.body.complexity !== null ? req.body.complexity : original_complexity;
     const new_link = req.body.link !== null ? req.body.link : original_link;
-    console.log(req.body.description);
-    const new_description =
+    let new_description =
       req.body.description !== null ? req.body.description : null;
+
     if (new_description != null) {
       new_description = "<p>" + new_description + "</p>";
-      new_description = "<div" + new_description + "</div>";
+      new_description = "<div>" + new_description + "</div>";
     }
 
     let newQuestionDescription = null;
+    console.log("hello", new_description);
     if ((new_description == null) & (new_link != null)) {
       newQuestionDescription = await webScrapperQuestionDescription(new_link);
     }
+
     await QuestionModel.updateOne(
       { question_id: question_id },
       {
@@ -123,7 +128,7 @@ const updateQuestionController = async (req, res, next) => {
         question_link: new_link,
       },
     );
-    if (new_description != null || newQuestionDescription != null) {
+    if ((new_description == null) & (new_link != null)) {
       await QuestionDescriptionModel.updateOne(
         { question_id: question_id },
         {

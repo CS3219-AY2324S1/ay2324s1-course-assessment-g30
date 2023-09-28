@@ -14,7 +14,6 @@ import {
   VStack
 } from '@chakra-ui/react'
 import colors from '../../utils/Colors'
-import Table from '../../components/Table/Table'
 import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage() {
