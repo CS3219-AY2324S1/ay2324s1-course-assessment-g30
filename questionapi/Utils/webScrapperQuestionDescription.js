@@ -19,7 +19,9 @@ const webScrapperQuestionDescription = async (link) => {
       throw new Error("Element not found");
     }
   } catch (error) {
-    console.error("Error:", error);
+    throw new Error(
+      "Ensure that the link provided is a valid Leetcode question link",
+    );
   }
 };
 

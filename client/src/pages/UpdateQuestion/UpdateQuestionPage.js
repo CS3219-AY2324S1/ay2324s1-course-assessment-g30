@@ -78,7 +78,10 @@ function UpdateQuestionPage() {
           
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Textarea defaultValue={prev_data.question_link} {...register("question_link")}/>
+          <Input defaultValue={prev_data.question_link} {...register("question_link")}/>
+          <Divider my={10} />
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question description</Text>
+          <Textarea defaultValue={prev_data.question_description} {...register("question_description")}/>
           {/* {errors.link && <p style={{color: 'red'}}>This field is required</p>} */}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           <Button type='submit'>Submit</Button>

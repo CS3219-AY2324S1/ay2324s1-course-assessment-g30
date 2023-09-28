@@ -6,6 +6,7 @@ const questionSchema = new mongoose.Schema({
   question_categories: [String],
   question_complexity: String,
   question_link: String,
+  uuid: String,
 });
 
 const QuestionModel = mongoose.model("QuestionModel", questionSchema, "Table1");

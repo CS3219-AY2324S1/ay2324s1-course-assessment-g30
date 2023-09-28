@@ -95,7 +95,7 @@ export default function Login() {
           <Stack align={'center'}>
             <Heading fontSize={'4xl'}>Login</Heading>
             <Text fontSize={'lg'} color={'gray.600'}>
-               I love volunteering ❤️
+               I love coding ❤️
             </Text>
           </Stack>
           <Box
