@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -63,6 +63,29 @@ function EditProfileModal(props) {
     }
   }
 
+
+    //----------------------------------------------------------
+  //for username
+  const [errorUsername, setErrorUsername] = useState(null);
+  const [usernameInputValue, setUsernameInputValue] = useState(props.user.username);
+  const handleInputChange = (event) => {
+    const newValue = event.target.value;
+
+    // Define a regular expression pattern to match your criteria
+    const pattern = /^[a-z0-9._-]{1,30}$/;
+
+    // Test if the input value matches the pattern
+    if (!pattern.test(newValue)) {
+      setErrorUsername("Use only lowercase a-z, 0-9, ., _ or -");
+      
+    } else {
+      setErrorUsername(null);
+    }
+
+    setUsernameInputValue(newValue);
+  };
+
+
   return (
     <>
     <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
@@ -73,16 +96,19 @@ function EditProfileModal(props) {
         <ModalCloseButton />
         <ModalBody mt={5} mb={-20}>
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>First Name</Text>
-          <Input defaultValue={props.user.firstName} {...register("firstName")}/>
+          <Input defaultValue={props.user.firstName} {...register("firstName")} maxLength={20}/>
           {errors.firstName && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Last Name</Text>
-          <Input defaultValue={props.user.lastName} {...register("lastName")}/>
+          <Input defaultValue={props.user.lastName} {...register("lastName")} maxLength={20}/>
           {errors.lastName && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Username</Text>
-          <Input defaultValue={props.user.username} {...register("username")}/>
+          <Input {...register('username', {
+                    required: true,
+                  })} type="text" value={usernameInputValue} onChange={handleInputChange} maxLength={30} />
           {errors.username && <p style={{color: 'red'}}>This field is required</p>}
+          <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorUsername}</Text>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           </Box>
         </ModalBody>

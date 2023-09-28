@@ -31,12 +31,9 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    control,
-    getValues,
-    setError,
-    clearErrors,
     formState: { errors }
   } = useForm({mode: 'onSubmit'});
+
 
   const onSubmit = async (data) => {
     const info = {
@@ -46,8 +43,8 @@ export default function Register() {
       firstName: data.firstName,
       lastName: data.lastName
    }
-   console.log(info)
-    
+   
+   if (errorUsername == null && errorPassword == null) {
     await createUser(info)
     .then((obj) => {
       toast({
@@ -80,7 +77,69 @@ export default function Register() {
         // Something happened in setting up the request that triggered an Error
         console.log('Here', error.message);
       }
-  })};
+    
+   })
+
+  }};
+
+  //----------------------------------------------------------
+  //for username
+  const [errorUsername, setErrorUsername] = useState(null);
+  const [usernameInputValue, setUsernameInputValue] = useState("");
+  const handleInputChange = (event) => {
+    const newValue = event.target.value;
+
+    // Define a regular expression pattern to match your criteria
+    const pattern = /^[a-z0-9._-]{1,30}$/;
+
+    // Test if the input value matches the pattern
+    if (!pattern.test(newValue)) {
+      setErrorUsername("Use only lowercase a-z, 0-9, ., _ or -");
+      
+    } else {
+      setErrorUsername(null);
+    }
+
+    setUsernameInputValue(newValue);
+  };
+
+  //----------------------------------------------------------
+  //for password
+
+  const [errorPassword, setErrorPassword] = useState(null);
+  const [passwordInputValue, setPasswordInputValue] = useState("");
+
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+
+    const minLength = 8;
+    const hasLowerCase = /[a-z]/.test(newPassword);
+    const hasUpperCase = /[A-Z]/.test(newPassword);
+    const hasDigit = /\d/.test(newPassword);
+    const hasSpecialChar = /[!@#$%^&*]/.test(newPassword);
+
+    if (
+      newPassword.length < minLength ||
+      !hasLowerCase ||
+      !hasUpperCase ||
+      !hasDigit ||
+      !hasSpecialChar
+    ) {
+      const passwordCriteriaMessage = "Password must be at least 8 characters long. \n"
+      + "Contain at least one lowercase letter. \n"
+      + "Contain one uppercase letter. \n"
+      + "Contain one digit. \n"
+      + "Contain one special character.";
+      setErrorPassword(
+        passwordCriteriaMessage
+      );
+    } else {
+      setErrorPassword(null);
+    }
+
+    setPasswordInputValue(newPassword);
+  };
+
     
   return (
     <Flex
@@ -111,7 +170,7 @@ export default function Register() {
                   <FormLabel>First Name</FormLabel>
                   <Input {...register('firstName', {
                     required: true,
-                  })} type="text" />
+                  })} type="text" maxLength={20} />
                 </FormControl>
               </Box>
               <Box>
@@ -119,7 +178,7 @@ export default function Register() {
                   <FormLabel>Last Name</FormLabel>
                   <Input {...register('lastName', {
                     required: true,
-                  })} type="text" />
+                  })} type="text" maxLength={20} />
                 </FormControl>
               </Box>
             </HStack>
@@ -127,20 +186,22 @@ export default function Register() {
               <FormLabel>Email address</FormLabel>
               <Input {...register('email', {
                     required: true,
-                  })} type="email" />
+                  })} type="email" maxLength={254}/>
             </FormControl>
             <FormControl id="username" isRequired>
               <FormLabel>Username</FormLabel>
               <Input {...register('username', {
                     required: true,
-                  })} type="text" />
+                  })} type="text" value={usernameInputValue} onChange={handleInputChange} maxLength={30} />
+                  <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorUsername}</Text>
             </FormControl>
+
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input {...register('password', {
                     required: true,
-                  })} type={showPassword ? 'text' : 'password'} />
+                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={handlePasswordChange} maxLength={128} />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -149,6 +210,7 @@ export default function Register() {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button

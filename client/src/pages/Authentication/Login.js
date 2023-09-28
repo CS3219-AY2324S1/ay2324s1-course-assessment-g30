@@ -116,6 +116,7 @@ export default function Login() {
                 mb={'5'}
                 type="text"
                 onClick={() => {setFormInvalid(false);}}
+                maxLength={254}
                 />
                 {!formInvalid && <FormErrorMessage mt={-3}>{errors?.email === "required"}{"Email is required"}</FormErrorMessage> }
               </FormControl >
@@ -127,6 +128,7 @@ export default function Login() {
                 mb={'5'}
                 type={show ? 'text' : 'password'}
                 onClick={() => {setFormInvalid(false);}}
+                maxLength={128} 
                 />
                 <InputRightElement width='4.5rem'>
                     <Button h='1.75rem' size='sm' onClick={handleShow}>
