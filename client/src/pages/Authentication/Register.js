@@ -116,7 +116,7 @@ export default function Register() {
     const hasLowerCase = /[a-z]/.test(newPassword);
     const hasUpperCase = /[A-Z]/.test(newPassword);
     const hasDigit = /\d/.test(newPassword);
-    const hasSpecialChar = /[!@#$%^&*]/.test(newPassword);
+    const hasSpecialChar = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/.test(newPassword);
 
     if (
       newPassword.length < minLength ||
