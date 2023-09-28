@@ -16,6 +16,8 @@ import {
   sendUnexpectedMissingUserResponse
 } from '../utils';
 import { UserRole } from '../types/roles';
+import { ValidationError } from 'sequelize';
+import { isValidPassword } from '../utils/validators';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -25,10 +27,11 @@ const createUser: RequestHandler = async (req, res) => {
     return;
   }
 
+  const lowerCasedUsername = (username as string).toLowerCase();
   // Check if username exists
   let registeredUser = await User.findOne({
     where: {
-      username
+      username: lowerCasedUsername
     }
   });
   if (registeredUser) {
@@ -51,6 +54,11 @@ const createUser: RequestHandler = async (req, res) => {
   let hashedPassword;
   let salt;
 
+  if (!isValidPassword(password)) {
+    sendBadRequestResponse(res, 'Invalid password provided');
+    return;
+  }
+
   try {
     salt = await bcrypt.genSalt(SALT_ROUNDS);
     hashedPassword = await bcrypt.hash(password, salt);
@@ -65,7 +73,7 @@ const createUser: RequestHandler = async (req, res) => {
   const newUser = User.build({
     uuid: crypto.randomUUID(),
     role: UserRole.registeredUser,
-    username,
+    username: lowerCasedUsername,
     firstName,
     lastName,
     hashedPassword,
@@ -75,8 +83,12 @@ const createUser: RequestHandler = async (req, res) => {
   try {
     await newUser.save();
     res.json({ err: '', res: 'Account created successfully' });
-  } catch (error) {
-    sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+    } else {
+      sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+    }
   }
 };
 
@@ -169,7 +181,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     let { username, firstName, lastName } = req.body;
 
     if (username && typeof username == 'string') {
-      userData.username = username;
+      userData.username = username.toLowerCase();
     }
 
     if (firstName && typeof firstName == 'string') {
@@ -183,7 +195,11 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     try {
       await userData.save();
     } catch (err) {
-      sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+      if (err instanceof ValidationError) {
+        sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+      } else {
+        sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+      }
       return;
     }
 
