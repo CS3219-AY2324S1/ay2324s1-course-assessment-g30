@@ -26,7 +26,7 @@ export const isValidUsername = (username: string) => {
 
   // Test if the input value matches the pattern
   if (!pattern.test(username)) {
-    return false;
+    throw Error('Invalid username');
   }
 
   return true;
