@@ -1,3 +1,4 @@
+import { isValidUsername } from './../utils/validators';
 import {
   DataTypes,
   InferAttributes,
@@ -14,7 +15,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare firstName: string;
   declare lastName: string;
   declare email: string;
-  declare hashedPassword: string;
+  declare hashedPassword: string; // not validated by model
 }
 
 User.init(
@@ -30,20 +31,32 @@ User.init(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isValidUsername
+      }
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: [1, 30]
+      }
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: [1, 20]
+      }
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
     hashedPassword: {
       type: DataTypes.STRING,

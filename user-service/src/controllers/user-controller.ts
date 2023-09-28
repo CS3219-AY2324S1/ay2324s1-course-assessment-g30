@@ -16,6 +16,8 @@ import {
   sendUnexpectedMissingUserResponse
 } from '../utils';
 import { UserRole } from '../types/roles';
+import { ValidationError } from 'sequelize';
+import { isValidPassword } from '../utils/validators';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -51,6 +53,11 @@ const createUser: RequestHandler = async (req, res) => {
   let hashedPassword;
   let salt;
 
+  if (!isValidPassword(password)) {
+    sendBadRequestResponse(res, 'Invalid password provided');
+    return;
+  }
+
   try {
     salt = await bcrypt.genSalt(SALT_ROUNDS);
     hashedPassword = await bcrypt.hash(password, salt);
@@ -75,8 +82,12 @@ const createUser: RequestHandler = async (req, res) => {
   try {
     await newUser.save();
     res.json({ err: '', res: 'Account created successfully' });
-  } catch (error) {
-    sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+    } else {
+      sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+    }
   }
 };
 
@@ -183,7 +194,11 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     try {
       await userData.save();
     } catch (err) {
-      sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+      if (err instanceof ValidationError) {
+        sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.INVALID_FIELD_ERROR);
+      } else {
+        sendInternalServerErrorResponse(res, REQUEST_ERROR_MESSAGES.DB_FAILURE);
+      }
       return;
     }
 
