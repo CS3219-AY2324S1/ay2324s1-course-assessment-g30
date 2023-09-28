@@ -27,10 +27,11 @@ const createUser: RequestHandler = async (req, res) => {
     return;
   }
 
+  const lowerCasedUsername = (username as string).toLowerCase();
   // Check if username exists
   let registeredUser = await User.findOne({
     where: {
-      username
+      username: lowerCasedUsername
     }
   });
   if (registeredUser) {
@@ -72,7 +73,7 @@ const createUser: RequestHandler = async (req, res) => {
   const newUser = User.build({
     uuid: crypto.randomUUID(),
     role: UserRole.registeredUser,
-    username,
+    username: lowerCasedUsername,
     firstName,
     lastName,
     hashedPassword,
@@ -180,7 +181,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     let { username, firstName, lastName } = req.body;
 
     if (username && typeof username == 'string') {
-      userData.username = username;
+      userData.username = username.toLowerCase();
     }
 
     if (firstName && typeof firstName == 'string') {
