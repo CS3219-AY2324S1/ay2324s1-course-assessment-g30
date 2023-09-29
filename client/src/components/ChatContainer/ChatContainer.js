@@ -2,48 +2,41 @@ import React, { useState, useEffect } from "react";
 import { Box, Input, IconButton, Flex } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "./ChatContainer.css";
-import { getUserProfile } from "../../api/Auth";
 import Cookies from "js-cookie";
 
 function ChatContainer({ socket, roomId, chatHistory }) {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState(chatHistory);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
-  const [user, setUser] = useState([]);
   const uuid = Cookies.get("uuid");
-
-  useEffect(() => {
-    if (user.length === 0) {
-      getUserProfile().then((data) => {
-        setUser(data);
-      });
-    }
-  }, []);
 
   useEffect(() => {
     // To handle sent messages
     if (socket) {
-      socket.on("receive-message", (senderId, message) => {
-        setMessages([...messages, { senderId, message, type: "chat" }]);
+      socket.on("receive-message", (senderId, message, username) => {
+        setMessages([
+          ...messages,
+          { senderId, message, type: "chat", username },
+        ]);
       });
     }
 
     // To handle welcome message
     if (socket) {
-      socket.on("user-joined", ({ userId, message }) => {
+      socket.on("user-joined", ({ userId, message, username }) => {
         setMessages([
           ...messages,
-          { senderId: userId, message, type: "announcement" },
+          { senderId: userId, message, type: "announcement", username },
         ]);
       });
     }
 
     // To handle user left message
     if (socket) {
-      socket.on("user-left", ({ userId, message }) => {
+      socket.on("user-left", ({ userId, message, username }) => {
         setMessages([
           ...messages,
-          { senderId: userId, message, type: "announcement" },
+          { senderId: userId, message, type: "announcement", username },
         ]);
       });
     }
@@ -82,7 +75,7 @@ function ChatContainer({ socket, roomId, chatHistory }) {
                 : ""
             }`}
           >
-            <strong>{user.username}</strong>{" "}
+            <strong>{msg.username}</strong>{" "}
             {msg.type === "announcement" ? (
               msg.message
             ) : (

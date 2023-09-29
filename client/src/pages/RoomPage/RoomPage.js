@@ -12,9 +12,11 @@ import {
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
+import EditorContainer from "../../components/EditorContainer/EditorContainer";
 import RoomPanel from "../../components/RoomPanel/RoomPanel";
 import Cookies from "js-cookie";
 import { collaborationServiceURL } from "../../api/config";
+import { getUserProfile } from "../../api/Auth";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -24,41 +26,37 @@ function RoomPage() {
   const [chatHistory, setChatHistory] = useState([]);
 
   useEffect(() => {
-    // Connect to collab lobby
-    const uuid = Cookies.get("uuid");
-    const socket = io(collaborationServiceURL, {
-      query: {
-        uuid: uuid,
-      },
-    });
-    setSocket(socket);
+    getUserProfile().then((data) => {
+      const uuid = Cookies.get("uuid");
+      const socket = io(collaborationServiceURL, {
+        query: {
+          uuid: uuid,
+          username: data.username,
+        },
+      });
+      setSocket(socket);
 
-    socket.emit("set-up-room", roomId);
+      socket.emit("set-up-room", roomId);
 
-    // To handle chat history
-    if (socket) {
+      // To handle chat history
       socket.on("chat-history", (messages) => {
         console.log("Let's see the chat history");
         setChatHistory(messages);
       });
-    }
 
-    socket.on("room-is-ready", () => {
-      setTimeout(() => {
+      socket.on("room-is-ready", () => {
+        setTimeout(() => {
+          setIsRoomBeingSetUp(false);
+          socket.emit("join-room", roomId);
+        }, 3000);
+      });
+
+      socket.on("invalid-room", () => {
         setIsRoomBeingSetUp(false);
-        socket.emit("join-room", roomId);
-      }, 3000);
+        setIsInvalidRoom(true);
+      });
     });
-
-    socket.on("invalid-room", () => {
-      setIsRoomBeingSetUp(false);
-      setIsInvalidRoom(true);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, [roomId]);
+  }, []);
 
   if (isInvalidRoom) {
     return (
@@ -176,9 +174,7 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            <Heading as="h1" size="2xl">
-              Editor
-            </Heading>
+            <EditorContainer />
           </GridItem>
         </Grid>
       )}
