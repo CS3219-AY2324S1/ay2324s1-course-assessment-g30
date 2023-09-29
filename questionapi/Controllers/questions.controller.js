@@ -43,7 +43,7 @@ const addQuestionController = async (req, res, next) => {
   const category = req.body.category;
   const complexity = req.body.complexity;
   const link = req.body.link;
-  const description = req.body.description;
+  let description = req.body.description;
   const uuid = req.body.uuid;
   if (description != null) {
     description = "<p>" + description + "</p>";
@@ -77,8 +77,11 @@ const addQuestionController = async (req, res, next) => {
       question_description: newQuestionDescription,
       description: description,
     });
+    console.log("Before question save")
     await newQuestionDocument.save();
+    console.log("Before description save")
     await newQuestionDescriptionDocument.save();
+    console.log("after description save")
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
     res.status(500).json({ error: err });
