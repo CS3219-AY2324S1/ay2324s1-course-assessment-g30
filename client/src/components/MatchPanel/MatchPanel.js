@@ -12,9 +12,11 @@ function MatchPanel() {
   useEffect(() => {
     // Connect to common lobby
     const uuid = Cookies.get("uuid");
+    const token = Cookies.get("token");
     const socket = io(matchingServiceURL, {
       query: {
         uuid: uuid,
+        token: token,
       },
     });
     setSocket(socket);

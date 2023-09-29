@@ -28,9 +28,12 @@ function RoomPage() {
   useEffect(() => {
     getUserProfile().then((data) => {
       const uuid = Cookies.get("uuid");
+      const token = Cookies.get("token");
+
       const socket = io(collaborationServiceURL, {
         query: {
           uuid: uuid,
+          token: token,
           username: data.username,
         },
       });

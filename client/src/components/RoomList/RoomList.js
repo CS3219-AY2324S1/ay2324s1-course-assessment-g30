@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getJoinedRooms } from "../../api/RoomServices";
-import Cookies from "js-cookie";
 import "../Table/Table.css";
 
 function RoomList() {
   const navigator = useNavigate();
   const [table, setTable] = useState([]);
-  const uuid = Cookies.get("uuid");
 
   useEffect(() => {
     if (table.length === 0) {
-      getJoinedRooms(uuid).then((data) => setTable(data));
+      getJoinedRooms().then((data) => setTable(data));
     }
   }, []);
 

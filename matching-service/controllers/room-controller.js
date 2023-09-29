@@ -2,7 +2,7 @@ import Room from "../model/room-model.js";
 
 export const getJoinedRooms = async (req, res) => {
   try {
-    const { uuid } = req.query;
+    const { uuid } = req.body;
     console.log(`Fetching joined rooms for user ${uuid}`);
 
     const rooms = await Room.find({ users: uuid })

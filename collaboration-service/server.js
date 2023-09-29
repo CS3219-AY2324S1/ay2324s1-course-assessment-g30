@@ -10,6 +10,7 @@ import {
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
 import Redis from "ioredis";
+import { attemptToAuthenticate } from "./middleware/auth.js";
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -22,6 +23,11 @@ const io = new Server(httpServer, {
     origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
+});
+
+// Middleware to authenticate user before allowing them to connect to socket.io server
+io.use(async (socket, next) => {
+  attemptToAuthenticate(socket, next);
 });
 
 // Run when client connects
