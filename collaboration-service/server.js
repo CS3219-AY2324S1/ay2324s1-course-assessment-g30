@@ -6,11 +6,12 @@ import {
   setUpRoom,
   disconnectFromRoom,
   leaveRoom,
+  getRoomDetails,
 } from "./controllers/room-controller.js";
 import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
 import Redis from "ioredis";
-import { attemptToAuthenticate } from "./middleware/auth.js";
+import { attemptToAuthenticate, auth } from "./middleware/auth.js";
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -61,6 +62,8 @@ io.on("connection", (socket) => {
 
 app.use(cors());
 app.use(express.json());
+
+app.post("/roomDetails", auth, getRoomDetails);
 
 httpServer.listen(3004, () => {
   console.log("collaboration-service started on port 3004");

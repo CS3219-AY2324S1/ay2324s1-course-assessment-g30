@@ -4,7 +4,7 @@ import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import { MonacoBinding } from "y-monaco";
 
-function EditorContainer() {
+function EditorContainer({ programmingLanguage }) {
   const editorRef = useRef(null);
 
   function handleEditorDidMount(editor, monaco) {
@@ -34,7 +34,7 @@ function EditorContainer() {
         width="100%"
         theme="vs-dark"
         onMount={handleEditorDidMount}
-        defaultLanguage="javascript"
+        defaultLanguage={programmingLanguage}
       />
     </div>
   );

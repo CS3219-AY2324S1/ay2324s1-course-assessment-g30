@@ -46,3 +46,25 @@ export const disconnectFromRoom = async (socket, io, redis) => {
     broadcastLeave(socket, roomId, io, redis);
   }
 };
+
+/**
+ * Fetches room details for a given room
+ */
+export const getRoomDetails = async (req, res) => {
+  try {
+    const { roomId } = req.body;
+    console.log(`Fetching room details for room ${roomId}`);
+
+    const room = await Room.findOne({ room_id: roomId });
+
+    if (!room) {
+      return res
+        .status(404)
+        .json({ error: "Room Details not found for " + roomId });
+    }
+
+    res.json(room);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

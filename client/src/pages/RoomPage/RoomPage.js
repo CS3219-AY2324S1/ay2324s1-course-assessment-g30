@@ -17,6 +17,7 @@ import RoomPanel from "../../components/RoomPanel/RoomPanel";
 import Cookies from "js-cookie";
 import { collaborationServiceURL } from "../../api/config";
 import { getUserProfile } from "../../api/Auth";
+import { getRoomDetails } from "../../api/RoomServices";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -24,8 +25,15 @@ function RoomPage() {
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
+  const [programmingLanguage, setProgrammingLanguage] = useState("");
+  const [questionDifficulty, setDifficulty] = useState("");
 
   useEffect(() => {
+    getRoomDetails(roomId).then((data) => {
+      setProgrammingLanguage(data.programming_language);
+      setDifficulty(data.difficulty);
+    });
+
     getUserProfile().then((data) => {
       const uuid = Cookies.get("uuid");
       const token = Cookies.get("token");
@@ -177,7 +185,7 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            <EditorContainer />
+            <EditorContainer programmingLanguage={programmingLanguage} />
           </GridItem>
         </Grid>
       )}

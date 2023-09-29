@@ -33,7 +33,9 @@ export const auth = async (req, res, next) => {
   }
 };
 
-// Check if user is authenticated
+/**
+ * Check if user is authenticated.
+ */
 export const attemptToAuthenticate = async (socket, next) => {
   const token = socket.handshake.query.token;
 
