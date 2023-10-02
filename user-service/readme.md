@@ -3,7 +3,7 @@
 1. Install docker desktop
 2. In the root dir user-service/ run `docker build -f Dockerfile.postgres-db -t user-service-psql .`
 3. Amend the password, container name and port as needed and run the command
-   `docker run -p 3000:5432 -e POSTGRES_PASSWORD=<db_password> --name <container_name> -d user-service-psql`
+   `docker run -p <db_port number>:5432 -e POSTGRES_PASSWORD=<db_password> --name <container_name> -d user-service-psql`
 
 # Setup
 
