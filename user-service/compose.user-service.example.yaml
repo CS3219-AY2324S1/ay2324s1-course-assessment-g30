@@ -1,0 +1,10 @@
+services:
+  user-service-db:
+    image: user-service-db
+    ports:
+      - "<.env db port>:5234"
+  user-service-backend:
+    image: user-service-backend
+    ports:
+    - "<.env db port>:5234"
+
