@@ -14,12 +14,11 @@ import {
   VStack
 } from '@chakra-ui/react'
 import colors from '../../utils/Colors'
-import { useNavigate } from 'react-router-dom';
+import Table from '../../components/Table/Table'
 
 export default function LandingPage() {
 
   const [reload, setReload] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (reload) {
@@ -73,7 +72,6 @@ export default function LandingPage() {
               px={6}
               colorScheme={'red'}
               bg={colors.primary}
-              onClick={() => navigate('/login')}
               _hover={{ bg: colors.darkerPrimary }}>
               Get started
             </Button>
@@ -114,7 +112,9 @@ export default function LandingPage() {
       </Stack>
     </Container>
     <Spacer />
-    
+    <Container maxW={'6xl'}>
+      <Table />
+    </Container>
     </VStack>
     </>
   )

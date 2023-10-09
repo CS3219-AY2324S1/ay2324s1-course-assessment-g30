@@ -1,33 +1,33 @@
 'use client'
 
 import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  CloseIcon,
-  HamburgerIcon,
-} from '@chakra-ui/icons'
-import {
   Box,
-  Button,
-  Collapse,
   Flex,
-  Icon,
-  IconButton,
-  Link,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Stack,
   Text,
+  IconButton,
+  Button,
+  Stack,
+  Collapse,
+  Icon,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
   useColorModeValue,
+  Link,
   useDisclosure,
 } from '@chakra-ui/react'
-import colors from '../../utils/Colors'
+import {
+  HamburgerIcon,
+  CloseIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from '@chakra-ui/icons'
 import { Logo } from '../Footer/Footer'
+import colors from '../../utils/Colors'
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure()
-  
+
   return (
     <Box>
       <Flex

@@ -31,7 +31,7 @@ export function setTableStorage(key, data) {
 export function getQuestionById(id) {
     console.log(id)
     let question_bank = JSON.parse(localStorage.getItem("tableData"));
-
+    console.log(question_bank)
     return question_bank.filter((a) => a.question_id === id);
 }
 
