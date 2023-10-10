@@ -69,7 +69,8 @@ export const addQuestion = async (title, category, complexity, link, description
             complexity: complexity,
             link: link,
             token : Cookies.get('token'),
-            uuid: Cookies.get('uuid')
+            uuid: Cookies.get('uuid'),
+            description,
         })
     }
 
