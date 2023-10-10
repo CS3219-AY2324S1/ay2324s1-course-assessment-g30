@@ -60,7 +60,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.status(404).json({ error: err });
+    res.status(500).json({ error: err });
     console.error("Error fetching uuid for question:", error);
   }
 };
