@@ -26,11 +26,11 @@ const checkAuth = async (req, res, next) => {
       req.userRole = userRole;
       return next();
     } else {
-      res.status(401).json({ error: err });
+      res.status(401).json({ error: "User not authorised to Peerprep" });
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: error });
   }
 };
 
@@ -55,12 +55,14 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       if (questionUuid === uuid) {
         return next();
       } else {
-        res.status(401).json({ error: err });
+        res
+          .status(401)
+          .json({ error: "User is not authorized to amend this question" });
         console.log("User is not authorized to amend this question");
       }
     }
   } catch (error) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: error });
     console.error("Error fetching uuid for question:", error);
   }
 };
