@@ -52,11 +52,10 @@ export default function Login() {
     })
     .catch(function (error) {
       if (error.response) {
-        if (error.response.data.error ===  "Bad request. Check your inputs!") {
-          setFormMessage("Please enter a valid email address")
-        } else {
-          setFormMessage(error.response.data.error)
-        }
+        
+        console.log(error.response.data.err)
+        setFormMessage(error.response.data.err)
+        
         setFormInvalid(true)
         setError("email")
         setError("password")
@@ -114,9 +113,10 @@ export default function Login() {
                     required: true,
                   })}
                 mb={'5'}
-                type="text"
+                type="email"
                 onClick={() => {setFormInvalid(false);}}
                 maxLength={254}
+                
                 />
                 {!formInvalid && <FormErrorMessage mt={-3}>{errors?.email === "required"}{"Email is required"}</FormErrorMessage> }
               </FormControl >
@@ -136,7 +136,7 @@ export default function Login() {
                     </Button>
                 </InputRightElement>
                 </InputGroup>
-                {!formInvalid && <FormErrorMessage mt={-3}>{errors?.password == "required"}{"Password is required"}</FormErrorMessage> }
+                {!formInvalid && <FormErrorMessage mt={-3}>{errors?.password === "required"}{"Password is required"}</FormErrorMessage> }
               </FormControl>
               {<FormErrorMessage>{formMessage}</FormErrorMessage>}
               </FormControl>

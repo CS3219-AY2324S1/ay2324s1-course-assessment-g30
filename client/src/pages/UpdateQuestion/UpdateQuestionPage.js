@@ -18,6 +18,8 @@ function UpdateQuestionPage() {
   const [info, setInfo] = useState([]);
 
   const prev_data = location.state;
+  prev_data.description = prev_data.description.replace(/<div.*?>|<\/div>/g, '');
+  prev_data.description = prev_data.description.replace(/<p.*?>|<\/p>/g, '');
 
   useEffect(() => {
     if (info.length === 0) {
@@ -32,12 +34,12 @@ function UpdateQuestionPage() {
     getValues,
     formState: { errors }
   } = useForm({defaultValues: prev_data});
-
+  console.log(prev_data)
 
   let navigator = useNavigate()
     
   const onSubmit = (data, event) => {
-    updateQuestion(data).then(data => console.log(data));
+    updateQuestion(data).then(data => console.log("submitted"));
     navigator('/dashboard');
   }
 
@@ -81,7 +83,7 @@ function UpdateQuestionPage() {
           <Input defaultValue={prev_data.question_link} {...register("question_link")}/>
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question description</Text>
-          <Textarea defaultValue={prev_data.question_description} {...register("question_description")}/>
+          <Textarea defaultValue={prev_data.description} {...register("description")}/>
           {/* {errors.link && <p style={{color: 'red'}}>This field is required</p>} */}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           <Button type='submit'>Submit</Button>

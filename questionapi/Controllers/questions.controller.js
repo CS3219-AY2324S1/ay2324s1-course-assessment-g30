@@ -144,6 +144,14 @@ const updateQuestionController = async (req, res, next) => {
   }
 };
 
+const testUpdateQuestionController = async (req, res, next) => {
+  try {
+    res.status(200).json({ message: "true" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
 const deleteQuestionController = async (req, res, next) => {
   const question_id = req.body.question_id;
   try {
@@ -166,4 +174,5 @@ module.exports = {
   addQuestionController,
   deleteQuestionController,
   updateQuestionController,
+  testUpdateQuestionController
 };
