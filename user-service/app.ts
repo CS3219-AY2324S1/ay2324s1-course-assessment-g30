@@ -39,10 +39,8 @@ router.post('/user', getUserProfile);
 router.put('/user', updateUserProfile);
 router.delete('/user', deleteUserProfile);
 
-initalize_db()
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`User-service on port ${port}`);
-    });
-  })
-  .catch((err) => console.log(err.message));
+initalize_db().then(() => {
+  app.listen(port, () => {
+    console.log(`User-service on port ${port}`);
+  });
+});

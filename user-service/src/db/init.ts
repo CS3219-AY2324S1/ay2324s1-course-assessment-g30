@@ -47,7 +47,8 @@ const initalize = async () => {
     await sync();
     await createAdminAccount();
   } catch (error) {
-    throw new Error('Unable to connect to the database:' + error);
+    console.log('Unable to connect to the database:' + error);
+    process.exit(1);
   }
 };
 
