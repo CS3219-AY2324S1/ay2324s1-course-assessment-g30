@@ -20,7 +20,7 @@ const readQuestionDescriptionController = async (req, res, next) => {
       res.send(doc);
     }
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.toString() });
   }
 };
 
@@ -33,7 +33,7 @@ const readQuestionsController = async (req, res, next) => {
       res.send(documents);
     }
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.toString() });
   }
 };
 
@@ -57,10 +57,7 @@ const addQuestionController = async (req, res, next) => {
   // const link = "https://leetcode.com/problems/maximal-network-rank/";
 
   try {
-    let newQuestionDescription = null;
-    if (description == "") {
-      newQuestionDescription = await webScrapperQuestionDescription(link);
-    }
+    let newQuestionDescription = await webScrapperQuestionDescription(link);
     const documentWithHighestIndex = await QuestionModel.find()
       .sort({ question_id: -1 })
       .limit(1);
@@ -75,7 +72,7 @@ const addQuestionController = async (req, res, next) => {
     });
     const newQuestionDescriptionDocument = new QuestionDescriptionModel({
       question_id: newIndex,
-      question_description: newQuestionDescription,
+      question_description: description == "" ? newQuestionDescription : "",
       description: description,
     });
     console.log("Before question save");
@@ -86,7 +83,7 @@ const addQuestionController = async (req, res, next) => {
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.toString() });
   }
 };
 
@@ -116,10 +113,7 @@ const updateQuestionController = async (req, res, next) => {
       new_description = "<div>" + new_description + "</div>";
     }
 
-    let newQuestionDescription = null;
-    if (new_description == null) {
-      newQuestionDescription = await webScrapperQuestionDescription(new_link);
-    }
+    let newQuestionDescription = await webScrapperQuestionDescription(new_link);
 
     await QuestionModel.updateOne(
       { question_id: question_id },
@@ -150,7 +144,8 @@ const updateQuestionController = async (req, res, next) => {
 
     res.status(200).json({ message: "Question updated successfully" });
   } catch (err) {
-    res.status(500).json({ error: err });
+    console.log(err);
+    res.status(500).json({ error: err.toString() });
   }
 };
 
@@ -158,7 +153,7 @@ const testUpdateQuestionController = async (req, res, next) => {
   try {
     res.status(200).json({ message: "true" });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.toString() });
   }
 };
 
@@ -174,7 +169,7 @@ const deleteQuestionController = async (req, res, next) => {
     await QuestionDescriptionModel.updateMany(query, decrement);
     res.status(200).json({ message: "Question deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.toString() });
   }
 };
 
