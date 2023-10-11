@@ -45,12 +45,10 @@ const addQuestionController = async (req, res, next) => {
   const link = req.body.link;
   let description = req.body.description;
   const uuid = req.body.uuid;
-  console.log("description: " + description);
   if (description != "") {
     description = "<p>" + description + "</p>";
-    description = "<div" + description + "</div>";
+    description = "<div>" + description + "</div>";
   }
-  console.log("new description: " + description);
   // const title = "maximal-network-rank";
   // const category = "[]";
   // const complexity = "hard";
@@ -109,8 +107,6 @@ const updateQuestionController = async (req, res, next) => {
     const new_link = req.body.link !== "" ? req.body.link : original_link;
     let new_description =
       req.body.description !== "" ? req.body.description : null;
-    console.log("new description: " + new_description);
-
     if (new_description != null) {
       new_description = "<p>" + new_description + "</p>";
       new_description = "<div>" + new_description + "</div>";

@@ -126,7 +126,7 @@ export const updateQuestion = async (data) => {
             category: d.question_categories,
             complexity: d.question_complexity,
             link: d.question_link,
-            description: d.description,
+            description: '<div><p>'+ d.description + '</p></div>',
             token : Cookies.get('token'),
             uuid: Cookies.get('uuid')
         })

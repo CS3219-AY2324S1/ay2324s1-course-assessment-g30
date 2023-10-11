@@ -18,10 +18,15 @@ function UpdateQuestionPage() {
   const [info, setInfo] = useState([]);
 
   const prev_data = location.state;
-  prev_data.description = prev_data.description.replace(/<div.*?>|<\/div>/g, '');
-  prev_data.description = prev_data.description.replace(/<p.*?>|<\/p>/g, '');
+
+  if (prev_data.description) {
+    prev_data.description = prev_data.description.replace(/<div.*?>|<\/div>/g, '');
+    prev_data.description = prev_data.description.replace(/<p.*?>|<\/p>/g, '');
+  }
+ 
 
   useEffect(() => {
+    
     if (info.length === 0) {
       getQuestions().then(data => setInfo(data.filter(val => {return val.question_id === question_idx})[0]));
     }
@@ -34,7 +39,9 @@ function UpdateQuestionPage() {
     getValues,
     formState: { errors }
   } = useForm({defaultValues: prev_data});
+  
   console.log(prev_data)
+
 
   let navigator = useNavigate()
     
@@ -83,7 +90,9 @@ function UpdateQuestionPage() {
           <Input defaultValue={prev_data.question_link} {...register("question_link")}/>
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question description</Text>
-          <Textarea defaultValue={prev_data.description} {...register("description")}/>
+
+          <Textarea defaultValue={prev_data.description == null ? "" : prev_data.description} {...register("description")}/>
+
           {/* {errors.link && <p style={{color: 'red'}}>This field is required</p>} */}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           <Button type='submit'>Submit</Button>
