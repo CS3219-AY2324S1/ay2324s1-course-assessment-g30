@@ -8,24 +8,21 @@ const initializeUserDatabase = async () => {
   console.log('Synced');
 };
 
-const createAdminAccount = async () => {
-  const adminEmail = 'admin@test.com';
-  const adminAccountExist = (await User.getUserByEmail(adminEmail)) !== null;
-  if (adminAccountExist) {
-    return;
-  }
-  const hashedPassword = await hashPassword(
-    process.env.ADMIN_PASSWORD as string
+const createAdmin = async (
+  username: string,
+  firstName: string,
+  lastName: string,
+  password: string,
+  email: string
+) => {
+  await createAccount(
+    UserRole.maintainer,
+    username,
+    firstName,
+    lastName,
+    password,
+    email
   );
-  await User.create({
-    uuid: crypto.randomUUID(),
-    role: UserRole.maintainer,
-    username: 'admin',
-    firstName: 'admin',
-    lastName: 'admin',
-    hashedPassword,
-    email: adminEmail
-  });
   console.log('Created admin account');
 };
 
@@ -46,14 +43,58 @@ const createUser = async (
     hashedPassword,
     email
   });
-  await User.create({
+  await createAccount(
+    UserRole.registeredUser,
+    username,
+    firstName,
+    lastName,
+    password,
+    email
+  );
+};
+
+const createAccount = async (
+  role: UserRole,
+  username: string,
+  firstName: string,
+  lastName: string,
+  password: string,
+  email: string
+) => {
+  const hashedPassword = await hashPassword(password);
+  console.log({
     uuid: crypto.randomUUID(),
-    role: UserRole.registeredUser,
+    role,
     username: username.toLowerCase(),
     firstName,
     lastName,
     hashedPassword,
     email
+  });
+  await User.create({
+    uuid: crypto.randomUUID(),
+    role,
+    username: username.toLowerCase(),
+    firstName,
+    lastName,
+    hashedPassword,
+    email
+  });
+};
+
+const getOneAdmin = async () => {
+  return await User.findOne({ where: { role: UserRole.maintainer } });
+};
+
+const getUser = async (filterCriteria: any) => {
+  return await User.findOne({ where: filterCriteria });
+};
+
+const deleteUser = async (uuid: string) => {
+  await User.destroy({
+    where: {
+      uuid
+    }
   });
 };
 
@@ -63,9 +104,12 @@ const dropUserTable = async () => {
 
 const UserDb = {
   initializeUserDatabase,
-  createAdminAccount,
   dropUserTable,
-  createUser
+  createAdmin,
+  createUser,
+  getUser,
+  getOneAdmin,
+  deleteUser
 };
 
 export { UserDb };

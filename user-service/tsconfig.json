@@ -5,7 +5,8 @@
     "app.ts",
     "server.ts",
     "jest.config.ts",
-    "__tests__/**.test.ts"
+    "__tests__/**.test.ts",
+    "__tests__/db/Users.test.ts"
   ],
   "compilerOptions": {
     "typeRoots": ["./src/types", "./node_modules/@types"],

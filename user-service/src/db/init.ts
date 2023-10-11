@@ -19,6 +19,17 @@ const sync = async () => {
   }
 };
 
+const seedAdmin = async () => {
+  const adminEmail = 'admin@test.com';
+  const password = process.env.ADMIN_PASSWORD as string;
+  const adminAccountExist = (await User.getUserByEmail(adminEmail)) !== null;
+
+  if (adminAccountExist) {
+    return;
+  }
+  await UserDb.createAdmin('admin', 'admin', 'admin', password, adminEmail);
+};
+
 // Initalises user model
 const initalize = async () => {
   try {
@@ -26,7 +37,7 @@ const initalize = async () => {
     console.log('Connection has been established successfully.');
     console.log(`Connected to ${DB_URL}`);
     await sync();
-    await UserDb.createAdminAccount();
+    await seedAdmin();
   } catch (error) {
     console.log('Unable to connect to the database:' + error);
     process.exit(1);
