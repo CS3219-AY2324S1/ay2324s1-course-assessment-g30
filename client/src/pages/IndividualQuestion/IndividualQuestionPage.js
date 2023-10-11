@@ -1,8 +1,23 @@
-import { Box,  Button,   Menu,   MenuButton,   MenuList,   MenuItem,   MenuItemOption,   MenuGroup,   MenuOptionGroup,   MenuDivider, Card, CardBody, HStack, Heading, Tab, TabList, TabPanel, TabPanels, Tabs, Text, Textarea } from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import {
+  Box, Button,
+  Card, CardBody, HStack, Heading,
+  Menu, MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Tab, TabList, TabPanel, TabPanels, Tabs, Text, Textarea,
+  useToast
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteQuestion, getQuestions, getQuestionsDescription } from '../../api/QuestionServices';
-import { ChevronDownIcon } from '@chakra-ui/icons';
+import { deleteQuestion, getQuestions, getQuestionsDescription, testUpdateQuestion } from '../../api/QuestionServices';
 
 function IndividualQuestionPage() {
 
@@ -13,6 +28,8 @@ function IndividualQuestionPage() {
 
     const [info, setInfo] = useState([]);
 
+    const toast = useToast()
+
     useEffect(() => {
         if (info.length === 0) {
             getQuestionsDescription(question_idx).then((data) => setInfo(data));
@@ -22,7 +39,6 @@ function IndividualQuestionPage() {
           getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0]));
         }
     }, [])
-
     console.log(info)
 
     const parser = new DOMParser();
@@ -41,11 +57,46 @@ function IndividualQuestionPage() {
     
     const navigator = useNavigate()
 
+    const handleDelete = (qid) => {
+      deleteQuestion(qid)
+        .then(() => {
+          navigator('/dashboard');
+        })
+        .catch((e) => {
+          toast({
+            title: 'Not Allowed',
+            description: "You can only delete questions that belong to you",
+            status: 'warning',
+            duration: 4000,
+            isClosable: true,
+          })
+          console.log(e.response);
+        });
+    };
+
+    const handleEdit = (qid) => {
+      testUpdateQuestion(qid)
+        .then(() => {
+          navigator('/edit_question/' + question.question_id, {state: Object.assign({}, info, question)})
+        })
+        .catch((e) => {
+          toast({
+            title: 'Not Allowed',
+            description: "You can only edit questions that belong to you",
+            status: 'warning',
+            duration: 4000,
+            isClosable: true,
+          })
+          console.log(e.response);
+        });
+    };
+    
+
   return (
     <>
     <HStack maxW={'100%'}>
      
-      <Box padding={'10px'} borderRight={'1px'} borderColor={'#D3D3D3'} w={'50vw'} h={'100vh'}>
+      <Box padding={'10px'} borderRight={'1px'} borderColor={'#D3D3D3'} w={'50vw'} >
       
       <Tabs>
       <TabList>
@@ -79,8 +130,8 @@ function IndividualQuestionPage() {
           Settings
         </MenuButton>
         <MenuList>
-        <MenuItem onClick={() => navigator('/edit_question/' + question.question_id, {state: question})}>Edit Question</MenuItem>
-        <MenuItem onClick={() => {deleteQuestion(question.question_id); navigator('/dashboard')}}>Delete Question</MenuItem>
+        <MenuItem onClick={() => {handleEdit(question.question_id)}}>Edit Question</MenuItem>
+        <MenuItem onClick={() => {handleDelete(question.question_id); }}>Delete Question</MenuItem>
         </MenuList>
         </Menu>
         {/* <Button maxWidth={'90%'} >Delete Question</Button> */}
@@ -102,8 +153,6 @@ function IndividualQuestionPage() {
       </Box>
       
     </HStack>
-    
-    
     
     </>
   )

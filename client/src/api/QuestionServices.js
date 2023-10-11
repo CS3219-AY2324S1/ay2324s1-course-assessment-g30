@@ -126,6 +126,48 @@ export const updateQuestion = async (data) => {
             category: d.question_categories,
             complexity: d.question_complexity,
             link: d.question_link,
+            description: '<div><p>'+ d.description + '</p></div>',
+            token : Cookies.get('token'),
+            uuid: Cookies.get('uuid')
+        })
+    }
+
+    // {
+    //     "question_id": 21,
+    //     "title":"maximal-network-rank-2",
+    //     "category": "[Algorithm]",
+    //     "complexity": "easy",
+    //     "link": "https://leetcode.com/problems/maximal-network-rank/",
+    // “description”: “This is a .. question”,
+    // “token” : <web-token>,
+    // “uuid”: <uuid>
+    
+    // }
+    
+
+    try {
+        const res = await axios(config);
+        const data = res.data;
+        console.log(data)
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error; // Re-throw the error to handle it elsewhere if needed.
+    }
+};
+
+export const testUpdateQuestion = async (data) => {
+    const url = BASE_URL + "/testUpdateQuestion";
+
+    const d = data;
+    console.log(d)
+    const config = {
+        method: 'post',
+        url: url,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify({
+            question_id: data,
             token : Cookies.get('token'),
             uuid: Cookies.get('uuid')
         })

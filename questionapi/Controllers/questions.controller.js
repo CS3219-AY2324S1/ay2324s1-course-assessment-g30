@@ -45,11 +45,10 @@ const addQuestionController = async (req, res, next) => {
   const link = req.body.link;
   let description = req.body.description;
   const uuid = req.body.uuid;
-  if (description != null) {
+  if (description != "") {
     description = "<p>" + description + "</p>";
-    description = "<div" + description + "</div>";
+    description = "<div>" + description + "</div>";
   }
-
   // const title = "maximal-network-rank";
   // const category = "[]";
   // const complexity = "hard";
@@ -57,7 +56,7 @@ const addQuestionController = async (req, res, next) => {
 
   try {
     let newQuestionDescription = null;
-    if (description == null) {
+    if (description == "") {
       newQuestionDescription = await webScrapperQuestionDescription(link);
     }
     const documentWithHighestIndex = await QuestionModel.find()
@@ -77,11 +76,11 @@ const addQuestionController = async (req, res, next) => {
       question_description: newQuestionDescription,
       description: description,
     });
-    console.log("Before question save")
+    console.log("Before question save");
     await newQuestionDocument.save();
-    console.log("Before description save")
+    console.log("Before description save");
     await newQuestionDescriptionDocument.save();
-    console.log("after description save")
+    console.log("after description save");
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
     res.status(500).json({ error: err });
@@ -106,7 +105,7 @@ const updateQuestionController = async (req, res, next) => {
       req.body.complexity !== null ? req.body.complexity : original_complexity;
     const new_link = req.body.link !== null ? req.body.link : original_link;
     let new_description =
-      req.body.description !== null ? req.body.description : null;
+      req.body.description !== "" ? req.body.description : null;
 
     if (new_description != null) {
       new_description = "<p>" + new_description + "</p>";
@@ -114,7 +113,6 @@ const updateQuestionController = async (req, res, next) => {
     }
 
     let newQuestionDescription = null;
-    console.log("hello", new_description);
     if ((new_description == null) & (new_link != null)) {
       newQuestionDescription = await webScrapperQuestionDescription(new_link);
     }
@@ -144,6 +142,14 @@ const updateQuestionController = async (req, res, next) => {
   }
 };
 
+const testUpdateQuestionController = async (req, res, next) => {
+  try {
+    res.status(200).json({ message: "true" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
 const deleteQuestionController = async (req, res, next) => {
   const question_id = req.body.question_id;
   try {
@@ -166,4 +172,5 @@ module.exports = {
   addQuestionController,
   deleteQuestionController,
   updateQuestionController,
+  testUpdateQuestionController,
 };

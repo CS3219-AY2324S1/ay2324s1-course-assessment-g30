@@ -1,0 +1,21 @@
+services:
+  user-service-db:
+    image: user-service-db
+    ports:
+      - "1111:5234"
+    networks:
+      - back-tier
+  user-service-backend:
+    image: user-service-backend
+    env_file: .env
+    ports:
+      - "8080:3000"
+    networks:
+      - front-tier
+      - back-tier
+    depends_on:
+      - user-service-db
+
+networks:
+  front-tier:
+  back-tier:

@@ -63,7 +63,7 @@ export default function LandingPage() {
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-          Elevate Your Programming Skills with GeekCode: Your Ultimate Destination for DSA Mastery! Dive into a world of challenging coding exercises, sharpen your problem-solving abilities, and prepare for coding interviews with our extensive collection of data structures and algorithms challenges. 
+          Elevate Your Programming Skills with PeerPrep: Your Ultimate Destination for DSA Mastery! Dive into a world of challenging coding exercises, sharpen your problem-solving abilities, and prepare for coding interviews with our extensive collection of data structures and algorithms challenges. 
           </Text>
           <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: 'column', sm: 'row' }}>
             <Button
