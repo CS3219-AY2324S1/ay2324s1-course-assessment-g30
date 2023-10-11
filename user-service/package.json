@@ -9,8 +9,8 @@
     "start:prod": "node build/server.js",
     "start:dev": "export NODE_ENV=development; nodemon",
 	  "start:dev-w": "set NODE_ENV=development && nodemon",
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest --detectOpenHandles",
-    "test:watch": "jest --watch"
+    "test": "export NODE_ENV=test; node --experimental-vm-modules ./node_modules/.bin/jest --detectOpenHandles",
+    "test:watch": "export NODE_ENV=test; jest --watch"
   },
   "author": "",
   "license": "ISC",
