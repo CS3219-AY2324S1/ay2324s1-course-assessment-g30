@@ -1,32 +1,17 @@
-# Setup
-
-1. `cp .env.example .env` and fill in the fields. JWT_SECRET can be a random string
-2. Setup postgres docker container
-3. Setup user-service container
-
-# Postgres DB and user-service setup using Docker
+# Postgres setup using docker
 
 1. Install docker desktop
 2. In the root dir user-service/ run `docker build -f Dockerfile.postgres-db -t user-service-psql .`
-3. Create user-service container
-   `docker build -f Dockerfile.userservice-backend -t user-service-backend .`
-4. Create network for user-service 
-   `docker network create user-service`
-5. Start DB container from image - replace fields 
-   `docker run -e POSTGRES_PASSWORD=<db_password> --name user-service-db -d --network=user-service user-service-psql`
-6. Get DB container IP - copy this value into DB_ADDR in .env
-   `docker inspect user-service-db | grep IPAddress`
-7. Start user-service container from image
-   `docker run -p <FILL THIS TO LOCALMACHINE PORT>:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
+3. Amend the password, container name and port as needed and run the command
+   `docker run -p <db_port number>:5432 -e POSTGRES_PASSWORD=<db_password> --name <container_name> -d user-service-psql`
 
-Note: Verify user-service-backend prints admin accout created to ensure that DB is connected
-Make a GET request to localhost:3000/v1/test where you will see `Hear you loud and clear`
-DB is inaccessible to local machine, add expose flag if you want to access it
+# Setup
 
-# Connecting to psql DB for verification
+1. Setup postgres docker contaier
+2. Run npm install
+3. `cp .env.example .env` and fill in the fields. JWT_SECRET can be a random string
 
-# Starting server - without using user-service container
-Only do steps 2 and 5
+# Starting server
 
 ## In Prod
 
@@ -40,4 +25,4 @@ Only do steps 2 and 5
 ### Admin account
 
 Username: admin@test.com
-password: Set by ADMIN_PASSWORD field in .env
+password: Set by ADMIN_PASSWORD field

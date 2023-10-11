@@ -48,7 +48,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       question_id: reqQuestionid,
     });
     if (doc == null) {
-      res.status(404).json({ error: err });
+      res.status(404).json({ error: "Question not found" });
       console.log("Question not found" + reqQuestionid);
     } else {
       const questionUuid = doc.uuid;

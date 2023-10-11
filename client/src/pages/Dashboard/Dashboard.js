@@ -45,7 +45,7 @@ function Dashboard() {
         <StatHelpText>Month of Feburary</StatHelpText>
         <StatHelpText>
           <StatArrow type='increase' />
-          23.36%
+          0.00%
         </StatHelpText>
       </Stat>
       </CardBody>
@@ -58,7 +58,7 @@ function Dashboard() {
         <StatHelpText>Month of Feburary</StatHelpText>
         <StatHelpText>
           <StatArrow type='decrease' />
-          100.00%
+          0.00%
         </StatHelpText>
       </Stat>
       </CardBody>
