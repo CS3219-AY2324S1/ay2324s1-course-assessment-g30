@@ -18,9 +18,10 @@ import Cookies from "js-cookie";
 import { collaborationServiceURL } from "../../api/config";
 import { getUserProfile } from "../../api/Auth";
 import { getRoomDetails } from "../../api/RoomServices";
+import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
 
 function RoomPage() {
-  const { roomId } = useParams();
+  const { roomId, questionId } = useParams();
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
@@ -155,6 +156,9 @@ function RoomPage() {
             <Heading as="h1" size="2xl">
               Question
             </Heading>
+            <QuestionContainer
+              questionId={questionId}
+            />
           </GridItem>
           <GridItem
             pl="2"
@@ -185,7 +189,7 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            <EditorContainer programmingLanguage={programmingLanguage} />
+            <EditorContainer programmingLanguage={programmingLanguage} roomId={roomId} />
           </GridItem>
         </Grid>
       )}

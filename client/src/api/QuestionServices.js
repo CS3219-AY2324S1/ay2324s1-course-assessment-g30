@@ -140,4 +140,3 @@ export const updateQuestion = async (data) => {
         throw error; // Re-throw the error to handle it elsewhere if needed.
     }
 };
-
