@@ -4,7 +4,7 @@ import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import { MonacoBinding } from "y-monaco";
 
-function EditorContainer({ programmingLanguage }) {
+function EditorContainer({ programmingLanguage, roomId }) {
   const editorRef = useRef(null);
 
   function handleEditorDidMount(editor, monaco) {
@@ -12,7 +12,7 @@ function EditorContainer({ programmingLanguage }) {
     // Initialize YJS
     const doc = new Y.Doc(); // a collection of shared objects -> Text
     // Connect to peers (or start connection) with WebRTC
-    const provider = new WebrtcProvider("test-room", doc); // room1, room2
+    const provider = new WebrtcProvider(roomId, doc);
     const ytext = doc.getText("monaco"); // doc { "monaco": "what our IDE is showing" }
     // Bind YJS to Monaco
     // ytext.insert(0,editorState);
