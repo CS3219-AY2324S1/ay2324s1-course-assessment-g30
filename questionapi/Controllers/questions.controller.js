@@ -85,6 +85,7 @@ const addQuestionController = async (req, res, next) => {
     console.log("after description save");
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err });
   }
 };
