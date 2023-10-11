@@ -18,6 +18,7 @@ function AddQuestionForm() {
   let navigator = useNavigate()
 
   const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
+  // const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
 
   return (
     

@@ -33,5 +33,11 @@ questionRouter.put(
   checkUpdateResourceAuth,
   questionController.updateQuestionController,
 );
+questionRouter.post(
+  "/testUpdateQuestion",
+  checkAuth,
+  checkUpdateResourceAuth,
+  questionController.testUpdateQuestionController,
+);
 
 module.exports = questionRouter;

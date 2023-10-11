@@ -177,3 +177,30 @@ export const deleteProfile = async (input) => {
         console.error('Error while fetching user profile:', error);
     }
 }
+
+export const getRole = async () => {
+    var curr_user_token = Cookies.get('token');
+
+    const config = {
+        method: 'post',
+        url: baseURL + '/user/role',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: {
+            token: curr_user_token,
+        }
+    };
+
+    try {
+        const response = await axios(config);
+        if (response.status === 200) {
+            const data = response.data.res;
+            return data;
+        } else {
+            console.error('Failed to retrieve user profile. Status:', response.status);
+        }
+    } catch (error) {
+        console.error('Error while fetching user profile:', error);
+    }
+}

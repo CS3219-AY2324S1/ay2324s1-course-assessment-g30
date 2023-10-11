@@ -17,7 +17,7 @@
 6. Get DB container IP - copy this value into DB_ADDR in .env
    `docker inspect user-service-db | grep IPAddress`
 7. Start user-service container from image
-   `docker run -p <FILL THIS TO LOCALMACHINE PORT>:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
+   `docker run -p 3000:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
 
 Note: Verify user-service-backend prints admin accout created to ensure that DB is connected
 Make a GET request to localhost:3000/v1/test where you will see `Hear you loud and clear`
