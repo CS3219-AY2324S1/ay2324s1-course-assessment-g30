@@ -27,12 +27,12 @@ function RoomPage() {
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [programmingLanguage, setProgrammingLanguage] = useState("");
-  const [questionDifficulty, setDifficulty] = useState("");
+  const [questionId, setQuestionId] = useState("");
 
   useEffect(() => {
     getRoomDetails(roomId).then((data) => {
       setProgrammingLanguage(data.programming_language);
-      setDifficulty(data.difficulty);
+      setQuestionId(data.question_id);
     });
 
     getUserProfile().then((data) => {
@@ -153,12 +153,7 @@ function RoomPage() {
             boxShadow="lg"
             area={"question"}
           >
-            <Heading as="h1" size="2xl">
-              Question
-            </Heading>
-            {/* <QuestionContainer
-              questionId={questionId}
-            /> */}
+            <QuestionContainer questionId={questionId} />
           </GridItem>
           <GridItem
             pl="2"

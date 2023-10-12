@@ -1,6 +1,7 @@
 import Redis from "ioredis";
 import { v4 as uuidv4 } from "uuid";
 import Room from "../model/room-model.js";
+import axios from "axios";
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -66,7 +67,7 @@ export const pairUsers = async (socket, difficulty, programmingLanguage) => {
 
       if (socket.uuid !== partnerUUID) {
         const roomId = await generateUniqueRoomId();
-        await setUpRoom(roomId, difficulty, programmingLanguage);
+        await setUpRoom(socket, roomId, difficulty, programmingLanguage);
 
         // Notify both users that they can join the room
         socket.emit("found-room", roomId);
@@ -87,11 +88,37 @@ export const pairUsers = async (socket, difficulty, programmingLanguage) => {
 /**
  * Set up room and add it to the database
  */
-export const setUpRoom = async (roomId, difficulty, programmingLanguage) => {
+export const setUpRoom = async (
+  socket,
+  roomId,
+  difficulty,
+  programmingLanguage
+) => {
   try {
+    const QUESTION_SERVICE_BASE_URL = "http://localhost:3001/api";
+    const url = QUESTION_SERVICE_BASE_URL + "/readRandomQuestion";
+    const capitalizedDifficulty =
+      difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+
+    const config = {
+      method: "post",
+      url: url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        token: socket.token,
+        uuid: socket.uuid,
+        question_complexity: capitalizedDifficulty,
+      }),
+    };
+    const res = await axios(config);
+    const question = res.data.question;
+
     const newRoom = new Room({
       room_id: roomId,
       question_difficulty: difficulty,
+      question_id: question.question_id,
       programming_language: programmingLanguage,
     });
 
@@ -108,7 +135,7 @@ export const setUpRoom = async (roomId, difficulty, programmingLanguage) => {
 export const createRoom = async (socket, difficulty, programmingLanguage) => {
   try {
     const roomId = await generateUniqueRoomId();
-    await setUpRoom(roomId, difficulty, programmingLanguage);
+    await setUpRoom(socket, roomId, difficulty, programmingLanguage);
 
     socket.emit("room-created");
 

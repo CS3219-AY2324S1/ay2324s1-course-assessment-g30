@@ -38,6 +38,7 @@ export const auth = async (req, res, next) => {
  */
 export const attemptToAuthenticate = async (socket, next) => {
   const token = socket.handshake.query.token;
+  socket.token = token;
 
   if (!token) {
     return next(new Error("Authentication error"));

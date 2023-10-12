@@ -23,7 +23,7 @@ function CreateRoomButton({ socket, uuid }) {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
-  const handleModalSubmit = () => {
+  const handleModalSubmit = async () => {
     if (difficulty !== "" && programmingLanguage !== "") {
       setIsLoading(true);
 
