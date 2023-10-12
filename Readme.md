@@ -1,5 +1,5 @@
 # Setting up PeerPrep
 
-1. Fill in .env for ./user-service
-2. Run docker compose up -d
-3. Follow readme in /client
+1. Install docker desktop
+2. In the root directory, run `docker-compose up -d --force-recreate --build`
+3. Once the container is built, the application should be running on localhost:3002
