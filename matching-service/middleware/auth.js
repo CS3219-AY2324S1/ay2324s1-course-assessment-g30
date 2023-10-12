@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const USER_SERVICE_BASE_URL = "http://localhost:3000/v1";
+const USER_SERVICE_BASE_URL =
+  process.env.USER_SERVICE_URL || "http://localhost:3000/v1";
 
 export const auth = async (req, res, next) => {
   const URL = USER_SERVICE_BASE_URL + "/user/role";

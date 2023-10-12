@@ -23,3 +23,20 @@ services:
       - "3001:3001"
     depends_on:
       - user-service
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+  
+  matching-service:
+    build: ./matching-service
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./matching-service/.env
+    depends_on:
+      - redis
+      - user-service
+  

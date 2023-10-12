@@ -60,6 +60,7 @@ app.use(express.json());
 app.post("/joinedRooms", auth, getJoinedRooms);
 
 httpServer.listen(3003, () => {
+  console.log(process.env.REDIS_HOST);
   console.log("matching-service started on port 3003");
   connectToDB();
 });

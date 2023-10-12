@@ -5,7 +5,13 @@ import axios from "axios";
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
-const redis = new Redis();
+const redisHost = process.env.REDIS_HOST || "localhost";
+const redisPort = process.env.REDIS_PORT || 6379;
+
+const redis = new Redis({
+  host: redisHost,
+  port: redisPort,
+});
 
 /**
  * Removes a user from a matchmaking queue.
@@ -95,7 +101,8 @@ export const setUpRoom = async (
   programmingLanguage
 ) => {
   try {
-    const QUESTION_SERVICE_BASE_URL = "http://localhost:3001/api";
+    const QUESTION_SERVICE_BASE_URL =
+      process.env.QUESTION_SERVICE_URL || "http://localhost:3001/api";
     const url = QUESTION_SERVICE_BASE_URL + "/readRandomQuestion";
     const capitalizedDifficulty =
       difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
