@@ -21,7 +21,7 @@ function RoomList() {
           <li class="table-header">
             <div class="col-1">Room ID</div>
             <div class="col-2">Programming Language</div>
-            <div class="col-3">Question Difficulty</div>
+            <div class="col-3">Question ID</div>
           </li>
           {table.map((val) => {
             return (
@@ -39,7 +39,7 @@ function RoomList() {
                   {val.programming_language}
                 </div>
                 <div class="col col-3" data-label="Amount">
-                  {val.question_difficulty}
+                  {val.question_id}
                 </div>
               </li>
             );

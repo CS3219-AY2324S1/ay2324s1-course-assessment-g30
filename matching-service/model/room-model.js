@@ -8,10 +8,10 @@ const roomSchema = new mongoose.Schema({
   },
   question_id: {
     type: Number,
+    required: true,
   },
   question_difficulty: {
     type: String,
-    required: true,
   },
   programming_language: {
     type: String,

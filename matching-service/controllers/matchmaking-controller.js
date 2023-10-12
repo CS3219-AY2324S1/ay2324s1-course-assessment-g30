@@ -130,12 +130,40 @@ export const setUpRoom = async (
 };
 
 /**
- * Create a room for the user
+ * Create a room for the user with a random question of said difficulty
  */
 export const createRoom = async (socket, difficulty, programmingLanguage) => {
   try {
     const roomId = await generateUniqueRoomId();
     await setUpRoom(socket, roomId, difficulty, programmingLanguage);
+
+    socket.emit("room-created");
+
+    setTimeout(() => {
+      socket.emit("found-room", roomId);
+    }, 2000);
+  } catch (err) {
+    console.error("Error creating room:", err);
+  }
+};
+
+/**
+ * Create a room for the user with a specified question
+ */
+export const createRoomWithQuestion = async (
+  socket,
+  questionId,
+  programmingLanguage
+) => {
+  try {
+    const roomId = await generateUniqueRoomId();
+    const newRoom = new Room({
+      room_id: roomId,
+      question_id: questionId,
+      programming_language: programmingLanguage,
+    });
+
+    await newRoom.save();
 
     socket.emit("room-created");
 

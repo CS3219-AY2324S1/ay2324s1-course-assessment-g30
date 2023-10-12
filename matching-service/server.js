@@ -7,6 +7,7 @@ import {
   pairUsers,
   removeFromAllQueues,
   createRoom,
+  createRoomWithQuestion,
 } from "./controllers/matchmaking-controller.js";
 import { connectToDB } from "./model/db.js";
 import { getJoinedRooms } from "./controllers/room-controller.js";
@@ -38,6 +39,10 @@ io.on("connection", (socket) => {
 
   socket.on("create-room", (difficulty, programmingLanguage) => {
     createRoom(socket, difficulty, programmingLanguage);
+  });
+
+  socket.on("create-room-with-question", (questionId, programmingLanguage) => {
+    createRoomWithQuestion(socket, questionId, programmingLanguage);
   });
 
   socket.on("cancel-matching", (difficulty, programmingLanguage) => {

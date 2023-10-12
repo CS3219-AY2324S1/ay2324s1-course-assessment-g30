@@ -13,28 +13,52 @@ import {
   FormControl,
   FormLabel,
   Text,
+  RadioGroup,
+  Radio,
+  Stack,
 } from "@chakra-ui/react";
+import { getQuestions } from "../../api/QuestionServices";
 
-function CreateRoomButton({ socket, uuid }) {
+function CreateRoomButton({ socket }) {
   const [difficulty, setDifficulty] = useState("");
   const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [showRoomCreatedModal, setShowRoomCreatedModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("difficulty");
+  const [questionId, setQuestionId] = useState("");
+  const [questionList, setQuestionList] = useState([]);
   const toast = useToast();
 
   const handleModalSubmit = async () => {
-    if (difficulty !== "" && programmingLanguage !== "") {
+    if (
+      ((selectedOption === "difficulty" && difficulty !== "") ||
+        (selectedOption === "custom" && questionId !== "")) &&
+      programmingLanguage !== ""
+    ) {
       setIsLoading(true);
-
-      setTimeout(() => {
-        socket.emit("create-room", difficulty, programmingLanguage);
-      }, 1000);
+      if (selectedOption === "difficulty") {
+        setTimeout(() => {
+          socket.emit("create-room", difficulty, programmingLanguage);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          socket.emit(
+            "create-room-with-question",
+            questionId,
+            programmingLanguage
+          );
+        }, 1000);
+      }
     } else {
       const errorMessages = [];
 
-      if (difficulty === "") {
+      if (selectedOption === "difficulty" && difficulty === "") {
         errorMessages.push("Please select a difficulty");
+      }
+
+      if (selectedOption === "custom" && questionId === "") {
+        errorMessages.push("Please select a question");
       }
 
       if (programmingLanguage === "") {
@@ -59,6 +83,12 @@ function CreateRoomButton({ socket, uuid }) {
     }
   };
 
+  useEffect(() => {
+    if (questionList.length === 0) {
+      getQuestions().then((data) => setQuestionList(data));
+    }
+  }, []);
+
   // Successful Room Creation
   useEffect(() => {
     if (socket) {
@@ -73,6 +103,8 @@ function CreateRoomButton({ socket, uuid }) {
     setShowModal(false);
     setDifficulty("");
     setProgrammingLanguage("");
+    setQuestionId("");
+    setSelectedOption("difficulty");
   };
 
   return (
@@ -95,17 +127,52 @@ function CreateRoomButton({ socket, uuid }) {
           <ModalCloseButton />
           <ModalBody>
             <FormControl isRequired>
-              <FormLabel>Difficulty</FormLabel>
-              <Select
-                value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value)}
-                placeholder="Select difficulty"
-                marginBottom={4}
+              <FormLabel>Choose an Option</FormLabel>
+              <RadioGroup
+                value={selectedOption}
+                onChange={setSelectedOption}
+                margin={4}
               >
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </Select>
+                <Stack direction="row" gap={5}>
+                  <Radio value="difficulty">Select by Difficulty</Radio>
+                  <Radio value="custom">Select a Specific Question</Radio>
+                </Stack>
+              </RadioGroup>
+              {selectedOption === "difficulty" && (
+                <>
+                  <FormLabel>Difficulty</FormLabel>
+                  <Select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    placeholder="Select difficulty"
+                    marginBottom={4}
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </Select>
+                </>
+              )}
+              {selectedOption === "custom" && (
+                <>
+                  <FormLabel>Custom Question</FormLabel>
+                  <Select
+                    value={questionId}
+                    onChange={(e) => setQuestionId(e.target.value)}
+                    placeholder="Select question"
+                    marginBottom={4}
+                  >
+                    {questionList.map((val) => {
+                      return (
+                        <option key={val.question_id} value={val.question_id}>
+                          {val.question_id}. {val.question_title}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </>
+              )}
+
               <FormLabel>Programming Language</FormLabel>
               <Select
                 value={programmingLanguage}

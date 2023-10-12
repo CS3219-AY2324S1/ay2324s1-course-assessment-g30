@@ -43,7 +43,7 @@ function QuestionContainer({ questionId }) {
     return formattedHtml;
   }
   return (
-    <Box overflowY="scroll" height="100%" textAlign="left" padding={2}>
+    <Box overflowY="scroll" height="100%" textAlign="left" padding={5}>
       <Heading as="h1" size="2xl" mb={5}>
         {question.question_id}. {question.question_title}
       </Heading>
