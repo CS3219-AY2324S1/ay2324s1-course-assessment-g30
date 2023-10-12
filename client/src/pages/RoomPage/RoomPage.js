@@ -21,7 +21,7 @@ import { getRoomDetails } from "../../api/RoomServices";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
 
 function RoomPage() {
-  const { roomId, questionId } = useParams();
+  const { roomId } = useParams();
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
@@ -156,9 +156,9 @@ function RoomPage() {
             <Heading as="h1" size="2xl">
               Question
             </Heading>
-            <QuestionContainer
+            {/* <QuestionContainer
               questionId={questionId}
-            />
+            /> */}
           </GridItem>
           <GridItem
             pl="2"
@@ -189,7 +189,10 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            <EditorContainer programmingLanguage={programmingLanguage} roomId={roomId} />
+            <EditorContainer
+              programmingLanguage={programmingLanguage}
+              roomId={roomId}
+            />
           </GridItem>
         </Grid>
       )}
