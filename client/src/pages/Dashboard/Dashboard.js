@@ -79,7 +79,7 @@ function Dashboard() {
               <Table />
             </CardBody>
           </Card>
-          <Card maxH={"500px"} my={10} mx={5}>
+          <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
             <CardBody>
               <RoomList />
             </CardBody>
