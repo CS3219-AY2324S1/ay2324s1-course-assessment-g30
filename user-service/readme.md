@@ -1,10 +1,4 @@
-# Setup
-
-1. `cp .env.example .env` and fill in the fields. JWT_SECRET can be a random string
-2. Setup postgres docker container
-3. Setup user-service container
-
-# Postgres DB and user-service setup using Docker
+# Postgres setup using docker
 
 1. Install docker desktop
 2. In the root dir user-service/ run `docker build -f Dockerfile.postgres-db -t user-service-psql .`
@@ -40,4 +34,4 @@ Only do steps 2 and 5
 ### Admin account
 
 Username: admin@test.com
-password: Set by ADMIN_PASSWORD field in .env
+password: Set by ADMIN_PASSWORD field

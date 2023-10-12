@@ -60,7 +60,7 @@ function AddQuestionForm() {
           
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Input {...register("link")}/>
+          <Input {...register("link", { required: true })}/>
           {errors.link && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>

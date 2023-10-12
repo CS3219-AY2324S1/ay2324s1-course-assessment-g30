@@ -30,7 +30,7 @@ const checkAuth = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.toString() });
   }
 };
 
@@ -62,7 +62,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.toString() });
     console.error("Error fetching uuid for question:", error);
   }
 };
