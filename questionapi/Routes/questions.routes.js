@@ -21,6 +21,11 @@ questionRouter.post(
   checkAuth,
   questionController.addQuestionController,
 );
+questionRouter.post(
+  "/readRandomQuestion",
+  checkAuth,
+  questionController.readRandomQuestionController,
+);
 questionRouter.delete(
   "/deleteQuestion",
   checkAuth,
