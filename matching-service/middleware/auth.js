@@ -30,7 +30,7 @@ export const auth = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error fetching user data:");
-    throw error;
+    res.status(500).json({ error: error.toString() });
   }
 };
 
