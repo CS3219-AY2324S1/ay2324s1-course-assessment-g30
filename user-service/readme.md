@@ -7,7 +7,7 @@
 4. Create network for user-service 
    `docker network create user-service`
 5. Start DB container from image - replace fields 
-   `docker run -e POSTGRES_PASSWORD=<db_password> --name user-service-db -d --network=user-service user-service-psql`
+   `docker run --env-file=.env --name user-service-db -d --network=user-service user-service-psql`
 6. Get DB container IP - copy this value into DB_ADDR in .env
    `docker inspect user-service-db | grep IPAddress`
 7. Start user-service container from image

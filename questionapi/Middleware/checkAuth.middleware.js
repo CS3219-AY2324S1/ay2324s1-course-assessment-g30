@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const { QuestionModel } = require("../Models/Question");
 
-const USER_SERVICE_BASE_URL = "http://localhost:3000/v1";
+const USER_SERVICE_BASE_URL = "http://user-service:3000/v1";
 
 const checkAuth = async (req, res, next) => {
   const URL = USER_SERVICE_BASE_URL + "/user/role";
