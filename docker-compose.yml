@@ -8,7 +8,8 @@ services:
     env_file:
       - ./user-service/.env
     depends_on:
-      - user-service-db
+      user-service-db:
+        condition: service_healthy
 
   user-service-db:
     build:
@@ -16,6 +17,11 @@ services:
       dockerfile: Dockerfile.postgres-db
     env_file:
       - ./user-service/.env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
   question-service:
     build: ./questionapi
@@ -29,7 +35,7 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
-  
+
   matching-service:
     build: ./matching-service
     ports:
@@ -39,7 +45,7 @@ services:
     depends_on:
       - redis
       - user-service
-  
+
   collaboration-service:
     build: ./collaboration-service
     ports:
@@ -49,11 +55,11 @@ services:
     depends_on:
       - redis
       - user-service
-  
+
   client:
     build: ./client
     ports:
-      - "3002:3002" 
+      - "3002:3002"
     depends_on:
       - user-service
       - question-service
