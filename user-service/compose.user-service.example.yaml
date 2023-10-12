@@ -7,4 +7,3 @@ services:
     image: user-service-backend
     ports:
     - "<.env db port>:5234"
-

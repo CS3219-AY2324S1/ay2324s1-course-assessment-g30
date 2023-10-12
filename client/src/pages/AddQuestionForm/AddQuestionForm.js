@@ -1,5 +1,5 @@
-import { Box, Button, Container, Divider, FormControl, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Button, Container, Toast, Spinner, Divider, FormControl, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea, useToast } from '@chakra-ui/react';
+import React, {useState} from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import { addQuestion } from '../../api/QuestionServices';
@@ -17,7 +17,24 @@ function AddQuestionForm() {
 
   let navigator = useNavigate()
 
-  const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = data => {
+    setLoading(true);
+    addQuestion(data.title, data.categories, data.complexity, data.link, data.description)
+    .then(() => {navigator('/dashboard'); setLoading(false)})
+    .catch((e) => {
+      toast({
+        title: 'Unable to submit',
+        description: 'Please use a valid link',
+        status: 'warning',
+        duration: 4000,
+        isClosable: true,
+      })
+      setLoading(false);
+    }); 
+    };
   // const onSubmit = data => {addQuestion(data.title, data.categories, data.complexity, data.link, data.description); navigator('/dashboard')};
 
   return (
@@ -60,13 +77,14 @@ function AddQuestionForm() {
           
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Input {...register("link")}/>
+          <Input {...register("link", { required: true })}/>
           {errors.link && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>
           <Textarea {...register("description")}/>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
-          <Button type='submit'>Submit</Button>
+          {!loading && <Button type='submit' >Submit</Button>}
+          {loading && <Spinner />}
           </Box>
         </form>
       </Container>
