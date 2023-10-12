@@ -4,7 +4,7 @@ import { hashPassword } from '../utils/auth';
 import { UserRole } from '../types/roles';
 import crypto from 'crypto';
 
-const DB_URL = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_ADDR}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+const DB_URL = `postgres://${process.env.DB_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.DB_ADDR}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
 const sequelizeConnection = new Sequelize(DB_URL);
 
 const sync = async () => {

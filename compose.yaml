@@ -1,0 +1,25 @@
+services:
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.userservice-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      - user-service-db
+
+  user-service-db:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.postgres-db
+    env_file:
+      - ./user-service/.env
+
+  question-service:
+    build: ./questionapi
+    ports:
+      - "3001:3001"
+    depends_on:
+      - user-service
