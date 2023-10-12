@@ -13,14 +13,13 @@
 7. Start user-service container from image
    `docker run -p 3000:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
 
-Note: Verify user-service-backend prints admin accout created to ensure that DB is connected
-Make a GET request to localhost:3000/v1/test where you will see `Hear you loud and clear`
-DB is inaccessible to local machine, add expose flag if you want to access it
+# Setup
 
-# Connecting to psql DB for verification
+1. Setup postgres docker contaier
+2. Run npm install
+3. `cp .env.example .env` and fill in the fields. JWT_SECRET can be a random string
 
-# Starting server - without using user-service container
-Only do steps 2 and 5
+# Starting server
 
 ## In Prod
 
