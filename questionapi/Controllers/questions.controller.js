@@ -169,6 +169,25 @@ const deleteQuestionController = async (req, res, next) => {
   }
 };
 
+const readRandomQuestionController = async (req, res, next) => {
+  const question_complexity = req.body.question_complexity;
+  try {
+    const documents = await QuestionModel.find({
+      question_complexity: question_complexity,
+    });
+    console.log("Selected docuemnts", documents);
+    const randomIndex = Math.floor(Math.random() * documents.length);
+    const doc = documents[randomIndex];
+    console.log(doc);
+    res.status(200).json({
+      question: doc,
+      message: "Random Question selected successfully",
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.toString() });
+  }
+};
+
 module.exports = {
   readQuestionDescriptionController,
   readQuestionsController,
@@ -176,4 +195,5 @@ module.exports = {
   deleteQuestionController,
   updateQuestionController,
   testUpdateQuestionController,
+  readRandomQuestionController,
 };
