@@ -40,3 +40,13 @@ services:
       - redis
       - user-service
   
+  collaboration-service:
+    build: ./collaboration-service
+    ports:
+      - "3004:3004"
+    env_file:
+      - ./collaboration-service/.env
+    depends_on:
+      - redis
+      - user-service
+  
