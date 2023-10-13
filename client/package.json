@@ -6,20 +6,14 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@monaco-editor/react": "^4.5.2",
-    "@stripe/react-stripe-js": "^2.1.1",
-    "@stripe/stripe-js": "^1.54.0",
-    "@supabase/supabase-js": "^2.25.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
-    "formik": "^2.4.3",
-    "framer-motion": "^10.12.16",
     "js-cookie": "^3.0.5",
     "parcel": "^2.9.3",
     "parcel-plugin-text": "^0.9.7",
     "react": "^18.2.0",
-    "react-ace": "^10.1.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.44.3",
     "react-icons": "^4.10.1",
@@ -56,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "jest": {
+    "monaco-editor":"node_modules/monaco-editor/esm/vs/editor/editor.api.d.ts"
   }
 }
