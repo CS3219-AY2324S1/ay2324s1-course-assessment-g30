@@ -8,6 +8,7 @@
     "tsc": "tsc",
     "start:prod": "node build/app.js",
     "start:dev": "export NODE_ENV=development; nodemon",
+	"start:dev-w": "set NODE_ENV=development && nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
