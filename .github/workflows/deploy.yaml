@@ -12,8 +12,8 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v2.0.2
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_DB_USER: ${{ secrets.DB_USER }}
           envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
