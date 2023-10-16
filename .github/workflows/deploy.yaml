@@ -23,7 +23,6 @@ jobs:
           envkey_JWT_SECRET: ${{ secrets.JWT_SECRET }}
           envkey_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           directory: ../user-service
-          file_name: .env
             
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
