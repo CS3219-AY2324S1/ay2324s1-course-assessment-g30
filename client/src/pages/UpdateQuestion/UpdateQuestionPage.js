@@ -1,11 +1,8 @@
-import { Box, Button, Container, useToast, Divider, FormControl, Spinner, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea } from '@chakra-ui/react';
-import React, {useState, useEffect} from 'react';
+import { Box, Button, Container, Divider, FormControl, Heading, Input, Radio, RadioGroup, Spinner, Stack, Text, Textarea, Tooltip, useToast } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
-import { addQuestion } from '../../api/QuestionServices';
-import { getQuestions } from '../../api/QuestionServices';
-import { updateQuestion } from '../../api/QuestionServices';
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getQuestions, updateQuestion } from '../../api/QuestionServices';
 
 
 function UpdateQuestionPage() {
@@ -20,6 +17,8 @@ function UpdateQuestionPage() {
   const prev_data = location.state;
   prev_data.description = prev_data.description.replace(/<div.*?>|<\/div>/g, '');
   prev_data.description = prev_data.description.replace(/<p.*?>|<\/p>/g, '');
+  const [questionLinkInput, setQuestionLinkInput] = useState(!!prev_data.question_link);
+  const [questionDescriptionInput, setQuestionDescriptionInput] = useState(!!prev_data.description);
 
   useEffect(() => {
     if (info.length === 0) {
@@ -37,10 +36,21 @@ function UpdateQuestionPage() {
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
+  const [bothFieldsEmpty, setBothFieldsEmpty] = useState(false);
   let navigator = useNavigate()
     
   const onSubmit = (data, event) => {
     setLoading(true);
+
+    if (!data.question_link && !data.description) {
+      setBothFieldsEmpty(true);
+      setLoading(false);
+      return;
+    }
+
+
+    setBothFieldsEmpty(false);
+
     updateQuestion(data)
     .then((data) => {navigator('/dashboard'); console.log("submitted"); setLoading(false);})
     .catch((e) => {
@@ -55,6 +65,14 @@ function UpdateQuestionPage() {
     });
     
   }
+
+  const handleQuestionLinkChange = (e) => {
+    setQuestionLinkInput(!!e.target.value);
+  };
+
+  const handleQuestionDescriptionChange = (e) => {
+    setQuestionDescriptionInput(!!e.target.value);
+  };
 
   return (
     <Box >
@@ -92,13 +110,48 @@ function UpdateQuestionPage() {
           </FormControl>
           
           <Divider my={10} />
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question link</Text>
-          <Input defaultValue={prev_data.question_link} {...register("question_link", { required: true })}/>
+          {/* Question Link input field */}
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Link</Text>
+          <Input
+            defaultValue={prev_data.question_link}
+            {...register("question_link")}
+            disabled={questionDescriptionInput} 
+            onChange={handleQuestionLinkChange}
+          />
           {errors.question_link && <p style={{color: 'red'}}>This field is required</p>}
+
+          {/* Tooltip for disabled Question Link */}
+          {questionDescriptionInput && (
+            <Tooltip hasArrow label="This field is disabled because the Question Description has content">
+              <Text color="gray">Question Link (disabled)</Text>
+            </Tooltip>
+          )}
+          {bothFieldsEmpty && (
+            <Text color="red">Either Question Link or Question Description must be filled</Text>
+          )}
+
           <Divider my={10} />
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question description</Text>
-          <Textarea defaultValue={prev_data.description} {...register("description")}/>
-          {/* {errors.link && <p style={{color: 'red'}}>This field is required</p>} */}
+
+          {/* Question Description textarea field */}
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>
+          <Textarea
+            defaultValue={prev_data.description}
+            {...register("description")}
+            disabled={questionLinkInput} 
+            onChange={handleQuestionDescriptionChange}
+          />
+          
+
+          {/* Tooltip for disabled Question Description */}
+          {questionLinkInput && (
+            <Tooltip label="Question Link is already provided">
+              <Text color="gray">Question Description (disabled)</Text>
+            </Tooltip>
+          )}
+
+          {bothFieldsEmpty && (
+            <Text color="red">Either Question Link or Question Description must be filled</Text>
+          )}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           {!loading && <Button type='submit'>Submit</Button>}
           {loading && <Spinner />}
