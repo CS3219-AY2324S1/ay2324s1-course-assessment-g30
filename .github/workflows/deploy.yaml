@@ -17,7 +17,12 @@ jobs:
           echo "${{ secrets.USER_SERVICE_ENV_FILE }}" > ./user-service/.env
           echo "${{ secrets.MATCHING_SERVICE_ENV_FILE }}" > ./matching-service/.env
           echo "${{ secrets.COLLABORATION_SERVICE_ENV_FILE }}" > ./collaboration-service/.env
+        
 
+      - name: Run tests for client
+        working-directory: ./client
+        run: npm install
+        run: npm test
             
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build

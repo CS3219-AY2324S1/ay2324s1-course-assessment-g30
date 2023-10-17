@@ -66,13 +66,13 @@ services:
       - matching-service
       - collaboration-service
 
-  # nginx-api-gateway:
-  #   build: ./nginx
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - user-service
-  #     - question-service
-  #     - matching-service
-  #     - collaboration-service
-  #     - client
+  nginx-api-gateway:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - question-service
+      - matching-service
+      - collaboration-service
+      - client
