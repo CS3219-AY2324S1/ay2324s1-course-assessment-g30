@@ -94,14 +94,13 @@ const updateQuestionController = async (req, res, next) => {
     const original_title = original_document.question_title;
     const original_category = original_document.question_categories;
     const original_complexity = original_document.question_complexity;
-    const original_link = original_document.question_link;
 
     const new_title = req.body.title !== "" ? req.body.title : original_title;
     const new_category =
       req.body.category !== "" ? req.body.category : original_category;
     const new_complexity =
       req.body.complexity !== "" ? req.body.complexity : original_complexity;
-    const new_link = req.body.link !== "" ? req.body.link : original_link;
+    const new_link = req.body.link;
     let new_description =
       req.body.description !== "" ? req.body.description : null;
     if (new_description != null) {
@@ -109,7 +108,10 @@ const updateQuestionController = async (req, res, next) => {
       new_description = "<div>" + new_description + "</div>";
     }
 
-    let newQuestionDescription = await webScrapperQuestionDescription(new_link);
+    let newQuestionDescription = "";
+    if (new_link !== "") {
+      newQuestionDescription = await webScrapperQuestionDescription(new_link);
+    }
 
     await QuestionModel.updateOne(
       { question_id: question_id },
