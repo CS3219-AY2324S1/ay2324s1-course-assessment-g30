@@ -1,26 +1,27 @@
-const puppeteer = require("puppeteer");
+const axios = require("axios");
 
 const webScrapperQuestionDescription = async (link) => {
   try {
-    const browser = await puppeteer.launch({ headless: "new" });
-    const page = await browser.newPage();
-
-    await page.goto(link);
-    const selector = 'div.xFUwe[data-track-load="description_content"]';
-
-    await page.waitForSelector(selector);
-    const element = await page.$(selector);
-
-    if (element) {
-      const outerHTML = await page.evaluate((el) => el.outerHTML, element);
-      await browser.close();
-      return outerHTML;
-    } else {
-      throw new Error("Element not found");
-    }
+    const URL =
+      "https://frcq4o4z91.execute-api.ap-southeast-2.amazonaws.com/leetcode-web-scrapper";
+    const APIKEY = "ePnMyK2A88152BJWsOSO38LI3T9rLVBx9vuHSrpY";
+    const queryParams = {
+      link: link,
+    };
+    const config = {
+      method: "post",
+      params: queryParams,
+      url: URL,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": APIKEY,
+      },
+    };
+    const res = await axios(config);
+    return res.data;
   } catch (error) {
     throw new Error(
-      "Ensure that the link provided is a valid Leetcode question link",
+      error.message + " in webScrapperQuestionDescription function",
     );
   }
 };
