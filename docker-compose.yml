@@ -31,6 +31,8 @@ services:
       - "3001:3001"
     depends_on:
       - user-service
+    env_file:
+      - ./questionapi/.env
     restart: on-failure
 
   redis:
