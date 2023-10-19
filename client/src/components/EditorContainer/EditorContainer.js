@@ -12,7 +12,7 @@ function EditorContainer({ programmingLanguage, roomId }) {
     // Initialize YJS
     const doc = new Y.Doc(); // a collection of shared objects -> Text
     // Connect to peers (or start connection) with WebRTC
-    const provider = new WebrtcProvider(roomId, doc);
+    const provider = new WebrtcProvider(roomId, doc, { signaling: ['ws://localhost:3006'] });
     const ytext = doc.getText("monaco"); // doc { "monaco": "what our IDE is showing" }
     // Bind YJS to Monaco
     // ytext.insert(0,editorState);

@@ -12,6 +12,9 @@ import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
 import Redis from "ioredis";
 import { attemptToAuthenticate, auth } from "./middleware/auth.js";
+import ws from 'ws'
+import http from 'http'
+import * as map from 'lib0/map'
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -76,129 +79,135 @@ httpServer.listen(3004, () => {
   connectToDB();
 });
 
-/**
- * @param {WebrtcConn} webrtcConn
- * @param {encoding.Encoder} encoder
- */
-const sendWebrtcConn = (webrtcConn, encoder) => {
-  log(
-    "send message to ",
-    logging.BOLD,
-    webrtcConn.remotePeerId,
-    logging.UNBOLD,
-    logging.GREY,
-    " (",
-    webrtcConn.room.name,
-    ")",
-    logging.UNCOLOR
-  );
-  try {
-    webrtcConn.peer.send(encoding.toUint8Array(encoder));
-  } catch (e) {}
-};
+// Signalling
+const wsReadyStateConnecting = 0
+const wsReadyStateOpen = 1
+const wsReadyStateClosing = 2 // eslint-disable-line
+const wsReadyStateClosed = 3 // eslint-disable-line
+
+const pingTimeout = 30000
+
+const wss = new ws.Server({ noServer: true })
+
+const signalserver = http.createServer((request, response) => {
+  response.writeHead(200, { 'Content-Type': 'text/plain' })
+  response.end('okay')
+})
 
 /**
- * @param {Room} room
- * @param {Uint8Array} m
+ * Map froms topic-name to set of subscribed clients.
+ * @type {Map<string, Set<any>>}
  */
-const broadcastWebrtcConn = (room, m) => {
-  log("broadcast message in ", logging.BOLD, room.name, logging.UNBOLD);
-  room.webrtcConns.forEach((conn) => {
-    try {
-      conn.peer.send(m);
-    } catch (e) {}
-  });
-};
+const topics = new Map()
 
-export class WebrtcConn {
-  /**
-   * @param {SignalingConn} signalingConn
-   * @param {boolean} initiator
-   * @param {string} remotePeerId
-   * @param {Room} room
-   */
-  constructor(signalingConn, initiator, remotePeerId, room) {
-    log("establishing connection to ", logging.BOLD, remotePeerId);
-    this.room = room;
-    this.remotePeerId = remotePeerId;
-    this.glareToken = undefined;
-    this.closed = false;
-    this.connected = false;
-    this.synced = false;
-    /**
-     * @type {any}
-     */
-    this.peer = new Peer({ initiator, ...room.provider.peerOpts });
-    this.peer.on("signal", (signal) => {
-      if (this.glareToken === undefined) {
-        // add some randomness to the timestamp of the offer
-        this.glareToken = Date.now() + Math.random();
-      }
-      publishSignalingMessage(signalingConn, room, {
-        to: remotePeerId,
-        from: room.peerId,
-        type: "signal",
-        token: this.glareToken,
-        signal,
-      });
-    });
-    this.peer.on("connect", () => {
-      log("connected to ", logging.BOLD, remotePeerId);
-      this.connected = true;
-      // send sync step 1
-      const provider = room.provider;
-      const doc = provider.doc;
-      const awareness = room.awareness;
-      const encoder = encoding.createEncoder();
-      encoding.writeVarUint(encoder, messageSync);
-      syncProtocol.writeSyncStep1(encoder, doc);
-      sendWebrtcConn(this, encoder);
-      const awarenessStates = awareness.getStates();
-      if (awarenessStates.size > 0) {
-        const encoder = encoding.createEncoder();
-        encoding.writeVarUint(encoder, messageAwareness);
-        encoding.writeVarUint8Array(
-          encoder,
-          awarenessProtocol.encodeAwarenessUpdate(
-            awareness,
-            Array.from(awarenessStates.keys())
-          )
-        );
-        sendWebrtcConn(this, encoder);
-      }
-    });
-    this.peer.on("close", () => {
-      this.connected = false;
-      this.closed = true;
-      if (room.webrtcConns.has(this.remotePeerId)) {
-        room.webrtcConns.delete(this.remotePeerId);
-        room.provider.emit("peers", [
-          {
-            removed: [this.remotePeerId],
-            added: [],
-            webrtcPeers: Array.from(room.webrtcConns.keys()),
-            bcPeers: Array.from(room.bcConns),
-          },
-        ]);
-      }
-      checkIsSynced(room);
-      this.peer.destroy();
-      log("closed connection to ", logging.BOLD, remotePeerId);
-      announceSignalingInfo(room);
-    });
-    this.peer.on("error", (err) => {
-      log("Error in connection to ", logging.BOLD, remotePeerId, ": ", err);
-      announceSignalingInfo(room);
-    });
-    this.peer.on("data", (data) => {
-      const answer = readPeerMessage(this, data);
-      if (answer !== null) {
-        sendWebrtcConn(this, answer);
-      }
-    });
+/**
+ * @param {any} conn
+ * @param {object} message
+ */
+const send = (conn, message) => {
+  if (conn.readyState !== wsReadyStateConnecting && conn.readyState !== wsReadyStateOpen) {
+    conn.close()
   }
-
-  destroy() {
-    this.peer.destroy();
+  try {
+    conn.send(JSON.stringify(message))
+  } catch (e) {
+    conn.close()
   }
 }
+
+/**
+ * Setup a new client
+ * @param {any} conn
+ */
+const onconnection = conn => {
+  /**
+   * @type {Set<string>}
+   */
+  const subscribedTopics = new Set()
+  let closed = false
+  // Check if connection is still alive
+  let pongReceived = true
+  const pingInterval = setInterval(() => {
+    if (!pongReceived) {
+      conn.close()
+      clearInterval(pingInterval)
+    } else {
+      pongReceived = false
+      try {
+        conn.ping()
+      } catch (e) {
+        conn.close()
+      }
+    }
+  }, pingTimeout)
+  conn.on('pong', () => {
+    pongReceived = true
+  })
+  conn.on('close', () => {
+    subscribedTopics.forEach(topicName => {
+      const subs = topics.get(topicName) || new Set()
+      subs.delete(conn)
+      if (subs.size === 0) {
+        topics.delete(topicName)
+      }
+    })
+    subscribedTopics.clear()
+    closed = true
+  })
+  conn.on('message', /** @param {object} message */ message => {
+    if (typeof message === 'string') {
+      message = JSON.parse(message)
+    }
+    if (message && message.type && !closed) {
+      switch (message.type) {
+        case 'subscribe':
+          /** @type {Array<string>} */ (message.topics || []).forEach(topicName => {
+            if (typeof topicName === 'string') {
+              // add conn to topic
+              const topic = map.setIfUndefined(topics, topicName, () => new Set())
+              topic.add(conn)
+              // add topic to conn
+              subscribedTopics.add(topicName)
+            }
+          })
+          break
+        case 'unsubscribe':
+          /** @type {Array<string>} */ (message.topics || []).forEach(topicName => {
+            const subs = topics.get(topicName)
+            if (subs) {
+              subs.delete(conn)
+            }
+          })
+          break
+        case 'publish':
+          if (message.topic) {
+            const receivers = topics.get(message.topic)
+            if (receivers) {
+              message.clients = receivers.size
+              receivers.forEach(receiver =>
+                  send(receiver, message)
+              )
+            }
+          }
+          break
+        case 'ping':
+          send(conn, { type: 'pong' })
+      }
+    }
+  })
+}
+wss.on('connection', onconnection)
+
+signalserver.on('upgrade', (request, socket, head) => {
+  // You may check auth of request here..
+  /**
+   * @param {any} ws
+   */
+  const handleAuth = ws => {
+    wss.emit('connection', ws, request)
+  }
+  wss.handleUpgrade(request, socket, head, handleAuth)
+})
+
+signalserver.listen(3006)
+console.log('Signaling server running on localhost: 3006')
