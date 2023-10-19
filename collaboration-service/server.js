@@ -12,8 +12,7 @@ import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
 import { connectToDB } from "./model/db.js";
 import Redis from "ioredis";
 import { attemptToAuthenticate, auth } from "./middleware/auth.js";
-import ws from 'ws'
-import http from 'http'
+import { WebSocketServer } from 'ws'
 import * as map from 'lib0/map'
 
 // Connect to the default Redis server running on localhost and default port 6379
@@ -87,9 +86,9 @@ const wsReadyStateClosed = 3 // eslint-disable-line
 
 const pingTimeout = 30000
 
-const wss = new ws.Server({ noServer: true })
+const wss = new WebSocketServer({ noServer: true })
 
-const signalserver = http.createServer((request, response) => {
+const signalserver = createServer((request, response) => {
   response.writeHead(200, { 'Content-Type': 'text/plain' })
   response.end('okay')
 })
