@@ -10,6 +10,7 @@ services:
     depends_on:
       user-service-db:
         condition: service_healthy
+    restart: on-failure
 
   user-service-db:
     build:
@@ -22,6 +23,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
+    restart: on-failure
 
   question-service:
     build: ./questionapi
@@ -29,12 +31,14 @@ services:
       - "3001:3001"
     depends_on:
       - user-service
+    restart: on-failure
 
   redis:
     image: redis
     container_name: redis
     ports:
       - "6379:6379"
+    restart: on-failure
 
   matching-service:
     build: ./matching-service
@@ -45,6 +49,7 @@ services:
     depends_on:
       - redis
       - user-service
+    restart: on-failure
 
   collaboration-service:
     build: ./collaboration-service
@@ -55,6 +60,7 @@ services:
     depends_on:
       - redis
       - user-service
+    restart: on-failure
 
   client:
     build: ./client
@@ -65,6 +71,7 @@ services:
       - question-service
       - matching-service
       - collaboration-service
+    restart: on-failure
 
   nginx-api-gateway:
     build: ./nginx
@@ -76,3 +83,4 @@ services:
       - matching-service
       - collaboration-service
       - client
+    restart: on-failure
