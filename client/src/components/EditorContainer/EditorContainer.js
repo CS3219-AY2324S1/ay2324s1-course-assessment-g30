@@ -16,6 +16,10 @@ function EditorContainer({ programmingLanguage, roomId }) {
     const ytext = doc.getText("monaco"); // doc { "monaco": "what our IDE is showing" }
     // Bind YJS to Monaco
     // ytext.insert(0,editorState);
+    provider.on('synced', synced => {
+      console.log(`Editor for ${roomId} synced`, synced)
+
+    })
     const binding = new MonacoBinding(
       ytext,
       editorRef.current.getModel(),
