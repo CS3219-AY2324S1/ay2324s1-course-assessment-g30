@@ -5,7 +5,9 @@ const password = "vNOO0irf6zd7Qjie";
 const cluster = "roomcluster.8cjzpah";
 const database = "Rooms";
 
-const mongoDBUrl = `mongodb+srv://${admin}:${password}@${cluster}.mongodb.net/${database}?retryWrites=true&w=majority`;
+const mongoDBUrl =
+  process.env.MONGODB_URI ||
+  `mongodb+srv://${admin}:${password}@${cluster}.mongodb.net/${database}?retryWrites=true&w=majority`;
 
 export const connectToDB = () => {
   mongoose.connect(mongoDBUrl, {
