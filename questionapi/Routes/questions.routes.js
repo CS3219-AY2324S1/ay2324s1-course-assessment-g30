@@ -4,6 +4,10 @@ const {
   checkAuth,
   checkUpdateResourceAuth,
 } = require("../Middleware/checkAuth.middleware.js");
+const {
+  checkDuplicateQuestion,
+} = require("../Middleware/checkDuplicateQuestion.middleware.js");
+
 const questionRouter = express.Router();
 
 questionRouter.post(
@@ -19,6 +23,7 @@ questionRouter.post(
 questionRouter.post(
   "/addQuestion",
   checkAuth,
+  checkDuplicateQuestion,
   questionController.addQuestionController,
 );
 questionRouter.post(

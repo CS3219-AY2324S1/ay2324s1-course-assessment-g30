@@ -54,13 +54,11 @@ export default function Register() {
         duration: 6000,
         isClosable: true
       })
-    }).then(
       setTimeout( () => {
         navigate('/')
       }, 6000)
-    )
+    })
     .catch(function (error) {
-      if (error.response) {
         // if (error.response.data.error ===  "Bad request. Check your inputs!") {
         //   setFormMessage("Please enter a valid email address")
         // } else {
@@ -69,15 +67,6 @@ export default function Register() {
         // setFormInvalid(true)
         // setError("email")
         // setError("password")
-        console.log(error)
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Here', error.message);
-      }
-    
    })
 
   }};

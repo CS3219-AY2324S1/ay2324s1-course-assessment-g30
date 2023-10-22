@@ -23,8 +23,7 @@ export const getQuestions = async () => {
         return data;
         
     } catch (error) {
-        console.error("Error fetching data:", error);
-        throw error; // Re-throw the error to handle it elsewhere if needed.
+        console.error("Error: please ensure that backend is connected");
     }
 };
 
@@ -65,7 +64,7 @@ export const addQuestion = async (title, category, complexity, link, description
         },
         data: JSON.stringify({
             title: title,
-            category: [category],
+            category: category,
             complexity: complexity,
             link: link,
             token : Cookies.get('token'),
@@ -73,6 +72,8 @@ export const addQuestion = async (title, category, complexity, link, description
             description,
         })
     }
+
+    console.log(config.data)
 
     try {
         const res = await axios(config);
@@ -106,7 +107,7 @@ export const deleteQuestion = async (id) => {
         console.log(data)
     } catch (error) {
         console.error("Error fetching data:", error);
-        throw error; // Re-throw the error to handle it elsewhere if needed.
+        throw error; 
     }
 };
 
