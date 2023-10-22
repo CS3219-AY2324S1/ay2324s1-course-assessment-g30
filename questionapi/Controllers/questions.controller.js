@@ -15,12 +15,12 @@ const readQuestionDescriptionController = async (req, res, next) => {
     if (doc == null) {
       res
         .status(404)
-        .json({ error: "Question description not found" + reqQuestionid });
+        .json({ message: "Question description not found" + reqQuestionid });
     } else {
       res.send(doc);
     }
   } catch (err) {
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -28,12 +28,12 @@ const readQuestionsController = async (req, res, next) => {
   try {
     const documents = await QuestionModel.find({}).sort({ question_id: 1 });
     if (documents == null) {
-      res.status(404).json({ error: "Questions not found" });
+      res.status(404).json({ message: "Questions not found" });
     } else {
       res.send(documents);
     }
   } catch (err) {
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -53,9 +53,19 @@ const addQuestionController = async (req, res, next) => {
   // const category = "[]";
   // const complexity = "hard";
   // const link = "https://leetcode.com/problems/maximal-network-rank/";
-
+  let newQuestionDescription = "";
   try {
-    let newQuestionDescription = await webScrapperQuestionDescription(link);
+    if (link !== "") {
+      newQuestionDescription = await webScrapperQuestionDescription(link);
+    }
+  } catch (err) {
+    console.log(err);
+    res
+      .status(400)
+      .json({ message: "URL is invalid! Please use the URL as specified." });
+    return;
+  }
+  try {
     const documentWithHighestIndex = await QuestionModel.find()
       .sort({ question_id: -1 })
       .limit(1);
@@ -81,7 +91,7 @@ const addQuestionController = async (req, res, next) => {
     res.status(200).json({ message: "Question added successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -140,8 +150,16 @@ const updateQuestionController = async (req, res, next) => {
     }
 
     let newQuestionDescription = "";
-    if (new_link !== "") {
-      newQuestionDescription = await webScrapperQuestionDescription(new_link);
+    try {
+      if (new_link !== "") {
+        newQuestionDescription = await webScrapperQuestionDescription(new_link);
+      }
+    } catch (err) {
+      console.log(err);
+      res
+        .status(400)
+        .json({ message: "URL is invalid! Please use the URL as specified." });
+      return;
     }
 
     await QuestionModel.updateOne(
@@ -174,7 +192,7 @@ const updateQuestionController = async (req, res, next) => {
     res.status(200).json({ message: "Question updated successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -182,7 +200,7 @@ const testUpdateQuestionController = async (req, res, next) => {
   try {
     res.status(200).json({ message: "true" });
   } catch (err) {
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -198,7 +216,7 @@ const deleteQuestionController = async (req, res, next) => {
     await QuestionDescriptionModel.updateMany(query, decrement);
     res.status(200).json({ message: "Question deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
@@ -217,7 +235,7 @@ const readRandomQuestionController = async (req, res, next) => {
       message: "Random Question selected successfully",
     });
   } catch (err) {
-    res.status(500).json({ error: err.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 
