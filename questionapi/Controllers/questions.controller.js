@@ -94,6 +94,7 @@ const updateQuestionController = async (req, res, next) => {
     const original_title = original_document.question_title;
     const original_category = original_document.question_categories;
     const original_complexity = original_document.question_complexity;
+    const original_link = original_document.question_link;
 
     const new_title = req.body.title !== "" ? req.body.title : original_title;
     const new_category =
@@ -106,6 +107,36 @@ const updateQuestionController = async (req, res, next) => {
     if (new_description != null) {
       new_description = "<p>" + new_description + "</p>";
       new_description = "<div>" + new_description + "</div>";
+    }
+    if (new_title !== original_title) {
+      const docOne = await QuestionModel.findOne({
+        question_title: {
+          $regex: `^${new_title}$`,
+          $options: "i",
+        },
+      });
+      if (docOne) {
+        res.status(409).json({
+          message: "Question title already exists",
+        });
+        return;
+      }
+    }
+
+    if (new_link !== original_link && new_link !== "") {
+      let docTwo = false;
+      docTwo = await QuestionModel.findOne({
+        question_link: {
+          $regex: `^${new_link}$`,
+          $options: "i",
+        },
+      });
+      if (docTwo) {
+        res.status(409).json({
+          message: "Question link already exists",
+        });
+        return;
+      }
     }
 
     let newQuestionDescription = "";

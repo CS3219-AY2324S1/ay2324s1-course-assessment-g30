@@ -6,22 +6,32 @@ const checkDuplicateQuestion = async (req, res, next) => {
 
   try {
     let docOne = false;
-    if (reqQuestionLink != "") {
-      docOne = await QuestionModel.findOne({
-        question_title: reqQuestionTitle,
+    docOne = await QuestionModel.findOne({
+      question_title: {
+        $regex: `^${reqQuestionTitle}$`,
+        $options: "i",
+      },
+    });
+
+    if (docOne) {
+      res.status(409).json({
+        message: "Question title already exists",
       });
     }
-    let docTwo = false;
-    if (reqQuestionLink != "") {
-      docTwo = await QuestionModel.findOne({ question_link: reqQuestionLink });
-    }
-    if (docOne || docTwo) {
-      res
-        .status(409)
-        .json({
-          message:
-            "Question title, link or question description already exists",
+
+    if (reqQuestionLink !== "") {
+      let docTwo = false;
+      docTwo = await QuestionModel.findOne({
+        question_link: {
+          $regex: `^${reqQuestionLink}$`,
+          $options: "i",
+        },
+      });
+      if (docTwo) {
+        res.status(409).json({
+          message: "Question link already exists",
         });
+      }
     } else {
       next();
     }

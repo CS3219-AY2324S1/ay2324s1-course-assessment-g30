@@ -41,7 +41,6 @@ questionRouter.put(
   "/updateQuestion",
   checkAuth,
   checkUpdateResourceAuth,
-  checkDuplicateQuestion,
   questionController.updateQuestionController,
 );
 questionRouter.post(
