@@ -18,11 +18,14 @@ const webScrapperQuestionDescription = async (link) => {
       },
     };
     const res = await axios(config);
-    return res.data;
+    if (res.data == "Error") {
+      throw new Error(error.message);
+    } else {
+      return res.data;
+    }
   } catch (error) {
-    throw new Error(
-      error.message + " in webScrapperQuestionDescription function",
-    );
+    console.error("Error fetching question description:", error);
+    throw new Error(error.message);
   }
 };
 
