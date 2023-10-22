@@ -21,7 +21,8 @@ function UpdateQuestionPage() {
     prev_data.question_categories = prev_data.question_categories.join(', ');
   }
   if (prev_data.question_link) {
-    prev_data.question_link = prev_data.question_link.split('/')[prev_data.question_link.length - 2];
+    prev_data.question_link = String(prev_data.question_link).split('/');
+    prev_data.question_link = prev_data.question_link[prev_data.question_link.length - 1];
   }
 
   useEffect(() => {
@@ -42,8 +43,8 @@ function UpdateQuestionPage() {
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [questionLink, setQuestionLink] = useState('');
-  const [questionDescription, setQuestionDescription] = useState('');
+  const [questionLink, setQuestionLink] = useState(prev_data.question_link.length === 0 ? '' : prev_data.question_link);
+  const [questionDescription, setQuestionDescription] = useState(prev_data.description.length === 0 ? '' : prev_data.question_description);
 
 
   let navigator = useNavigate()
@@ -55,7 +56,7 @@ function UpdateQuestionPage() {
       ...data,
       question_title: data.question_title.trim(),
       question_complexity: data.question_complexity.trim(),
-      link: data.question_link.trim().length === 0 ? "" : "https://leetcode.com/problems/" + data.link.trim(),
+      question_link: data.question_link.trim().length === 0 ? "" : `https://leetcode.com/problems/${data.question_link.trim()}`,
       question_description: data.question_description.trim(),
       question_categories: data.question_categories
       .split(',')
@@ -63,8 +64,7 @@ function UpdateQuestionPage() {
       .filter((category) => category.length > 0)
     };
 
-
-    if (!trimmedData.link.length  && !trimmedData.description ) {
+    if (!trimmedData.question_link.length  && !trimmedData.description ) {
       setError("link", {
         type: "manual",
         message: "Please provide a question link or description",

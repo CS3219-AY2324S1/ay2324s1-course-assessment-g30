@@ -35,7 +35,10 @@ export default function Register() {
   } = useForm({mode: 'onSubmit'});
 
 
+  const [regError, setRegError] = useState(null);
+
   const onSubmit = async (data) => {
+    setRegError(null);
     const info = {
       username: data.username,
       password: data.password,
@@ -59,14 +62,16 @@ export default function Register() {
       }, 6000)
     })
     .catch(function (error) {
-        // if (error.response.data.error ===  "Bad request. Check your inputs!") {
-        //   setFormMessage("Please enter a valid email address")
-        // } else {
-        //   setFormMessage(error.response.data.error)
-        // }
-        // setFormInvalid(true)
-        // setError("email")
-        // setError("password")
+      if (error.response) {
+        setRegError(error.response.data.err);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Here', error.message);
+      }
+    
    })
 
   }};
@@ -201,6 +206,7 @@ export default function Register() {
               </InputGroup>
               <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>
             </FormControl>
+            {regError && <Text color={"#cc0000"}>{regError}</Text>}
             <Stack spacing={10} pt={2}>
               <Button
                 loadingText="Submitting"
