@@ -101,8 +101,7 @@ function IndividualQuestionPage() {
       <Tabs>
       <TabList>
         <Tab>Description</Tab>
-        <Tab>Solution</Tab>
-        <Tab>Peer programming</Tab>
+
       </TabList>
 
       <TabPanels>
@@ -111,12 +110,12 @@ function IndividualQuestionPage() {
           <div dangerouslySetInnerHTML={{ __html: formatQuestionInfo() }}></div>
         </div>
         </TabPanel>
-        <TabPanel>
+        {/* <TabPanel>
           <p>Solution</p>
         </TabPanel>
         <TabPanel>
           <p>Peer Programming</p>
-        </TabPanel>
+        </TabPanel> */}
       </TabPanels>
     </Tabs>
      
@@ -149,7 +148,7 @@ function IndividualQuestionPage() {
         </Card>
         
         
-        <Textarea minH={'500px'}placeholder='Enter Code Here' resize={'vertical'}/>
+
       </Box>
       
     </HStack>

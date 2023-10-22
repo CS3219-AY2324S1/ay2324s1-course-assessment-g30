@@ -1,4 +1,4 @@
-import { Box, Button, Container, Toast, Spinner, Divider, FormControl, Heading, Input, Radio, RadioGroup, Stack, Text, Textarea, useToast, Tooltip } from '@chakra-ui/react';
+import { Box, Button, Container, InputGroup, InputLeftAddon, Divider, FormControl, Heading, Input, Radio, RadioGroup, Spinner, Stack, Text, Textarea, Tooltip, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
@@ -21,34 +21,53 @@ function AddQuestionForm() {
   const [questionDescription, setQuestionDescription] = useState('');
 
   const onSubmit = (data) => {
+
     setLoading(true);
-    console.log(data)
-    if (!data.link && !data.description) {
+  
+    const trimmedData = {
+      ...data,
+      title: data.title.trim(),
+      complexity: data.complexity.trim(),
+      link: data.link.trim().length === 0 ? "" : "https://leetcode.com/problems/" + data.link.trim(),
+      description: data.description.trim(),
+    };
+  
+    if (!trimmedData.link && !trimmedData.description) {
       setError("link", {
         type: "manual",
         message: "Please provide a question link or description",
       });
-
+  
       setError("description", {
         type: "manual",
         message: "Please provide a question link or description",
       });
-
+  
       setLoading(false);
     } else {
       clearErrors("link");
       clearErrors("description");
-
-      addQuestion(data.title, data.categories, data.complexity, data.link, data.description)
+  
+      const categoriesArray = trimmedData.categories
+        .split(',')
+        .map((category) => category.trim())
+        .filter((category) => category.length > 0);
+  
+      addQuestion(
+        trimmedData.title,
+        categoriesArray, 
+        trimmedData.complexity,
+        trimmedData.link,
+        trimmedData.description
+      )
         .then(() => {
           navigator('/dashboard');
           setLoading(false);
         })
         .catch((e) => {
-          console.log(e)
           toast({
             title: 'Unable to submit',
-            description: 'Please use a valid leetcode link',
+            description: e.response.data.message !== null ? e.response.data.message : "",
             status: 'warning',
             duration: 4000,
             isClosable: true,
@@ -57,6 +76,7 @@ function AddQuestionForm() {
         });
     }
   }
+  
 
   const handleLinkChange = (e) => {
     setQuestionLink(e.target.value);
@@ -89,8 +109,10 @@ function AddQuestionForm() {
           <Text mb="20px" fontSize={'lg'} fontWeight={'semibold'}>
             Question Category
           </Text>
-          <Input {...register("categories", { required: true })} />
+          <Input placeholder='Example: data structures, array, dynamic programming' {...register("categories", { required: true })} />
+          
           {errors.categories && <p style={{ color: 'red' }}>This field is required</p>}
+
           <Divider my={10} />
           <Text mb="20px" fontSize={'lg'} fontWeight={'semibold'}>
             Question Complexity
@@ -120,17 +142,24 @@ function AddQuestionForm() {
           </Text>
           {questionDescription.trim() ? (
             <Tooltip hasArrow label="This field is disabled because the Question Description has content">
+              <InputGroup size='md'>
+              <InputLeftAddon children='https://leetcode.com/problems/' />
               <Input
                 {...register("link")}
                 disabled
               />
+              </InputGroup>
             </Tooltip>
           ) : (
+            <InputGroup size='md'>
+            <InputLeftAddon children='https://leetcode.com/problems/' />
             <Input
               {...register("link")}
               onChange={handleLinkChange}
               value={questionLink}
+              placeholder='leetcode-problem-name'
             />
+            </InputGroup>
           )}
           {errors.link && <p style={{ color: 'red' }}>Either Question Link or Question Description must be filled</p>}
           <Divider my={10} />
@@ -152,6 +181,9 @@ function AddQuestionForm() {
             />
           )}
           {errors.link && <p style={{ color: 'red' }}>Either Question Link or Question Description must be filled</p>}
+          <p style={{ color: 'gray', fontSize: '14px', marginTop: 20}}>
+            Note: Either Question Link or Question Description must be filled
+          </p>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
             {!loading && <Button type='submit'>Submit</Button>}
             {loading && <Spinner />}

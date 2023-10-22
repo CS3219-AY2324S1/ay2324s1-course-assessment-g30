@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, FormControl, Heading, Input, Radio, RadioGroup, Spinner, Stack, Text, Textarea, Tooltip, useToast } from '@chakra-ui/react';
+import { Box, Button, Container, Divider, InputGroup, InputLeftAddon, FormControl, Heading, Input, Radio, RadioGroup, Spinner, Stack, Text, Textarea, Tooltip, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,11 +14,15 @@ function UpdateQuestionPage() {
   // Question Title Question Description Question Category Question Complexit
   const [info, setInfo] = useState([]);
 
-  const prev_data = location.state;
+  let prev_data = location.state;
   prev_data.description = prev_data.description.replace(/<div.*?>|<\/div>/g, '');
   prev_data.description = prev_data.description.replace(/<p.*?>|<\/p>/g, '');
-  const [questionLinkInput, setQuestionLinkInput] = useState(!!prev_data.question_link);
-  const [questionDescriptionInput, setQuestionDescriptionInput] = useState(!!prev_data.description);
+  if (typeof(prev_data.question_categories) == typeof([])) {
+    prev_data.question_categories = prev_data.question_categories.join(', ');
+  }
+  if (prev_data.question_link) {
+    prev_data.question_link = prev_data.question_link.split('/')[prev_data.question_link.length - 2];
+  }
 
   useEffect(() => {
     if (info.length === 0) {
@@ -31,47 +35,95 @@ function UpdateQuestionPage() {
     handleSubmit,
     control,
     getValues,
+    setError,
+    clearErrors,
     formState: { errors }
   } = useForm({defaultValues: prev_data});
 
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [bothFieldsEmpty, setBothFieldsEmpty] = useState(false);
+  const [questionLink, setQuestionLink] = useState('');
+  const [questionDescription, setQuestionDescription] = useState('');
+
+
   let navigator = useNavigate()
     
   const onSubmit = (data, event) => {
     setLoading(true);
 
-    if (!data.question_link && !data.description) {
-      setBothFieldsEmpty(true);
+    const trimmedData = {
+      ...data,
+      question_title: data.question_title.trim(),
+      question_complexity: data.question_complexity.trim(),
+      link: data.question_link.trim().length === 0 ? "" : "https://leetcode.com/problems/" + data.link.trim(),
+      question_description: data.question_description.trim(),
+      question_categories: data.question_categories
+      .split(',')
+      .map((category) => category.trim())
+      .filter((category) => category.length > 0)
+    };
+
+
+    if (!trimmedData.link.length  && !trimmedData.description ) {
+      setError("link", {
+        type: "manual",
+        message: "Please provide a question link or description",
+      });
+  
+      setError("description", {
+        type: "manual",
+        message: "Please provide a question link or description",
+      });
+  
       setLoading(false);
-      return;
+    } else {
+      clearErrors("link");
+      clearErrors("description");
+
+      updateQuestion(trimmedData)
+      .then((data) => {navigator('/dashboard'); console.log("submitted"); setLoading(false);})
+      .catch((e) => {
+        toast({
+          title: 'Unable to submit',
+          description: e.response.data.message !== null ? e.response.data.message : "",
+          status: 'warning',
+          duration: 4000,
+          isClosable: true,
+        });
+        setLoading(false);
+      });
     }
-
-
-    setBothFieldsEmpty(false);
-
-    updateQuestion(data)
-    .then((data) => {navigator('/dashboard'); console.log("submitted"); setLoading(false);})
-    .catch((e) => {
-      toast({
-        title: 'Unable to submit',
-        description: 'Please use a valid link',
-        status: 'warning',
-        duration: 4000,
-        isClosable: true,
-      })
-      setLoading(false);
-    });
     
   }
 
-  const handleQuestionLinkChange = (e) => {
-    setQuestionLinkInput(!!e.target.value);
-  };
+  // const handleQuestionLinkChange = (e) => {
+  //   setQuestionLinkInput(!!e.target.value);
+  // };
 
-  const handleQuestionDescriptionChange = (e) => {
-    setQuestionDescriptionInput(!!e.target.value);
+  // const handleQuestionDescriptionChange = (e) => {
+  //   setQuestionDescriptionInput(!!e.target.value);
+  // };
+
+  const handleLinkChange = (e) => {
+    if (errors.link) {
+      clearErrors("link");
+      clearErrors("description");
+    }
+    setQuestionLink(e.target.value);
+    if (e.target.value) {
+      setQuestionDescription('');
+    }
+  };
+  
+  const handleDescriptionChange = (e) => {
+    if (errors.link) {
+      clearErrors("link");
+      clearErrors("description");
+    }
+    setQuestionDescription(e.target.value);
+    if (e.target.value) {
+      setQuestionLink('');
+    }
   };
 
   return (
@@ -87,8 +139,8 @@ function UpdateQuestionPage() {
           <Input defaultValue={prev_data.question_title} {...register("question_title", { required: true })}/>
           {errors.question_title && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Category</Text>
-          <Input defaultValue={prev_data.question_categories} {...register("question_categories", { required: true })}/>
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'} >Question Category</Text>
+          <Input placeholder='Example: data structures, array, dynamic programming' defaultValue={prev_data.question_categories} {...register("question_categories", { required: true })}/>
           {errors.question_categories && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Complexity</Text>
@@ -110,48 +162,57 @@ function UpdateQuestionPage() {
           </FormControl>
           
           <Divider my={10} />
-          {/* Question Link input field */}
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Link</Text>
-          <Input
-            defaultValue={prev_data.question_link}
-            {...register("question_link")}
-            disabled={questionDescriptionInput} 
-            onChange={handleQuestionLinkChange}
-          />
-          {errors.question_link && <p style={{color: 'red'}}>This field is required</p>}
-
-          {/* Tooltip for disabled Question Link */}
-          {questionDescriptionInput && (
+          <Text mb="20px" fontSize={'lg'} fontWeight={'semibold'}>
+            Question Link
+          </Text>
+          {questionDescription.trim() ? (
             <Tooltip hasArrow label="This field is disabled because the Question Description has content">
-              <Text color="gray">Question Link (disabled)</Text>
+              <InputGroup size='md'>
+                <InputLeftAddon children='https://leetcode.com/problems/' />
+                <Input
+                  {...register("question_link")}
+                  disabled
+                />
+              </InputGroup>
             </Tooltip>
+          ) : (
+            <InputGroup size='md'>
+              <InputLeftAddon children='https://leetcode.com/problems/' />
+              <Input
+                {...register("question_link")}
+                onChange={handleLinkChange}
+                defaultValue={prev_data.question_link}
+                placeholder='leetcode-problem-name'
+              />
+            </InputGroup>
           )}
-          {bothFieldsEmpty && (
-            <Text color="red">Either Question Link or Question Description must be filled</Text>
-          )}
+          {errors.link && <p style={{ color: 'red' }}>Either Question Link or Question Description must be filled</p>}
 
           <Divider my={10} />
 
-          {/* Question Description textarea field */}
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Description</Text>
-          <Textarea
-            defaultValue={prev_data.description}
-            {...register("description")}
-            disabled={questionLinkInput} 
-            onChange={handleQuestionDescriptionChange}
-          />
-          
-
-          {/* Tooltip for disabled Question Description */}
-          {questionLinkInput && (
-            <Tooltip label="Question Link is already provided">
-              <Text color="gray">Question Description (disabled)</Text>
+          <Text mb="20px" fontSize={'lg'} fontWeight={'semibold'}>
+            Question Description
+          </Text>
+          {questionLink.trim() ? (
+            <Tooltip hasArrow label="This field is disabled because the Question Link has content">
+              <Textarea
+                {...register("description")}
+                disabled
+              />
             </Tooltip>
+          ) : (
+            <Textarea
+              {...register("description")}
+              onChange={handleDescriptionChange}
+              defaultValue={prev_data.description}
+            />
           )}
+          {errors.link && <p style={{ color: 'red' }}>Either Question Link or Question Description must be filled</p>}
+          <p style={{ color: 'gray', fontSize: '14px', marginTop: 20}}>
+            Note: Either Question Link or Question Description must be filled
+          </p>
 
-          {bothFieldsEmpty && (
-            <Text color="red">Either Question Link or Question Description must be filled</Text>
-          )}
+          
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           {!loading && <Button type='submit'>Submit</Button>}
           {loading && <Spinner />}
