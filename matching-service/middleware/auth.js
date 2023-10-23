@@ -34,6 +34,36 @@ export const auth = async (req, res, next) => {
   }
 };
 
+export const socketIOAuth = async (token, next) => {
+  const URL = USER_SERVICE_BASE_URL + "/user/role";
+  const config = {
+    method: "post",
+    url: URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      token: token,
+    }),
+  };
+
+  try {
+    const res = await axios(config);
+    const data = res.data;
+    const userRole = data.res.role;
+
+    if (userRole == "USER" || userRole == "MAINTAINER") {
+      // Attach userRole to the req object
+      req.userRole = userRole;
+      return next();
+    } else {
+      console.error("User not authorised to Peerprep");
+    }
+  } catch (error) {
+    console.error("Error fetching user data:");
+  }
+};
+
 /**
  * Check if user is authenticated.
  */
@@ -45,13 +75,7 @@ export const attemptToAuthenticate = async (socket, next) => {
     return next(new Error("Authentication error"));
   }
 
-  const req = {
-    body: {
-      token: token,
-    },
-  };
-
-  await auth(req, null, async (error) => {
+  await socketIOAuth(token, async (error) => {
     if (error) {
       return next(new Error("Authentication error: " + error.message));
     }

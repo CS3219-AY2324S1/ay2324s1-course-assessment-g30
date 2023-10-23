@@ -12,22 +12,28 @@ function QuestionContainer({ questionId }) {
 
   useEffect(() => {
     if (info.length === 0) {
-      getQuestionsDescription(questionId).then((data) => setInfo(data));
+      getQuestionsDescription(questionId)
+        .then((data) => setInfo(data))
+        .catch((error) => {
+          console.error("Error fetching question description:", error);
+        });
     }
 
     if (question.length === 0) {
-      getQuestions().then((data) =>
-        setQuestion(
-          data.filter((val) => {
-            return val.question_id === questionId;
-          })[0]
+      getQuestions()
+        .then((data) =>
+          setQuestion(
+            data.filter((val) => {
+              return val.question_id === questionId;
+            })[0]
+          )
         )
-      );
+        .catch((error) => {
+          // Handle any errors from the API call
+          console.error("Error fetching questions:", error);
+        });
     }
   }, []);
-
-  console.log(info);
-  console.log(question);
 
   const parser = new DOMParser();
 
@@ -44,10 +50,18 @@ function QuestionContainer({ questionId }) {
   }
   return (
     <Box overflowY="scroll" height="100%" textAlign="left" padding={5}>
-      <Heading as="h1" size="2xl" mb={5}>
-        {question.question_id}. {question.question_title}
-      </Heading>
-      <div dangerouslySetInnerHTML={{ __html: formatQuestionInfo() }}></div>
+      {question !== undefined ? (
+        <>
+          <Heading as="h1" size="2xl" mb={5}>
+            {question.question_id}. {question.question_title}
+          </Heading>
+          <div dangerouslySetInnerHTML={{ __html: formatQuestionInfo() }}></div>
+        </>
+      ) : (
+        <Heading as="h1" size="2xl" mb={5}>
+          Sorry, question not found!
+        </Heading>
+      )}
     </Box>
   );
 }

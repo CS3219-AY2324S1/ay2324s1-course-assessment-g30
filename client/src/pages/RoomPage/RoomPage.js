@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -9,6 +9,11 @@ import {
   Text,
   Flex,
   Divider,
+  Modal,
+  ModalBody,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
@@ -28,11 +33,39 @@ function RoomPage() {
   const [chatHistory, setChatHistory] = useState([]);
   const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [questionId, setQuestionId] = useState("");
+  const [remainingTime, setRemainingTime] = useState(0);
+  const [timer, setTimer] = useState("00:00:00");
+  const navigate = useNavigate();
+  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
+    let autoRedirectTimeout;
+
     getRoomDetails(roomId).then((data) => {
       setProgrammingLanguage(data.programming_language);
       setQuestionId(data.question_id);
+
+      // Calculate remainingTime
+      const currentTime = new Date().getTime();
+      const roomCreationTime = new Date(data.date_created).getTime();
+      const twoHoursInMilliseconds = 2 * 60 * 60 * 1000;
+      //   const twoHoursInMilliseconds = 30 * 1000;
+
+      const endTime = roomCreationTime + twoHoursInMilliseconds;
+      const remainingTime = Math.max(0, endTime - currentTime);
+      setRemainingTime(remainingTime);
+
+      if (remainingTime > 10000) {
+        startTimer();
+        autoRedirectTimeout = setTimeout(() => {
+          setModalOpen(true);
+          setTimeout(() => {
+            navigate(`/dashboard`);
+          }, 5000);
+        }, remainingTime);
+      } else {
+        setIsInvalidRoom(true);
+      }
     });
 
     getUserProfile().then((data) => {
@@ -68,7 +101,39 @@ function RoomPage() {
         setIsInvalidRoom(true);
       });
     });
+
+    return () => {
+      if (autoRedirectTimeout) {
+        clearTimeout(autoRedirectTimeout);
+      }
+    };
   }, []);
+
+  // Countdown timer
+  function startTimer() {
+    const timerInterval = setInterval(() => {
+      setRemainingTime((prevRemainingTime) => {
+        if (prevRemainingTime <= 0) {
+          clearInterval(timerInterval);
+          return 0;
+        }
+        // Calculate hours, minutes, and seconds
+        const hours = Math.floor(prevRemainingTime / (1000 * 60 * 60));
+        const minutes = Math.floor((prevRemainingTime / (1000 * 60)) % 60);
+        const seconds = Math.floor((prevRemainingTime / 1000) % 60);
+
+        // Format the time as "hh:mm:ss"
+        const formattedTime = `${String(hours).padStart(2, "0")}:${String(
+          minutes
+        ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+        // Update the state with the formatted time
+        setTimer(formattedTime);
+
+        return prevRemainingTime - 1000;
+      });
+    }, 1000);
+  }
 
   if (isInvalidRoom) {
     return (
@@ -182,13 +247,26 @@ function RoomPage() {
             boxShadow="lg"
             area={"editor"}
           >
-            <RoomPanel roomId={roomId} socket={socket} />
+            <RoomPanel roomId={roomId} socket={socket} timer={timer} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
             <EditorContainer
               programmingLanguage={programmingLanguage}
               roomId={roomId}
             />
           </GridItem>
+          <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>
+            <ModalOverlay backdropFilter="blur(10px)" />
+            <ModalContent>
+              <ModalHeader textAlign="center" fontSize="2xl" fontWeight="bold">
+                Room has expired
+              </ModalHeader>
+              <ModalBody mb={5}>
+                <Text>
+                  Sorry, time's up! You will be redirected to the dashboard.
+                </Text>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </Grid>
       )}
     </Box>
