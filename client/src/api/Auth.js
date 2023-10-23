@@ -155,7 +155,8 @@ export const editProfile = async (input) => {
             console.error('Failed to retrieve user profile. Status:', response.status);
         }
     } catch (error) {
-        console.error('Error while fetching user profile:', error);
+        
+        throw error;
     }
 }
 
