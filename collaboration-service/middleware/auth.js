@@ -26,7 +26,7 @@ export const auth = async (req, res, next) => {
       req.userRole = userRole;
       return next();
     } else {
-      throw new Error("User is not authorized to perform this action");
+      res.status(401).json({ error: "User not authorised to Peerprep" });
     }
   } catch (error) {
     console.error("Error fetching user data:");
