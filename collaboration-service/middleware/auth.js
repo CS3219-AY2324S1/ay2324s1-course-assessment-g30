@@ -50,7 +50,7 @@ export const attemptToAuthenticate = async (socket, next) => {
     },
   };
 
-  await auth(req, null, async (error) => {
+  await auth(req, res, async (error) => {
     if (error) {
       return next(new Error("Authentication error: " + error.message));
     }
