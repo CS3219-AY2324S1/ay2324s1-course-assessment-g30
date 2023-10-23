@@ -27,11 +27,11 @@ const checkAuth = async (req, res, next) => {
       req.userRole = userRole;
       return next();
     } else {
-      res.status(401).json({ error: "User not authorised to Peerprep" });
+      res.status(401).json({ message: "User not authorised to Peerprep" });
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
-    res.status(500).json({ error: error.toString() });
+    res.status(500).json({ message: error.toString() });
   }
 };
 
@@ -49,7 +49,7 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       question_id: reqQuestionid,
     });
     if (doc == null) {
-      res.status(404).json({ error: "Question not found" });
+      res.status(404).json({ message: "Question not found" });
       console.log("Question not found" + reqQuestionid);
     } else {
       const questionUuid = doc.uuid;
@@ -58,12 +58,12 @@ const checkUpdateResourceAuth = async (req, res, next) => {
       } else {
         res
           .status(401)
-          .json({ error: "User is not authorized to amend this question" });
+          .json({ message: "User is not authorized to amend this question" });
         console.log("User is not authorized to amend this question");
       }
     }
   } catch (error) {
-    res.status(500).json({ error: error.toString() });
+    res.status(500).json({ message: error.toString() });
     console.error("Error fetching uuid for question:", error);
   }
 };

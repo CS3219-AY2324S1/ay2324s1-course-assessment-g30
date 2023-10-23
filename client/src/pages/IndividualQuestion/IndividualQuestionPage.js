@@ -77,6 +77,7 @@ function IndividualQuestionPage() {
     const handleEdit = (qid) => {
       testUpdateQuestion(qid)
         .then(() => {
+          console.log('this', Object.assign({}, info, question))
           navigator('/edit_question/' + question.question_id, {state: Object.assign({}, info, question)})
         })
         .catch((e) => {

@@ -64,16 +64,16 @@ services:
       - user-service
     restart: on-failure
 
-  # client:
-  #   build: ./client
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     - user-service
-  #     - question-service
-  #     - matching-service
-  #     - collaboration-service
-  #   restart: on-failure
+  client:
+    build: ./client
+    ports:
+      - "3002:3002"
+    depends_on:
+      - user-service
+      - question-service
+      - matching-service
+      - collaboration-service
+    restart: on-failure
 
   # nginx-api-gateway:
   #   build: ./nginx

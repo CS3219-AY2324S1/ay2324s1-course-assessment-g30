@@ -30,12 +30,13 @@ function MatchPanel() {
     <Card
       p={5}
       m={100}
-      w="25%"
+      minW="300px"
       ml="auto"
       align="center"
       justifyContent="center"
       flexDirection="column"
       gap={3}
+      minH={'300px'}
     >
       <MatchMeButton socket={socket} />
       <CreateRoomButton socket={socket} />
