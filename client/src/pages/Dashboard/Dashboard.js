@@ -40,32 +40,6 @@ function Dashboard() {
             Ready to <Kbd shadow={"base"}>code</Kbd>?
           </Text>
           <Stack spacing={"5"} direction={["column", "row"]}>
-            {/* <Card mt={10} w={"-moz-fit-content"} h={"-webkit-fit-content"}>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Number of Questions Completed</StatLabel>
-                  <StatNumber>0</StatNumber>
-                  <StatHelpText>Month of Feburary</StatHelpText>
-                  <StatHelpText>
-                    <StatArrow type="increase" />
-                    0.00%
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card> */}
-            {/* <Card mt={10} w={"-moz-fit-content"} h={"-webkit-fit-content"}>
-              <CardBody>
-                <Stat>
-                  <StatLabel>Number of friends</StatLabel>
-                  <StatNumber>None</StatNumber>
-                  <StatHelpText>Month of Feburary</StatHelpText>
-                  <StatHelpText>
-                    <StatArrow type="decrease" />
-                    0.00%
-                  </StatHelpText>
-                </Stat>
-              </CardBody>
-            </Card> */}
           </Stack>
         </Box>
         <MatchPanel />

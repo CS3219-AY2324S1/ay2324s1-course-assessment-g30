@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import * as React from 'react'
 import {
   Container,
   Stack,
@@ -18,10 +18,10 @@ import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage() {
 
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = React.useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
+  
+  React.useEffect(() => {
     if (reload) {
       window.location.reload()
       setReload(true)

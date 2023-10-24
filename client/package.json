@@ -1,6 +1,8 @@
 {
   "private": true,
   "dependencies": {
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-react": "^7.22.15",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.7.0",
     "@emotion/react": "^11.11.1",
@@ -9,8 +11,14 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
+    "axios-mock-adapter": "^1.22.0",
+    "babel-jest": "^29.7.0",
+    "fetch-mock": "^9.11.0",
     "framer-motion": "^10.12.16",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-transform-css": "^6.0.1",
     "js-cookie": "^3.0.5",
+    "node-fetch": "^3.3.2",
     "postcss-flexbugs-fixes": "^5.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -50,12 +58,22 @@
     ]
   },
   "jest": {
-    "monaco-editor": "node_modules/monaco-editor/esm/vs/editor/editor.api.d.ts"
+    "monaco-editor": "node_modules/monaco-editor/esm/vs/editor/editor.api.d.ts",
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.22.11",
     "@testing-library/react": "^14.0.0",
     "jest": "^27.5.1",
     "react-router-dom": "^6.16.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   }
 }
