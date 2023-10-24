@@ -21,6 +21,7 @@ import { createUser } from '../../api/Auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react'
 import colors from '../../utils/Colors';
+import * as React from 'react';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
