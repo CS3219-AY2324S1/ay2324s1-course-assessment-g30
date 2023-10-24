@@ -6,8 +6,8 @@ import { getUserProfile } from '../api/Auth';
 
 jest.mock('../api/Auth');
 
-describe('Dashboard', () => {
-  beforeEach(() => {
+describe('Dashboard',  () => {
+  beforeEach( async () => {
     getUserProfile.mockClear();
   });
 
