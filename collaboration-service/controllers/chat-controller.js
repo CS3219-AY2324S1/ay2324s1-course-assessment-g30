@@ -1,7 +1,7 @@
 /**
  * Broadcasts a join message to all users in a room
  */
-export const broadcastJoin = async (socket, roomId, io, redis) => {
+const broadcastJoin = async (socket, roomId, io, redis) => {
   console.log(`User ${socket.username} joined room ${roomId}`);
   const chatKey = `chat:${roomId}`;
   await redis.rpush(
@@ -24,7 +24,7 @@ export const broadcastJoin = async (socket, roomId, io, redis) => {
 /**
  * Broadcasts a leave message to all users in a room
  */
-export const broadcastLeave = async (socket, roomId, io, redis) => {
+const broadcastLeave = async (socket, roomId, io, redis) => {
   console.log(`User ${socket.username} left room ${roomId}`);
   const chatKey = `chat:${roomId}`;
   await redis.rpush(
@@ -47,7 +47,7 @@ export const broadcastLeave = async (socket, roomId, io, redis) => {
 /**
  * Broadcasts a message to all users in a room
  */
-export const sendMessage = async (socket, message, roomId, io, redis) => {
+const sendMessage = async (socket, message, roomId, io, redis) => {
   console.log(
     `User ${socket.username} sent message: ${message} to room:${roomId}`
   );
@@ -64,3 +64,5 @@ export const sendMessage = async (socket, message, roomId, io, redis) => {
 
   io.to(roomId).emit("receive-message", socket.uuid, message, socket.username);
 };
+
+module.exports = { broadcastJoin, broadcastLeave, sendMessage };
