@@ -3,10 +3,10 @@ const cors = require("cors");
 const { createDB } = require("./Config/db.js");
 const questionRouter = require("./Routes/questions.routes.js");
 
-const initializeApp = async () => {
+const initializeApp = async (port_no) => {
   await createDB();
   const app = express();
-  const port = 3001;
+  const port = port_no || 3001;
 
   app.use(express.json());
   app.use(cors());
@@ -23,6 +23,6 @@ const initializeApp = async () => {
   return app;
 };
 
-initializeApp();
+initializeApp(3001);
 
 module.exports = { initializeApp };
