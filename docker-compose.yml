@@ -60,7 +60,6 @@ services:
     env_file:
       - ./collaboration-service/.env
     depends_on:
-      - redis
       - user-service
     restart: on-failure
 
