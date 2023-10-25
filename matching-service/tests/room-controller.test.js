@@ -1,6 +1,6 @@
-const app = require("../server");
-const supertest = require("supertest");
-const request = supertest(app);
+// const app = require("../server");
+// const supertest = require("supertest");
+// const request = supertest(app);
 const Room = require("../model/room-model");
 const { getJoinedRooms } = require("../controllers/room-controller.js");
 
