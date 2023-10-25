@@ -32,14 +32,13 @@ function IndividualQuestionPage() {
 
     useEffect(() => {
         if (info.length === 0) {
-            getQuestionsDescription(question_idx).then((data) => setInfo(data));
+            getQuestionsDescription(question_idx).then((data) => setInfo(data)).catch((e) => console.log(e));
         }
 
         if (question.length === 0) {
-          getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0]));
+          getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0])).catch((e) => console.log(e));
         }
     }, [])
-    console.log(info)
 
     const parser = new DOMParser();
     

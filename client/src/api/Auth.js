@@ -86,7 +86,6 @@ export const createUser = async (input) => {
             console.log(data);
         }
     } catch (e) {
-        console.error("Error: Please ensure that backend is connected");
         throw e;
     }
     
