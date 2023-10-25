@@ -28,6 +28,14 @@ const redis = new Redis({
   port: redisPort,
 });
 
+redis.on("connect", () => {
+  console.log("Connected to the Redis server.");
+});
+
+redis.on("error", (err) => {
+  console.error("Redis connection error:", err);
+});
+
 const app = express();
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {

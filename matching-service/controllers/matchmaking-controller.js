@@ -13,6 +13,14 @@ const redis = new Redis({
   port: redisPort,
 });
 
+redis.on("connect", () => {
+  console.log("Connected to the Redis server.");
+});
+
+redis.on("error", (err) => {
+  console.error("Redis connection error:", err);
+});
+
 /**
  * Removes a user from a matchmaking queue.
  */
