@@ -13,28 +13,9 @@ const {
   sendMessage,
 } = require("./controllers/chat-controller.js");
 const { connectToDB } = require("./model/db.js");
-const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
 const WebSocket = require("ws");
 const map = require("lib0/map");
-
-// Connect to the default Redis server running on localhost and default port 6379
-// Run redis-server locally
-const redisHost = process.env.REDIS_HOST || "localhost";
-const redisPort = process.env.REDIS_PORT || 6379;
-
-const redis = new Redis({
-  host: redisHost,
-  port: redisPort,
-});
-
-redis.on("connect", () => {
-  console.log("Connected to the Redis server.");
-});
-
-redis.on("error", (err) => {
-  console.error("Redis connection error:", err);
-});
 
 const app = express();
 const httpServer = http.createServer(app);
