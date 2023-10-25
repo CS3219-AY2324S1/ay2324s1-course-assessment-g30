@@ -34,7 +34,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/room/:roomId" element={<RoomPage />} />
+          
 
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -49,6 +49,7 @@ function App() {
             />
             <Route path="/edit_profile" element={<EditProfile />} />
             <Route path="/view_profile" element={<ViewProfile />} />
+            <Route path="/room/:roomId" element={<RoomPage />} />
             {/* <Route path="/forgot_password" element={<LoginForm />} /> */}
           </Route>
         </Routes>

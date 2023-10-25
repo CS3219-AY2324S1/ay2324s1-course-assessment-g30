@@ -5,14 +5,7 @@ import {
   Menu, MenuButton,
   MenuItem,
   MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Tab, TabList, TabPanel, TabPanels, Tabs, Text, Textarea,
+  Tab, TabList, TabPanel, TabPanels, Tabs, Text,
   useToast
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
@@ -29,14 +22,16 @@ function IndividualQuestionPage() {
     const [info, setInfo] = useState([]);
 
     const toast = useToast()
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (info.length === 0) {
-            getQuestionsDescription(question_idx).then((data) => setInfo(data)).catch((e) => console.log(e));
+            getQuestionsDescription(question_idx).then((data) => setInfo(data)).then(() => setIsLoading(false)).catch((e) => console.log(e));
         }
 
         if (question.length === 0) {
-          getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0])).catch((e) => console.log(e));
+          getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0])).then(() => setIsLoading(false)).catch((e) => console.log(e));
+
         }
     }, [])
 
@@ -106,16 +101,12 @@ function IndividualQuestionPage() {
 
       <TabPanels>
         <TabPanel>
-        <div style={{overflow: 'scroll', height: '80vh'}} >
+        {isLoading ? (
+          <p>Loading...</p>
+        ) :<div style={{overflow: 'scroll', height: '80vh'}} >
           <div dangerouslySetInnerHTML={{ __html: formatQuestionInfo() }}></div>
-        </div>
+        </div>}
         </TabPanel>
-        {/* <TabPanel>
-          <p>Solution</p>
-        </TabPanel>
-        <TabPanel>
-          <p>Peer Programming</p>
-        </TabPanel> */}
       </TabPanels>
     </Tabs>
      

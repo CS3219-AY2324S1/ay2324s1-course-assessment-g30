@@ -15,13 +15,31 @@ import {
 } from '@chakra-ui/react'
 import colors from '../../utils/Colors'
 import { useNavigate } from 'react-router-dom';
+import checkAuth from '../../utils/checkAuth';
 
 export default function LandingPage() {
 
   const [reload, setReload] = React.useState(false);
   const navigate = useNavigate();
-  
-  React.useEffect(() => {
+
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const isAuthenticated = checkAuth(); 
+
+    if (isAuthenticated) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/dashboard');
+    }
+  }, [loggedIn, navigate]);
+
+  useEffect(() => {
     if (reload) {
       window.location.reload()
       setReload(true)
