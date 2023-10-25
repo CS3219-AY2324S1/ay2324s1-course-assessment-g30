@@ -32,13 +32,15 @@ function RoomList() {
                   navigator("/room/" + val.room_id);
                 }}
               >
-                <div class="col col-1" data-label="Job Id">
+                <div class="col col-1" data-label="Room Id">
+                <div style={{whiteSpace: "nowrap", overflow:'hidden', textOverflow: 'ellipsis'}}>
                   {val.room_id}
                 </div>
-                <div class="col col-2" data-label="Customer Name">
+                </div>
+                <div class="col col-2" data-label="Programming Language">
                   {val.programming_language}
                 </div>
-                <div class="col col-3" data-label="Amount">
+                <div class="col col-3" data-label="Question Id">
                   {val.question_id}
                 </div>
               </li>

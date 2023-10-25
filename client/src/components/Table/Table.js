@@ -65,16 +65,16 @@ function Table() {
                   navigator("/question/" + val.question_id);
                 }}
               >
-                <div class="col col-1" data-label="Job Id">
+                <div class="col col-1" data-label="Question Id">
                   {val.question_id}
                 </div>
-                <div class="col col-2" data-label="Customer Name">
+                <div class="col col-2" data-label="Question Title">
                   {val.question_title}
                 </div>
-                <div class="col col-3" data-label="Amount">
+                <div class="col col-3" data-label="Question Categories">
                   {val.question_categories.reduce((a, b) => a + " * " + b, "")}
                 </div>
-                <div class="col col-4" data-label="Payment Status">
+                <div class="col col-4" data-label="Question Complexity">
                   {val.question_complexity}
                 </div>
               </li>

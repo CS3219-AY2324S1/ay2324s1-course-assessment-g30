@@ -8,7 +8,7 @@ import Table from "../../components/Table/Table";
 
 function Dashboard() {
   const [user, setUser] = useState([]);
-  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+  const [isLargerThan768] = useMediaQuery("(min-width: 1000px)");
 
   useEffect(() => {
     if (user.length === 0) {
@@ -32,17 +32,18 @@ function Dashboard() {
 
       <Divider />
 
-      <Box justifyContent={"center"} display={"flex"} flexWrap={"wrap"}>
+      <Box justifyContent={"center"} minW={"100%"}>
         <Stack
           spacing={isLargerThan768 ? "5" : "0"}
           direction={isLargerThan768 ? "row" : "column"}
+          
         >
           <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
             <CardBody>
               <Table />
             </CardBody>
           </Card>
-          <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
+          <Card minW={isLargerThan768 ? "500px" : "null"} maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
             <CardBody>
               <RoomList />
             </CardBody>

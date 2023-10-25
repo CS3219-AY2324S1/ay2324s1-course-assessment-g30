@@ -117,7 +117,7 @@ function CreateRoomButton({ socket }) {
         variant="outline"
         colorScheme="linkedin"
         onClick={() => setShowModal(true)}
-        p={width < 764 ? '5' : null}
+        p={width < 1000 ? '5' : null}
       >
         Create Private Room
       </Button>

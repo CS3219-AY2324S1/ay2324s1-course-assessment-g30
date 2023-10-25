@@ -9,7 +9,7 @@ import useWindowDimensions from '../../utils/WindowDimensions'
 
 function MatchPanel() {
   const [socket, setSocket] = useState(null);
-  const {width} = useWindowDimensions(); //764
+  const {width} = useWindowDimensions(); //1000
   console.log(width)
 
   useEffect(() => {
@@ -39,7 +39,7 @@ function MatchPanel() {
       justifyContent="center"
       flexDirection="column"
       gap={3}
-      minH={width < 764 ? '100px' : '300px'}
+      minH={width < 1000 ? '100px' : '300px'}
     >
       <MatchMeButton socket={socket} />
       <CreateRoomButton socket={socket} />

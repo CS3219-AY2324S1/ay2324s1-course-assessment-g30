@@ -158,7 +158,7 @@ function MatchMeButton({ socket, uuid }) {
         onClick={() => setShowModal(true)}
         w="100%"
         h={'50%'}
-        p={width < 764 ? '5' : null}
+        p={width < 1000 ? '5' : null}
       >
         Match With Stranger!
       </Button>

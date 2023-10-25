@@ -14,17 +14,35 @@ import {
   useColorModeValue,
   Link,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useForm } from 'react-hook-form';
 import { createUser } from '../../api/Auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react'
 import colors from '../../utils/Colors';
+import checkAuth from '../../utils/checkAuth';
+
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const isAuthenticated = checkAuth(); 
+
+    if (isAuthenticated) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/dashboard');
+    }
+  }, [loggedIn, navigate]);
 
   const toast = useToast()
 
