@@ -1,21 +1,21 @@
-import express from "express";
-import cors from "cors";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import {
+const express = require("express");
+const cors = require("cors");
+const http = require("http");
+const socketIO = require("socket.io");
+const {
   removeFromQueue,
   pairUsers,
   removeFromAllQueues,
   createRoom,
   createRoomWithQuestion,
-} from "./controllers/matchmaking-controller.js";
-import { connectToDB } from "./model/db.js";
-import { getJoinedRooms } from "./controllers/room-controller.js";
-import { attemptToAuthenticate, auth } from "./middleware/auth.js";
+} = require("./controllers/matchmaking-controller.js");
+const { connectToDB } = require("./model/db.js");
+const { getJoinedRooms } = require("./controllers/room-controller.js");
+const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const httpServer = http.createServer(app);
+const io = socketIO(httpServer, {
   cors: {
     origin: "http://localhost:3002",
     methods: ["GET", "POST"],
@@ -63,3 +63,5 @@ httpServer.listen(3003, () => {
   console.log("matching-service started on port 3003");
   connectToDB();
 });
+
+module.exports = { app };
