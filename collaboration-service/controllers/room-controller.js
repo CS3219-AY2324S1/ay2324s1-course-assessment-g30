@@ -4,7 +4,7 @@ const Room = require("../model/room-model.js");
 /**
  * Connects socket to a room and fetches the state of chat and editor for user
  */
-const setUpRoom = async (socket, roomId, redis) => {
+const setUpRoom = async (socket, roomId) => {
   console.log(`Setting up room ${roomId} for user ${socket.uuid}`);
   const existingRoom = await Room.findOne({ room_id: roomId });
 
@@ -13,11 +13,6 @@ const setUpRoom = async (socket, roomId, redis) => {
       existingRoom.users.push(socket.uuid);
       await Room.updateOne({ room_id: roomId }, { users: existingRoom.users });
     }
-    const chatKey = `chat:${roomId}`;
-    const chatHistory = await redis.lrange(chatKey, 0, -1);
-    const messages = chatHistory.map((message) => JSON.parse(message));
-
-    socket.emit("chat-history", messages);
 
     socket.join(roomId);
     socket.emit("room-is-ready");
@@ -30,20 +25,20 @@ const setUpRoom = async (socket, roomId, redis) => {
 /**
  * Disconnects socket from room
  */
-const leaveRoom = async (socket, roomId, io, redis) => {
+const leaveRoom = async (socket, roomId, io) => {
   console.log(`User ${socket.uuid} left room ${roomId}`);
   socket.leave(roomId);
-  broadcastLeave(socket, roomId, io, redis);
+  broadcastLeave(socket, roomId, io);
 };
 
 /**
  * Disconnects socket from a room. Socket leaves room upon disconnect.
  */
-const disconnectFromRoom = async (socket, io, redis) => {
+const disconnectFromRoom = async (socket, io) => {
   const roomKeysIterator = socket.rooms.keys();
 
   for (const roomId of roomKeysIterator) {
-    broadcastLeave(socket, roomId, io, redis);
+    broadcastLeave(socket, roomId, io);
   }
 };
 

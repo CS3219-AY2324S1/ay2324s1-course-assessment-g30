@@ -30,7 +30,6 @@ function RoomPage() {
   const [isRoomBeingSetUp, setIsRoomBeingSetUp] = useState(true);
   const [socket, setSocket] = useState(null);
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]);
   const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [questionId, setQuestionId] = useState("");
   const [remainingTime, setRemainingTime] = useState(0);
@@ -82,12 +81,6 @@ function RoomPage() {
       setSocket(socket);
 
       socket.emit("set-up-room", roomId);
-
-      // To handle chat history
-      socket.on("chat-history", (messages) => {
-        console.log("Let's see the chat history");
-        setChatHistory(messages);
-      });
 
       socket.on("room-is-ready", () => {
         setTimeout(() => {
@@ -233,7 +226,7 @@ function RoomPage() {
             <ChatContainer
               socket={socket}
               roomId={roomId}
-              chatHistory={chatHistory}
+              //   chatHistory={chatHistory}
             />
           </GridItem>
           <GridItem

@@ -57,23 +57,23 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.username} connected`);
 
   socket.on("set-up-room", (roomId) => {
-    setUpRoom(socket, roomId, redis);
+    setUpRoom(socket, roomId);
   });
 
   socket.on("join-room", (roomId) => {
-    broadcastJoin(socket, roomId, io, redis);
+    broadcastJoin(socket, roomId, io);
   });
 
   socket.on("leave-room", (roomId) => {
-    leaveRoom(socket, roomId, io, redis);
+    leaveRoom(socket, roomId, io);
   });
 
   socket.on("send-message", (message, roomId) => {
-    sendMessage(socket, message, roomId, io, redis);
+    sendMessage(socket, message, roomId, io);
   });
 
   socket.on("disconnecting", async () => {
-    disconnectFromRoom(socket, io, redis);
+    disconnectFromRoom(socket, io);
   });
 
   socket.on("disconnect", () => {});
