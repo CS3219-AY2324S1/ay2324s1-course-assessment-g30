@@ -16,11 +16,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import MatchModal from "./MatchModal";
+import useWindowDimensions from "../../utils/WindowDimensions";
 
 function MatchMeButton({ socket, uuid }) {
   const FINDING_MATCH_TIMEOUT = 30;
   const navigate = useNavigate();
   const toast = useToast();
+  const {width} = useWindowDimensions(); //764
 
   const [difficulty, setDifficulty] = useState("");
   const [programmingLanguage, setProgrammingLanguage] = useState("");
@@ -155,7 +157,8 @@ function MatchMeButton({ socket, uuid }) {
         variant="solid"
         onClick={() => setShowModal(true)}
         w="100%"
-        h="50%"
+        h={'50%'}
+        p={width < 764 ? '5' : null}
       >
         Match With Stranger!
       </Button>

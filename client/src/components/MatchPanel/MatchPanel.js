@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { io } from "socket.io-client";
-import MatchMeButton from "./MatchMeButton";
-import CreateRoomButton from "./CreateRoomButton";
 import { Card } from "@chakra-ui/react";
 import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { matchingServiceURL } from "../../api/config";
+import CreateRoomButton from "./CreateRoomButton";
+import MatchMeButton from "./MatchMeButton";
+import useWindowDimensions from '../../utils/WindowDimensions'
 
 function MatchPanel() {
   const [socket, setSocket] = useState(null);
+  const {width} = useWindowDimensions(); //764
+  console.log(width)
 
   useEffect(() => {
     // Connect to common lobby
@@ -36,7 +39,7 @@ function MatchPanel() {
       justifyContent="center"
       flexDirection="column"
       gap={3}
-      minH={'300px'}
+      minH={width < 764 ? '100px' : '300px'}
     >
       <MatchMeButton socket={socket} />
       <CreateRoomButton socket={socket} />

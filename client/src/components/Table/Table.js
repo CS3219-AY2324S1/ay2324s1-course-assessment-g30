@@ -1,12 +1,11 @@
+import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
+import { Box, Button } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Table.css";
-import { Box, Button } from "@chakra-ui/react";
-import { AddIcon, RepeatIcon } from "@chakra-ui/icons";
 import {
-  getQuestions,
-  getQuestionsDescription,
+  getQuestions
 } from "../../api/QuestionServices";
+import "./Table.css";
 
 function Table() {
   // Question Id
@@ -14,11 +13,18 @@ function Table() {
   // Question Category
   // Question Complexity
   const navigator = useNavigate();
-  const [table, setTable] = useState([]);
+  const [table, setTable] = useState([    {   
+    question_id: 1,
+    question_title: "Reverse a String",
+    question_categories: ["Strings", "Algorithms"],
+    question_complexity: "Easy",
+    question_link : "https://leetcode.com/problems/reverse-string/"
+}, ]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (table.length === 0) {
-      getQuestions().then((data) => setTable(data));
+    if (table.length === 1) {
+      getQuestions().then((data) => {setTable(data); setIsLoading(false);}).catch((e) => console.log(e));
     }
   }, []);
 
@@ -48,7 +54,9 @@ function Table() {
             <div class="col-3">Question Category</div>
             <div class="col-4">Question Complexity</div>
           </li>
-          {table.map((val) => {
+          {isLoading ? (
+          <p>Loading...</p>
+        ) : table?.map((val) => {
             return (
               <li
                 class="table-row"

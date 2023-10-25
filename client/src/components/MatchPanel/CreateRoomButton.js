@@ -18,6 +18,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { getQuestions } from "../../api/QuestionServices";
+import useWindowDimensions from "../../utils/WindowDimensions";
 
 function CreateRoomButton({ socket }) {
   const [difficulty, setDifficulty] = useState("");
@@ -28,6 +29,7 @@ function CreateRoomButton({ socket }) {
   const [selectedOption, setSelectedOption] = useState("difficulty");
   const [questionId, setQuestionId] = useState("");
   const [questionList, setQuestionList] = useState([]);
+  const {width} = useWindowDimensions(); //764
   const toast = useToast();
 
   const handleModalSubmit = async () => {
@@ -111,10 +113,11 @@ function CreateRoomButton({ socket }) {
     <>
       <Button
         w="100%"
-        h="50%"
+        h={'50%'}
         variant="outline"
         colorScheme="linkedin"
         onClick={() => setShowModal(true)}
+        p={width < 764 ? '5' : null}
       >
         Create Private Room
       </Button>

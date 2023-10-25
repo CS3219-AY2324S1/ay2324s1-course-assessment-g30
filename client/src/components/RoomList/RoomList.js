@@ -9,7 +9,7 @@ function RoomList() {
 
   useEffect(() => {
     if (table.length === 0) {
-      getJoinedRooms().then((data) => setTable(data));
+      getJoinedRooms().then((data) => setTable(data)).catch((e) => console.log(e));
     }
   }, []);
 
