@@ -102,7 +102,9 @@ export default function Register() {
   const handleInputChange = (event) => {
     const newValue = event.target.value;
 
+
     const pattern = /^[a-z0-9._-]{1,30}$/;
+
 
     if (!pattern.test(newValue)) {
       setErrorUsername("Use only lowercase a-z, 0-9, ., _ or -");
