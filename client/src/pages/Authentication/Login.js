@@ -41,6 +41,7 @@ export default function Login() {
 
   useEffect(() => {
     const isAuthenticated = checkAuth(); 
+    
 
     if (isAuthenticated) {
       setLoggedIn(true);

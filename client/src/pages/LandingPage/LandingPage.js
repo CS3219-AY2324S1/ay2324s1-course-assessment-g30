@@ -26,7 +26,6 @@ export default function LandingPage() {
 
   useEffect(() => {
     const isAuthenticated = checkAuth(); 
-
     if (isAuthenticated) {
       setLoggedIn(true);
     }

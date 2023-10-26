@@ -48,6 +48,7 @@ export const getAuthToken = async (email, password) => {
         return "No token"
     } catch(e) {
         console.error("Error: Please ensure that backend is connected");
+        throw e;
     }
     
     
