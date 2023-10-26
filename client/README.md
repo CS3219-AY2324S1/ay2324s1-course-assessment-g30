@@ -1,9 +1,5 @@
-To set up,
+# Starting client (frontend) (Dev mode)
 
-    Enter the /client directory from the terminal
-    Enter npm install
-
-To run,
-
-    Ensure that you are in the /client directory from the terminal
-    Enter npm start
+1. Run `npm install` => install all dependencies from package.json
+2. Run `npm start` => hot reloads the event loop
+3. The client file will can be found in localhost:3002

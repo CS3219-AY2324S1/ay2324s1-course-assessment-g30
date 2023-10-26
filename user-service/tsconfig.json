@@ -1,0 +1,11 @@
+{
+  "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
+  "include": ["src/**/*", "app.ts"],
+  "compilerOptions": {
+    "rootDirs": ["./src"],
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "outDir": "./build",
+    "baseUrl": "./src"
+  },
+  "paths": { "*": "./src/*" }
+}

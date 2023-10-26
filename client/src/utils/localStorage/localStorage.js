@@ -31,7 +31,7 @@ export function setTableStorage(key, data) {
 export function getQuestionById(id) {
     console.log(id)
     let question_bank = JSON.parse(localStorage.getItem("tableData"));
-    console.log(question_bank)
+
     return question_bank.filter((a) => a.question_id === id);
 }
 
@@ -42,7 +42,7 @@ export function addTableStorage(title, cat, des, complexity) {
     old.push({
       question_id: old.length + 1,
       question_title: title,
-      question_categories: cat,
+      question_categories: [cat],
       question_complexity: complexity,
       question_link : "https://leetcode.com/problems/chalkboard-xor-game/",
       question_description: des
