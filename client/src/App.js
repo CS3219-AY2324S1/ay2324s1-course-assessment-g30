@@ -11,7 +11,6 @@ import ProtectedRoutes from "./protectedRoutes";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import EditProfile from "./pages/Authentication/EditProfile";
 import ViewProfile from "./pages/Authentication/ViewProfile";
-import RoomPage from "./pages/RoomPage/RoomPage";
 import { useEffect } from "react";
 import { deleteToken } from "./api/Auth";
 
@@ -52,7 +51,6 @@ function App() {
             />
             <Route path="/edit_profile" element={<EditProfile />} />
             <Route path="/view_profile" element={<ViewProfile />} />
-            <Route path="/room/:roomId" element={<RoomPage />} />
             {/* <Route path="/forgot_password" element={<LoginForm />} /> */}
           </Route>
         </Routes>

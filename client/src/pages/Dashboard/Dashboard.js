@@ -1,8 +1,6 @@
 import { Box, Card, CardBody, Divider, Flex, Heading, Kbd, Stack, Text, useMediaQuery } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { getUserProfile } from "../../api/Auth";
-import MatchPanel from "../../components/MatchPanel/MatchPanel";
-import RoomList from "../../components/RoomList/RoomList";
 import Table from "../../components/Table/Table";
 
 
@@ -27,7 +25,6 @@ function Dashboard() {
             Ready to <Kbd shadow={"base"}>code</Kbd>?
           </Text>
         </Box>
-        <MatchPanel />
       </Flex>
 
       <Divider />
@@ -41,11 +38,6 @@ function Dashboard() {
           <Card maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
             <CardBody>
               <Table />
-            </CardBody>
-          </Card>
-          <Card minW={isLargerThan768 ? "500px" : "null"} maxH={"500px"} overflow={"scroll"} my={10} mx={5}>
-            <CardBody>
-              <RoomList />
             </CardBody>
           </Card>
         </Stack>
