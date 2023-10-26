@@ -35,14 +35,45 @@ services:
       - ./question-service/.env
     restart: on-failure
 
-  client:
-    build: ./client
+  redis:
+    image: redis
+    container_name: redis
     ports:
-      - "3002:3002"
+      - "6379:6379"
+    restart: on-failure
+
+  matching-service:
+    build: ./matching-service
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./matching-service/.env
+    depends_on:
+      - redis
+      - user-service
+    restart: on-failure
+
+  collaboration-service:
+    build: ./collaboration-service
+    ports:
+      - "3004:3004"
+    env_file:
+      - ./collaboration-service/.env
     depends_on:
       - user-service
-      - question-service
     restart: on-failure
+
+  # client:
+  #   build: ./client
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - user-service
+  #     - question-service
+  #     - matching-service
+  #     - collaboration-service
+  #   restart: on-failure
+
   # nginx-api-gateway:
   #   build: ./nginx
   #   ports:

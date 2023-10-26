@@ -22,7 +22,7 @@ export default function LandingPage() {
   const [reload, setReload] = React.useState(false);
   const navigate = useNavigate();
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   React.useEffect(() => {
     const isAuthenticated = checkAuth(); 

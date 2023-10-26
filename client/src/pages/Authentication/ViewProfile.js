@@ -103,4 +103,4 @@ function ViewProfile() {
   )
 }
 
-export default ViewProfile 
+export default ViewProfile
