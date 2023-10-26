@@ -68,12 +68,21 @@ export default function Login() {
       navigate('/dashboard');
     })
     .catch(function (error) {
+      if (error.response) {
+        
         console.log(error.response.data.err)
         setFormMessage(error.response.data.err)
         
         setFormInvalid(true)
         setError("email")
         setError("password")
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Here', error.message);
+      }
   
     });
     
@@ -143,9 +152,14 @@ export default function Login() {
               </InputRightElement>
             </InputGroup>
             {!formInvalid && <FormErrorMessage mt={-3}>{errors.password && "Password is required"}</FormErrorMessage> }
-            {formMessage.length !== 0 && <p style={{color: "#FF0000"}}>{formMessage}</p>}
+            {formMessage.length !== 0 && <p style={{color: "#B33A3A"}}>{formMessage}</p>}
           </FormControl>
               <Stack spacing={10}>
+                <Stack
+                  direction={{ base: 'column', sm: 'row' }}
+                  align={'start'}
+                  justify={'space-between'}>
+                </Stack>
                 <Button
                   bg={colors.primary}
                   color={'white'}

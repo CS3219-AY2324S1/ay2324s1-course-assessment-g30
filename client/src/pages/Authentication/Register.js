@@ -187,7 +187,7 @@ export default function Register() {
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="lastName" isRequired>
+                <FormControl id="lastName">
                   <FormLabel>Last Name</FormLabel>
                   <Input {...register('lastName', {
                     required: true,
