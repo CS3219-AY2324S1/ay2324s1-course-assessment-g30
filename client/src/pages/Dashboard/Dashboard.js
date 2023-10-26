@@ -24,12 +24,6 @@ function Dashboard() {
           <Text lineHeight="tall" fontSize={"2xl"}>
             Ready to <Kbd shadow={"base"}>code</Kbd>?
           </Text>
-<<<<<<< HEAD
-=======
-          <Stack spacing={"5"} direction={["column", "row"]}>
-          </Stack>
-
->>>>>>> main
         </Box>
       </Flex>
 

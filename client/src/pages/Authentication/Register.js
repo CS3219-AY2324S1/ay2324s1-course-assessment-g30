@@ -21,17 +21,10 @@ import { createUser } from '../../api/Auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react'
 import colors from '../../utils/Colors';
-<<<<<<< HEAD
-=======
-import * as React from 'react';
->>>>>>> main
 import checkAuth from '../../utils/checkAuth';
 import * as React from 'react';
 
-<<<<<<< HEAD
 
-=======
->>>>>>> main
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate();
@@ -194,7 +187,7 @@ export default function Register() {
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="lastName" isRequired>
+                <FormControl id="lastName">
                   <FormLabel>Last Name</FormLabel>
                   <Input {...register('lastName', {
                     required: true,

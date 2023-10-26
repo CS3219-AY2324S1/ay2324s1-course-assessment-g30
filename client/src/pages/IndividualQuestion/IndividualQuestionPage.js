@@ -31,10 +31,6 @@ function IndividualQuestionPage() {
 
         if (question.length === 0) {
           getQuestions().then(data => setQuestion(data.filter(val => {return val.question_id === question_idx})[0])).then(() => setIsLoading(false)).catch((e) => console.log(e));
-<<<<<<< HEAD
-=======
-
->>>>>>> main
         }
     }, [])
 
