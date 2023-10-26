@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  matching-service:
+    build: .
+    ports:
+      - "3003:3003"
+    environment:
+      MONGODB_URI: "mongodb+srv://cs3219-grp30-admin:vNOO0irf6zd7Qjie@roomcluster.8cjzpah.mongodb.net/Rooms"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+    depends_on:
+      - redis
+    volumes:
+      - redis_data:/data
+    restart: on-failure
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m" 
+        max-file: "3" 
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+  
+volumes:
+  redis_data:

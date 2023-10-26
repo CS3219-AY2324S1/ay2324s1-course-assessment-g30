@@ -16,4 +16,5 @@ export const getProjects = async () => {
     } catch(e) {
         console.log(e);
     }
+
 }
