@@ -15,7 +15,6 @@ import {
   sendSuccessResponse,
   sendUnexpectedMissingUserResponse
 } from '../utils';
-import { UserRole } from '../types/roles';
 import { ValidationError } from 'sequelize';
 import { isValidPassword } from '../utils/validators';
 
@@ -72,7 +71,6 @@ const createUser: RequestHandler = async (req, res) => {
 
   const newUser = User.build({
     uuid: crypto.randomUUID(),
-    role: UserRole.registeredUser,
     username: lowerCasedUsername,
     firstName,
     lastName,
