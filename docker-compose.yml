@@ -1,0 +1,56 @@
+services:
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.userservice-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./user-service/.env
+    depends_on:
+      user-service-db:
+        condition: service_healthy
+    restart: on-failure
+
+  user-service-db:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile.postgres-db
+    env_file:
+      - ./user-service/.env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    restart: on-failure
+
+  question-service:
+    build: ./question-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - user-service
+    env_file:
+      - ./question-service/.env
+    restart: on-failure
+
+  client:
+    build: ./client
+    ports:
+      - "3002:3002"
+    depends_on:
+      - user-service
+      - question-service
+    restart: on-failure
+  # nginx-api-gateway:
+  #   build: ./nginx
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - user-service
+  #     - question-service
+  #     - matching-service
+  #     - collaboration-service
+  #     - client
+  #   restart: on-failure

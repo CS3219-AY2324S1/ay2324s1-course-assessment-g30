@@ -2,8 +2,16 @@
 
 1. Install docker desktop
 2. In the root dir user-service/ run `docker build -f Dockerfile.postgres-db -t user-service-psql .`
-3. Amend the password, container name and port as needed and run the command
-   `docker run -p 1111:5432 -e POSTGRES_PASSWORD=<POSTGRES_PASSWORD> --name user-service-db -d user-service-psql`
+3. Create user-service container
+   `docker build -f Dockerfile.userservice-backend -t user-service-backend .`
+4. Create network for user-service 
+   `docker network create user-service`
+5. Start DB container from image - replace fields 
+   `docker run --env-file=.env --name user-service-db -d --network=user-service user-service-psql`
+6. Get DB container IP - copy this value into DB_ADDR in .env
+   `docker inspect user-service-db | grep IPAddress`
+7. Start user-service container from image
+   `docker run -p 3000:3000 --env-file=.env --name user-service-backend -d --network=user-service user-service-backend`
 
 # Setup
 
