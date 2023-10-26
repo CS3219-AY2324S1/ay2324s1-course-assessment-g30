@@ -5,7 +5,7 @@ const Room = require("../model/room-model.js");
  * Connects socket to a room and fetches the state of chat and editor for user
  */
 const setUpRoom = async (socket, roomId) => {
-  console.log(`Setting up room ${roomId} for user ${socket.uuid}`);
+  console.log(`Setting up room ${roomId} for user ${socket.username}`);
   const existingRoom = await Room.findOne({ room_id: roomId });
 
   if (existingRoom) {
@@ -26,7 +26,7 @@ const setUpRoom = async (socket, roomId) => {
  * Disconnects socket from room
  */
 const leaveRoom = async (socket, roomId, io) => {
-  console.log(`User ${socket.uuid} left room ${roomId}`);
+  console.log(`User ${socket.username} left room ${roomId}`);
   socket.leave(roomId);
   broadcastLeave(socket, roomId, io);
 };

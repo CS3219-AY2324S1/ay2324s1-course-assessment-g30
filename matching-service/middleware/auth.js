@@ -53,8 +53,6 @@ const socketIOAuth = async (token, next) => {
     const userRole = data.res.role;
 
     if (userRole == "USER" || userRole == "MAINTAINER") {
-      // Attach userRole to the req object
-      req.userRole = userRole;
       return next();
     } else {
       console.error("User not authorised to Peerprep");
@@ -79,9 +77,9 @@ const attemptToAuthenticate = async (socket, next) => {
     if (error) {
       return next(new Error("Authentication error: " + error.message));
     }
-  });
 
-  next();
+    next();
+  });
 };
 
 module.exports = { auth, socketIOAuth, attemptToAuthenticate };
