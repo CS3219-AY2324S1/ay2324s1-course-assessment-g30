@@ -152,13 +152,13 @@ export default function Login() {
               </InputRightElement>
             </InputGroup>
             {!formInvalid && <FormErrorMessage mt={-3}>{errors.password && "Password is required"}</FormErrorMessage> }
+            {formMessage.length !== 0 && <p style={{color: "#B33A3A"}}>{formMessage}</p>}
           </FormControl>
               <Stack spacing={10}>
                 <Stack
                   direction={{ base: 'column', sm: 'row' }}
                   align={'start'}
                   justify={'space-between'}>
-                  <Link color={'blue.400'} href='/forgot_password'>Forgot password?</Link>
                 </Stack>
                 <Button
                   bg={colors.primary}
