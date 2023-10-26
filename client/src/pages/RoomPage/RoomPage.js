@@ -242,10 +242,11 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} timer={timer} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            <EditorContainer
+            {/* <EditorContainer
               programmingLanguage={programmingLanguage}
               roomId={roomId}
-            />
+            /> */}
+            Work In Progress
           </GridItem>
           <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>
             <ModalOverlay backdropFilter="blur(10px)" />
