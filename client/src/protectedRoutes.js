@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const useAuth = () => {
-  const user = localStorage.getItem("notAuthenticated");
-  console.log(user)
+  let user = localStorage.getItem("notAuthenticated");
+  if (user) {
+    user = Boolean(user)
+  }
   return user;
 };
 

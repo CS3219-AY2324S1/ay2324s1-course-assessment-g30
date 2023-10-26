@@ -1,5 +1,8 @@
 export default function useAuth() {
-    const user = localStorage.getItem("notAuthenticated");
+    let user = localStorage.getItem("notAuthenticated");
+    if (user) {
+      user = Boolean(user)
+    }
     console.log(user)
     return user;
   };
