@@ -19,7 +19,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import { getAuthToken } from '../../api/Auth';
 import colors from '../../utils/Colors';
-import checkAuth from '../../utils/checkAuth';
+import checkAuth from '../../utils/checkAuth'
 import * as React from 'react';
 
 
