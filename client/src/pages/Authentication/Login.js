@@ -146,12 +146,6 @@ export default function Login() {
             {formMessage.length !== 0 && <p style={{color: "#FF0000"}}>{formMessage}</p>}
           </FormControl>
               <Stack spacing={10}>
-                <Stack
-                  direction={{ base: 'column', sm: 'row' }}
-                  align={'start'}
-                  justify={'space-between'}>
-                  <Link color={'blue.400'} href='/forgot_password'>Forgot password?</Link>
-                </Stack>
                 <Button
                   bg={colors.primary}
                   color={'white'}
