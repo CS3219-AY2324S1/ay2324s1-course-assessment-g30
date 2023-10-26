@@ -36,13 +36,11 @@
     "start": "PORT=3002 react-scripts start",
     "start-w": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -57,17 +55,9 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "monaco-editor": "node_modules/monaco-editor/esm/vs/editor/editor.api.d.ts",
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-    }
-  },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "^7.22.11",
     "@testing-library/react": "^14.0.0",
-    "jest": "^27.5.1",
     "react-router-dom": "^6.16.0"
   },
   "babel": {
