@@ -39,7 +39,6 @@ function Table() {
       <p style={{color: 'gray'}}>* If no question shows up, please refresh browser</p>
       <ul class="responsive-table">
         <li class="table-header">
-          <div class="col-1">Question Id</div>
           <div class="col-2">Question Title</div>
           <div class="col-3">Question Category</div>
           <div class="col-4">Question Complexity</div>
@@ -47,7 +46,6 @@ function Table() {
         {table.map(val => {
           return (
             <li class="table-row" id={val.question_id} onClick={() => {navigator('/question/' + val.question_id)}}>
-              <div class="col col-1" data-label="Job Id">{val.question_id}</div>
               <div class="col col-2" data-label="Customer Name">{val.question_title}</div>
               <div class="col col-3" data-label="Amount">{val.question_categories.reduce((a,b) => a + ' * ' + b, "")}</div>
               <div class="col col-4" data-label="Payment Status">{val.question_complexity}</div>

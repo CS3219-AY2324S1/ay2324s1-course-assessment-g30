@@ -19,7 +19,18 @@ function AddQuestionForm() {
 
   
 
-  const onSubmit = data => {addTableStorage(data.title, data.categories, data.description, data.complexity); nagivator('/')};
+  const onSubmit = data => {
+    
+    const trimmedCategories = data.categories.trim();
+
+    const categoriesArray = trimmedCategories
+        .split(',')
+        .map((category) => category.trim())
+        .filter((category) => category.length > 0);
+
+    addTableStorage(data.title.trim(), categoriesArray, data.description.trim(), data.complexity.trim()); 
+    nagivator('/')
+  };
 
   return (
     

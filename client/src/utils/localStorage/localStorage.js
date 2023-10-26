@@ -42,7 +42,7 @@ export function addTableStorage(title, cat, des, complexity) {
     old.push({
       question_id: old.length + 1,
       question_title: title,
-      question_categories: [cat],
+      question_categories: cat,
       question_complexity: complexity,
       question_link : "https://leetcode.com/problems/chalkboard-xor-game/",
       question_description: des
