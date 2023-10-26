@@ -19,7 +19,7 @@ import MatchModal from "./MatchModal";
 import useWindowDimensions from "../../utils/WindowDimensions";
 
 function MatchMeButton({ socket }) {
-  const FINDING_MATCH_TIMEOUT = 5;
+  const FINDING_MATCH_TIMEOUT = 30;
   const navigate = useNavigate();
   const toast = useToast();
   const { width } = useWindowDimensions(); //764
