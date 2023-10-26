@@ -46,8 +46,8 @@ function AddQuestionForm() {
           <Input {...register("title", { required: true })}/>
           {errors.title && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
-          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Category</Text>
-          <Input {...register("categories", { required: true })}/>
+          <Text  mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Category</Text>
+          <Input placeholder={'Eg. Data structures, Dynamic Programming'} {...register("categories", { required: true })}/>
           {errors.categories && <p style={{color: 'red'}}>This field is required</p>}
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Question Complexity</Text>
