@@ -21,3 +21,8 @@
 ## In dev - note data is dropped on start
 
 1. Run `npm run start:dev` - hot reloads using nodemon when files are changed
+
+### Admin account
+
+Username: admin@test.com
+password: Set by ADMIN_PASSWORD field
