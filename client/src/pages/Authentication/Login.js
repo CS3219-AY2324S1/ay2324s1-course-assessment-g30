@@ -19,8 +19,14 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import { getAuthToken } from '../../api/Auth';
 import colors from '../../utils/Colors';
+<<<<<<< HEAD
 import checkAuth from '../../utils/checkAuth'
 import * as React from 'react';
+=======
+import * as React from 'react';
+import checkAuth from '../../utils/checkAuth';
+
+>>>>>>> main
 
 
 export default function Login() {

@@ -22,9 +22,16 @@ export default function LandingPage() {
   const [reload, setReload] = React.useState(false);
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
+=======
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+>>>>>>> main
     const isAuthenticated = checkAuth(); 
     if (isAuthenticated) {
       setLoggedIn(true);
@@ -39,6 +46,10 @@ export default function LandingPage() {
   
   React.useEffect(() => {
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+>>>>>>> main
     if (reload) {
       window.location.reload()
       setReload(true)
