@@ -15,11 +15,14 @@ function Table() {
     const [table, setTable] = useState([]);
     
     
-    useEffect(() => {
-      if (table.length === 0) {
-        setTable(getTableStorage())
-      }
-    }, [])
+  useEffect(() => {
+    const storageData = getTableStorage();
+  
+    if (storageData !== null && Array.isArray(storageData) && storageData.length > 0) {
+      setTable(storageData);
+    }
+  }, []);
+  
 
 
   return (
@@ -30,8 +33,10 @@ function Table() {
     <Box style={{display: 'flex', justifyContent: 'flex-end'}}>
     <Button onClick={() => navigator('/add_question')} leftIcon={<AddIcon />}>Add Question</Button>
     </Box>
+   
     <div class="container">
       <h2 id='title'>Leetcode Questions</h2>
+      <p style={{color: 'gray'}}>* If no question shows up, please refresh browser</p>
       <ul class="responsive-table">
         <li class="table-header">
           <div class="col-1">Question Id</div>
@@ -49,7 +54,6 @@ function Table() {
             </li>
           )
         })}
-        
       </ul>
     </div>
     </>

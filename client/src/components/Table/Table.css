@@ -1,70 +1,81 @@
 body {
-    font-family: 'lato', sans-serif;
+  font-family: 'lato', sans-serif;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+#title {
+  font-size: 26px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+#title small {
+  font-size: 0.5em;
+}
+
+.responsive-table li {
+  border-radius: 3px;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.responsive-table .table-header {
+  background-color: #E27d60;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+
+.responsive-table .table-row {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+.responsive-table .table-row:hover {
+  background-color: #8d8d8de0;
+  cursor: pointer;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+.responsive-table .col-1 {
+  flex-basis: 20%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.responsive-table .col-2 {
+  flex-basis: 15%;
+}
+
+.responsive-table .col-3 {
+  flex-basis: 25%;
+}
+
+.responsive-table .col-4 {
+  flex-basis: 20%;
+}
+
+@media (max-width: 767px) {
+  .responsive-table .table-header {
+      display: none;
   }
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+
+  .responsive-table li {
+      display: block;
   }
-  
-  #title {
-    font-size: 26px;
-    margin: 20px 0;
-    text-align: center;
-    small {
-      font-size: 0.5em;
-    }
-  } 
-  
-  .responsive-table {
-    li {
-      border-radius: 3px;
-      padding: 25px 30px;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 25px;
-    }
-    
-    .table-header {
-      background-color: #E27d60;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      font-weight: 700;
-    }
-    .table-row {
-      background-color: #ffffff;
-      box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-    }
-    .table-row:hover {
-      background-color: #8d8d8de0;
-      cursor: pointer;
-      box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
-    }
-    .col-1 {
-      flex-basis: 12%;
-    }
-    .col-2 {
-      flex-basis: 15%;
-    }
-    .col-3 {
-      flex-basis: 25%;
-    }
-    .col-4 {
-      flex-basis: 20%;
-    }
-    
-    
-    @media all and (max-width: 767px) {
-      .table-header {
-        display: none;
-      }
-      
-      li {
-        display: block;
-      }
-      
-    }
-  }
+}
+
+.long-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

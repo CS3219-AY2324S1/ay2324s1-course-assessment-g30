@@ -27,7 +27,6 @@ function IndividualQuestionPage() {
           
         }
     }, [])
-    console.log('here', question)
 
     const parser = new DOMParser();
     
@@ -81,9 +80,6 @@ function IndividualQuestionPage() {
             <Text>{question?.question_complexity}</Text>
           </CardBody>
         </Card>
-        
-        
-        <Textarea minH={'500px'}placeholder='Enter Code Here' resize={'vertical'}/>
       </Box>
       
     </HStack>

@@ -65,22 +65,8 @@ export default function WithSubnavigation() {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
-            Sign In
-          </Button>
-          <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
-            bg={colors.primary}
-            href={'/register'}
-            _hover={{
-              bg: colors.darkerPrimary,
-            }}>
-            Sign Up
-          </Button>
+          
+          
         </Stack>
       </Flex>
 
