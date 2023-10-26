@@ -10,7 +10,6 @@ import { initalize as initalize_db } from './src/db/init';
 import express from 'express';
 import authJwtMiddleware from './src/middleware/auth';
 import cors from 'cors';
-import { getUserRole } from './src/controllers/auth-controller';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,8 +29,6 @@ router.get('/test', (req, res) => {
 // Create new user endpoint
 router.post('/auth/register', createUser);
 router.post('/auth/login', loginUser);
-
-router.post('/user/role', getUserRole);
 
 // Protected routes
 router.use(authJwtMiddleware);

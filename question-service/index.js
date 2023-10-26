@@ -23,6 +23,6 @@ const initializeApp = async (port_no) => {
   return app;
 };
 
-initializeApp(3001);
+initializeApp();
 
 module.exports = { initializeApp };

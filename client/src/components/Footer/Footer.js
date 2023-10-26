@@ -27,32 +27,6 @@ export const Logo = (props) => {
   )
 }
 
-const SocialButton = ({
-  children,
-  label,
-  href,
-}) => {
-  return (
-    <chakra.button
-      bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
-      rounded={'full'}
-      w={8}
-      h={8}
-      cursor={'pointer'}
-      as={'a'}
-      href={href}
-      display={'inline-flex'}
-      alignItems={'center'}
-      justifyContent={'center'}
-      transition={'background 0.3s ease'}
-      _hover={{
-        bg: useColorModeValue('blackAlpha.200', 'whiteAlpha.200'),
-      }}>
-      <VisuallyHidden>{label}</VisuallyHidden>
-      {children}
-    </chakra.button>
-  )
-}
 
 export default function SmallWithLogoLeft() {
   return (
@@ -69,17 +43,6 @@ export default function SmallWithLogoLeft() {
         align={{ base: 'center', md: 'center' }}>
         <Logo />
         <Text>© Geekcode. All rights reserved</Text>
-        <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}>
-            <FaTwitter />
-          </SocialButton>
-          <SocialButton label={'YouTube'} href={'#'}>
-            <FaYoutube />
-          </SocialButton>
-          <SocialButton label={'Instagram'} href={'#'}>
-            <FaInstagram />
-          </SocialButton>
-        </Stack>
       </Container>
     </Box>
   )

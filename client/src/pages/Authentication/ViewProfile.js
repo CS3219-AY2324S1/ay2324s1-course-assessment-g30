@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getRole, getUserProfile } from '../../api/Auth';
+import { getUserProfile } from '../../api/Auth';
 import { Center, Card, useDisclosure, Text, Stack, StackDivider, Box, Heading, CardHeader, CardBody, CardFooter, Button, HStack } from '@chakra-ui/react'
 import EditProfileModal from './EditProfile';
 import DeleteProfileModal from './DeleteProfile';
@@ -7,7 +7,6 @@ import DeleteProfileModal from './DeleteProfile';
 function ViewProfile() {
 
   const [user, setUser] = useState([]);
-  const [role, setRole] = useState([]);
 
   useEffect(() => {
     if (user.length === 0) {
@@ -18,11 +17,7 @@ function ViewProfile() {
       
     }
 
-    if (role.length === 0) {
-      getRole().then((data) => {
-        setRole(data.role);
-      })
-    }
+  
    }, [])
 
   const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure()
@@ -84,14 +79,6 @@ function ViewProfile() {
           </Heading>
           <Text pt='2' fontSize='sm'>
             {user.lastName}
-          </Text>
-        </Box>
-        <Box>
-          <Heading size='xs' textTransform='uppercase'>
-            Role
-          </Heading>
-          <Text pt='2' fontSize='sm'>
-            {role}
           </Text>
         </Box>
       </Stack>
