@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import * as React from 'react'
 import {
   Container,
   Stack,
@@ -19,25 +19,26 @@ import checkAuth from '../../utils/checkAuth';
 
 export default function LandingPage() {
 
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = React.useState(false);
   const navigate = useNavigate();
 
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const isAuthenticated = checkAuth(); 
     if (isAuthenticated) {
       setLoggedIn(true);
     }
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (loggedIn) {
       navigate('/dashboard');
     }
   }, [loggedIn, navigate]);
+  
+  React.useEffect(() => {
 
-  useEffect(() => {
     if (reload) {
       window.location.reload()
       setReload(true)
