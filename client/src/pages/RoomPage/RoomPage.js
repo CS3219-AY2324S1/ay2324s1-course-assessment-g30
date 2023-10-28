@@ -37,7 +37,7 @@ function RoomPage() {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
   const [codeRef, setCodeRef] = useState("");
-  
+
   useEffect(() => {
     let autoRedirectTimeout;
 
@@ -224,11 +224,7 @@ function RoomPage() {
             boxShadow="lg"
             area={"chat"}
           >
-            <ChatContainer
-              socket={socket}
-              roomId={roomId}
-              //   chatHistory={chatHistory}
-            />
+            <ChatContainer socket={socket} roomId={roomId} />
           </GridItem>
           <GridItem
             pl="2"
@@ -244,10 +240,10 @@ function RoomPage() {
             <RoomPanel roomId={roomId} socket={socket} timer={timer} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
             <EditorContainer
-            socket={socket}
-            programmingLanguage={programmingLanguage}
-            roomId={roomId}
-            getCodeRef={setCodeRef}
+              socket={socket}
+              programmingLanguage={programmingLanguage}
+              roomId={roomId}
+              getCodeRef={setCodeRef}
             />
           </GridItem>
           <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>

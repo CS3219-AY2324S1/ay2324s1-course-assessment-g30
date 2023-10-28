@@ -1,52 +1,56 @@
 import React, { useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 
-const EditorContainer = ({ socket, programmingLanguage, roomId, getCodeRef }) => {
+const EditorContainer = ({
+  socket,
+  programmingLanguage,
+  roomId,
+  getCodeRef,
+}) => {
   const editorRef = useRef(null);
   // initializing code editor
 
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
+    // Fetch saved state from editor (on redis) and apply to editor
+
+    // Change event for editor
     editorRef.current.getModel().onDidChangeContent((event) => {
+      console.log(event);
       const source = event.changes;
-      const code = source.toString();
 
-      getCodeRef(code);
+      socket.emit("push-code", source, roomId);
 
-      if (code !== "setValue") {
-        socket.current.emit("push-code", roomId, code);
-      }
-
+      getCodeRef(source);
     });
   }
 
   useEffect(() => {
-    if (socket.current) {
-      socket.current.on("push-code", (code) => {
-        if (code !== null) {
-          //editorRef.current.setValue(code);
-          editorRef.current.getModel().applyEdits(code.changes);
-        }
+    if (socket) {
+      // Fetch saved state from editor (on redis) and apply to editor
+      //   socket.on("receive-state", (initial_state) => {
+      //     editorRef.current.getModel().applyEdits(initial_state);
+      //   });
+
+      // Receiving change from other users
+      socket.on("push-code", (code) => {
+        console.log(code);
+        editorRef.current.getModel().applyEdits(code);
       });
     }
-
-    return () => {
-      socket.current.off("push-code");
-    };
-  }, [socket.current]);
+  }, [socket]);
 
   return (
-      <div>
-        <Editor
-            height="90vh"
-            width="100%"
-            theme="vs-dark"
-            onMount={onEditorDidMount}
-            defaultLanguage={programmingLanguage}
-        />
-      </div>
+    <div>
+      <Editor
+        height="90vh"
+        width="100%"
+        theme="vs-dark"
+        onMount={onEditorDidMount}
+        defaultLanguage={programmingLanguage}
+      />
+    </div>
   );
 };
 
 export default EditorContainer;
-

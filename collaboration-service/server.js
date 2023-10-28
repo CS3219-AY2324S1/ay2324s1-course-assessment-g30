@@ -7,13 +7,15 @@ const {
   disconnectFromRoom,
   leaveRoom,
   getRoomDetails,
-} from "./controllers/room-controller.js";
-import { broadcastJoin, sendMessage } from "./controllers/chat-controller.js";
-import { pushCode, syncCode } from "./controllers/editor-controller.js";
-import { connectToDB } from "./model/db.js";
-import Redis from "ioredis";
-import { attemptToAuthenticate, auth } from "./middleware/auth.js";
-
+} = require("./controllers/room-controller.js");
+const {
+  broadcastJoin,
+  sendMessage,
+} = require("./controllers/chat-controller.js");
+const { pushCode } = require("./controllers/editor-controller.js");
+const { connectToDB } = require("./model/db.js");
+const Redis = require("ioredis");
+const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -46,7 +48,7 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.username} connected`);
 
   socket.on("set-up-room", (roomId) => {
-    setUpRoom(socket, roomId);
+    setUpRoom(socket, roomId, redis);
   });
 
   socket.on("join-room", (roomId) => {
@@ -63,10 +65,6 @@ io.on("connection", (socket) => {
 
   socket.on("push-code", (code, roomId) => {
     pushCode(socket, code, roomId, io, redis);
-  });
-
-  socket.on("sync-code", (code, roomId) => {
-    syncCode(socket, code, roomId, io, redis);
   });
 
   socket.on("disconnecting", async () => {

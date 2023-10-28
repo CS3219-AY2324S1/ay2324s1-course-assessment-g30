@@ -4,7 +4,7 @@ const Room = require("../model/room-model.js");
 /**
  * Connects socket to a room and fetches the state of chat and editor for user
  */
-const setUpRoom = async (socket, roomId) => {
+const setUpRoom = async (socket, roomId, redis) => {
   console.log(`Setting up room ${roomId} for user ${socket.username}`);
   const existingRoom = await Room.findOne({ room_id: roomId });
 
@@ -16,10 +16,14 @@ const setUpRoom = async (socket, roomId) => {
 
     socket.join(roomId);
 
-    socket.emit("sync-code", {
-      text: "",
-      roomId,
-    });
+    // Fetch the editor state for the room from redis and emit some event for user to receive the initial state
+    // const editorKey = `editor:${roomId}`;
+    // const initial_state = await redis.lrange(
+    //   editorKey,
+    //   0, -1)
+    // );
+
+    // socket.emit("receive-state", initial_state);
 
     socket.emit("room-is-ready");
   } else {
@@ -60,15 +64,14 @@ const getRoomDetails = async (req, res) => {
 
     if (!room) {
       return res
-          .status(404)
-          .json({ error: "Room Details not found for " + roomId });
+        .status(404)
+        .json({ error: "Room Details not found for " + roomId });
     }
 
     res.status(200).json(room);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-
 };
-module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails };
 
+module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails };
