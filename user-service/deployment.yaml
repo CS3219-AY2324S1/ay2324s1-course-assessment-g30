@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+      environment: production
+      tier: backend
+      app.kubernetes.io/component: backend
+      app.kubernetes.io/part-of: peerprep
+  template:
+    metadata:
+      labels:
+        app: user-service
+        environment: production
+        tier: backend
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: peerprep
+      annotations:
+        commit: 7322af717ee4ae86491c0105077936e77c6fb022
+    spec:
+      serviceAccountName: ksa-cloud-sql
+      containers:
+        - name: user-service-backend
+          image: asia-southeast1-docker.pkg.dev/cs3219-402913/peerprep/userservice_prod:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_ADDR
+              value: "127.0.0.1"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "userservice"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gke-cloud-sql-secrets
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gke-cloud-sql-secrets
+                  key: password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-secrets
+                  key: jwt-private-key
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: user-service-secrets
+                  key: admin-password
+
+        - name: cloud-sql-proxy
+          # It is recommended to use the latest version of the Cloud SQL Auth Proxy
+          # Make sure to update on a regular schedule!
+          image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.1.0
+          args:
+            # Enable structured logging with LogEntry format:
+            - "--structured-logs"
+
+            # Replace DB_PORT with the port the proxy should listen on
+            - "--port=5432"
+            - "cs3219-402913:asia-southeast1:user-service-db"
+
+          securityContext:
+            runAsNonRoot: true
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1"

@@ -1,14 +1,17 @@
 FROM node:16-alpine as builder
 WORKDIR '/client'
 COPY ./package.json ./
+COPY .env ./
 COPY . .
 RUN npm ci
 RUN npm run build
 
-FROM nginx:alpine
-COPY --from=builder /client/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf  
-CMD ["nginx", "-g", "daemon off;"]
+FROM  node:16-alpine
+COPY --from=builder /client/build /client/build
+WORKDIR /client
+RUN npm install -g serve
+EXPOSE 3002
+CMD ["serve", "-s", "build", "-l", "3002"];
 
 # To test it alone, run "docker build -t client ." inside /client
 # To run the image, run "docker run -d -p 3002:3002 client" inside /client

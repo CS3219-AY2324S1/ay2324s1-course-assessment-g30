@@ -20,7 +20,7 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
-    origin: "http://localhost:3002",
+    origin: process.env.CLIENT_URL || "http://localhost:3002",
     methods: ["GET", "POST"],
   },
   // path: "/matching-service/socket.io/",

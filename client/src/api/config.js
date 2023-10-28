@@ -22,4 +22,3 @@
 // export const matchingServiceURL = "http://localhost:80/matching-service/";
 
 // export const collaborationServiceURL = "http://localhost:80/collaboration-service/";
-

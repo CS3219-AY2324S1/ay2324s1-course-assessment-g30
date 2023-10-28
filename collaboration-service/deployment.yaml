@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collaboration-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: collaboration-service
+      environment: production
+      tier: backend
+      app.kubernetes.io/component: backend
+      app.kubernetes.io/part-of: peerprep
+  template:
+    metadata:
+      labels:
+        app: collaboration-service
+        environment: production
+        tier: backend
+        app.kubernetes.io/component: backend
+        app.kubernetes.io/part-of: peerprep
+      annotations:
+        commit: 7322af717ee4ae86491c0105077936e77c6fb022
+    spec:
+      containers:
+        - name: collaboration-service-backend
+          image: asia-southeast1-docker.pkg.dev/cs3219-402913/peerprep/collaborationservice_prod:latest
+          ports:
+            - containerPort: 3004
+          env:
+            - name: USER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: user-service
+            - name: QUESTION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: question-service
+            - name: REDIS_HOST
+              value: "10.152.64.51"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: CLIENT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: client
