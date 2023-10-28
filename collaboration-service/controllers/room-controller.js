@@ -20,6 +20,12 @@ export const setUpRoom = async (socket, roomId, redis) => {
     socket.emit("chat-history", messages);
 
     socket.join(roomId);
+
+    socket.emit("sync-code", {
+      text: "",
+      roomId,
+    });
+
     socket.emit("room-is-ready");
   } else {
     socket.emit("invalid-room");
@@ -59,8 +65,8 @@ export const getRoomDetails = async (req, res) => {
 
     if (!room) {
       return res
-        .status(404)
-        .json({ error: "Room Details not found for " + roomId });
+          .status(404)
+          .json({ error: "Room Details not found for " + roomId });
     }
 
     res.json(room);

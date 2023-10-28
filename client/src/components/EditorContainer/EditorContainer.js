@@ -1,32 +1,39 @@
-import {useRef, useEffect, useState} from "react";
+import React, { useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import * as Y from "yjs";
-import { WebrtcProvider } from "y-webrtc";
-import { MonacoBinding } from "y-monaco";
 
-function EditorContainer({ programmingLanguage, roomId}) {
+const EditorContainer = ({ socket, programmingLanguage, roomId, getCodeRef }) => {
   const editorRef = useRef(null);
+  // initializing code editor
 
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
-    const doc = new Y.Doc();
-    const provider = new WebrtcProvider(roomId, doc, { signaling: ['ws://localhost:3006'] });
-    editor.onDidDispose(()=>{provider.destroy()})
+    editorRef.current.getModel().onDidChangeContent((event) => {
+      const source = event.changes;
+      const code = source.toString();
 
-    const ytext = doc.getText("monaco");
-    provider.on('synced', synced => {
-      console.log(`Editor for ${roomId} synced`, synced)
+      getCodeRef(code);
 
-    })
-    const binding = new MonacoBinding(
-        ytext,
-        editorRef.current.getModel(),
-        new Set([editorRef.current]),
-        provider.awareness
-    );
-    console.log(provider.awareness);
+      if (code !== "setValue") {
+        socket.current.emit("push-code", roomId, code);
+      }
+
+    });
   }
 
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("push-code", (code) => {
+        if (code !== null) {
+          //editorRef.current.setValue(code);
+          editorRef.current.getModel().applyEdits(code.changes);
+        }
+      });
+    }
+
+    return () => {
+      socket.current.off("push-code");
+    };
+  }, [socket.current]);
 
   return (
       <div>
@@ -39,6 +46,6 @@ function EditorContainer({ programmingLanguage, roomId}) {
         />
       </div>
   );
-}
+};
 
 export default EditorContainer;
