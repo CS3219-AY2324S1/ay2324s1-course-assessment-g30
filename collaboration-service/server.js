@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
-import { Server } from "socket.io";
-import { createServer } from "http";
-import {
+const express = require("express");
+const cors = require("cors");
+const http = require("http");
+const socketIO = require("socket.io");
+const {
   setUpRoom,
   disconnectFromRoom,
   leaveRoom,
@@ -26,8 +26,8 @@ const redis = new Redis({
 });
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const httpServer = http.createServer(app);
+const io = socketIO(httpServer, {
   cors: {
     origin: "http://localhost:3002",
     methods: ["GET", "POST"],
@@ -46,19 +46,19 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.username} connected`);
 
   socket.on("set-up-room", (roomId) => {
-    setUpRoom(socket, roomId, redis);
+    setUpRoom(socket, roomId);
   });
 
   socket.on("join-room", (roomId) => {
-    broadcastJoin(socket, roomId, io, redis);
+    broadcastJoin(socket, roomId, io);
   });
 
   socket.on("leave-room", (roomId) => {
-    leaveRoom(socket, roomId, io, redis);
+    leaveRoom(socket, roomId, io);
   });
 
   socket.on("send-message", (message, roomId) => {
-    sendMessage(socket, message, roomId, io, redis);
+    sendMessage(socket, message, roomId, io);
   });
 
   socket.on("push-code", (code, roomId) => {
@@ -70,10 +70,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnecting", async () => {
-    disconnectFromRoom(socket, io, redis);
+    disconnectFromRoom(socket, io);
   });
 
   socket.on("disconnect", () => {});
+
+  socket.on("connect_error", (err) => {
+    console.log(err instanceof Error); // true
+    console.log(err.message); // not authorized
+    console.log(err.data); // { content: "Please retry later" }
+  });
 });
 
 app.use(cors());

@@ -1,7 +1,7 @@
-# MongoDB questionapi setup using docker
+# MongoDB question-service setup using docker
 
 1. Install docker desktop
-2. In the root dir questionapi/ run `docker build . -t <docker-username>/question-api`
+2. In the root dir question-service/ run `docker build . -t <docker-username>/question-api`
 3. Amend container name and port as needed and run the command
    `docker run -p 3001:3001 -d <docker-username>/question-api`
 

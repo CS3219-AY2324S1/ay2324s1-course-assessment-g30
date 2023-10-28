@@ -5,12 +5,11 @@ import { io } from "socket.io-client";
 import { matchingServiceURL } from "../../api/config";
 import CreateRoomButton from "./CreateRoomButton";
 import MatchMeButton from "./MatchMeButton";
-import useWindowDimensions from '../../utils/WindowDimensions'
+import useWindowDimensions from "../../utils/WindowDimensions";
 
 function MatchPanel() {
   const [socket, setSocket] = useState(null);
-  const {width} = useWindowDimensions(); //1000
-  console.log(width)
+  const { width } = useWindowDimensions(); //1000
 
   useEffect(() => {
     // Connect to common lobby
@@ -39,7 +38,7 @@ function MatchPanel() {
       justifyContent="center"
       flexDirection="column"
       gap={3}
-      minH={width < 1000 ? '100px' : '300px'}
+      minH={width < 1000 ? "100px" : "300px"}
     >
       <MatchMeButton socket={socket} />
       <CreateRoomButton socket={socket} />

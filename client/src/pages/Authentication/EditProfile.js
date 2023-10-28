@@ -28,6 +28,12 @@ function EditProfileModal(props) {
     setError,
     formState: { errors }
   } = useForm({defaultValues: props.user});
+
+  const prevUsername = props.user.username;
+
+ 
+  
+  
   
   const [errMsg, setErrMsg] = useState(null);
 
@@ -46,6 +52,12 @@ function EditProfileModal(props) {
       setError('username')
       error = true
     }
+
+    if (data.username === prevUsername) {
+      delete data.username;
+    }
+
+
     if (!error) {
       editProfile(data).then(() => {
         toast({

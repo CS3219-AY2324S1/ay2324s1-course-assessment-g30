@@ -28,6 +28,12 @@ jobs:
         run: |
           npm install
           npm test
+      
+      - name: Build and test question-service
+        working-directory: ./question-service
+        run: |
+          npm install
+          npm test
             
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build

@@ -4,9 +4,9 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import "./ChatContainer.css";
 import Cookies from "js-cookie";
 
-function ChatContainer({ socket, roomId, chatHistory }) {
+function ChatContainer({ socket, roomId }) {
   const [messageText, setMessageText] = useState("");
-  const [messages, setMessages] = useState(chatHistory);
+  const [messages, setMessages] = useState([]);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const uuid = Cookies.get("uuid");
 

@@ -1,6 +1,6 @@
-import Room from "../model/room-model.js";
+const Room = require("../model/room-model.js");
 
-export const getJoinedRooms = async (req, res) => {
+const getJoinedRooms = async (req, res) => {
   try {
     const { uuid } = req.body;
     console.log(`Fetching joined rooms for user ${uuid}`);
@@ -14,8 +14,10 @@ export const getJoinedRooms = async (req, res) => {
       .sort({ date_created: -1 })
       .limit(10);
 
-    res.json(rooms);
+    res.status(200).json(rooms);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+module.exports = { getJoinedRooms };

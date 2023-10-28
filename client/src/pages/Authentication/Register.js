@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react'
 import colors from '../../utils/Colors';
 import checkAuth from '../../utils/checkAuth';
+import * as React from 'react';
 
 
 export default function Register() {
@@ -186,7 +187,7 @@ export default function Register() {
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="lastName">
+                <FormControl id="lastName" isRequired>
                   <FormLabel>Last Name</FormLabel>
                   <Input {...register('lastName', {
                     required: true,

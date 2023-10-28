@@ -26,13 +26,13 @@ services:
     restart: on-failure
 
   question-service:
-    build: ./questionapi
+    build: ./question-service
     ports:
       - "3001:3001"
     depends_on:
       - user-service
     env_file:
-      - ./questionapi/.env
+      - ./question-service/.env
     restart: on-failure
 
   redis:
@@ -60,7 +60,6 @@ services:
     env_file:
       - ./collaboration-service/.env
     depends_on:
-      - redis
       - user-service
     restart: on-failure
 

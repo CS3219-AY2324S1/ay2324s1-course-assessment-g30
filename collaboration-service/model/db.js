@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const admin = "cs3219-grp30-admin";
 const password = "vNOO0irf6zd7Qjie";
@@ -9,7 +9,7 @@ const mongoDBUrl =
   process.env.MONGODB_URI ||
   `mongodb+srv://${admin}:${password}@${cluster}.mongodb.net/${database}?retryWrites=true&w=majority`;
 
-export const connectToDB = () => {
+const connectToDB = async () => {
   mongoose.connect(mongoDBUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -25,3 +25,5 @@ export const connectToDB = () => {
     console.log("MongoDB connection is open");
   });
 };
+
+module.exports = { connectToDB };
