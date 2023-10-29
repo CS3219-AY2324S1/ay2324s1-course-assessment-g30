@@ -1,17 +1,15 @@
 name: Deploy MultiDocker
-
 on:
-  pull_request:
+  push:
     branches:
       - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 # Use v2 of the action
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
@@ -36,12 +34,10 @@ jobs:
         run: |
           npm ci
           npm test
-
+            
       - name: Prevent PR merge
         if: github.event.pull_request.merged == 'true'
         run: echo "This PR cannot be merged. Please make necessary changes."
-
-            
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
 
