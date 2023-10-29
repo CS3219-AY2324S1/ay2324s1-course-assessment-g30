@@ -58,12 +58,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {});
-
-  socket.on("connect_error", (err) => {
-    console.log(err instanceof Error); // true
-    console.log(err.message); // not authorized
-    console.log(err.data); // { content: "Please retry later" }
-  });
 });
 
 app.use(cors());
