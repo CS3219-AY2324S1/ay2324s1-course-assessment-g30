@@ -26,13 +26,13 @@ jobs:
       - name: Build and test client
         working-directory: ./client
         run: |
-          npm install
+          npm ci
           npm test
       
       - name: Build and test question-service
         working-directory: ./question-service
         run: |
-          npm install
+          npm ci
           npm test
             
       # - name: Build Docker containers

@@ -36,7 +36,7 @@
     "start": "PORT=3002 react-scripts start",
     "start-w": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "jest --silent",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
