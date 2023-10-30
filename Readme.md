@@ -1,10 +1,9 @@
 # Setting up PeerPrep
 
 1. Install docker desktop
-2. Use readme in /user-service to setup user service
-3. Use readme in /questionapi to setup question service
-4. Use readme in /client to setup client
+2. Run docker compose up -d in project root directory
 5. Once the container is built, the application should be running on localhost:3002
+
 
 # Help
 * Give the containers sometime to start up
