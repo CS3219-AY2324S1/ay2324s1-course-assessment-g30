@@ -36,7 +36,6 @@ function RoomPage() {
   const [timer, setTimer] = useState("00:00:00");
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [codeRef, setCodeRef] = useState("");
   const [initialCode, setInitialCode] = useState("");
 
   useEffect(() => {
@@ -85,9 +84,7 @@ function RoomPage() {
       socket.emit("set-up-room", roomId);
 
       socket.on("sync-state", (code) => {
-        if (code !== "") {
-          setInitialCode(JSON.parse(code)["code"]);
-        }
+        setInitialCode(JSON.parse(code)["code"]);
       });
 
       socket.on("room-is-ready", () => {
@@ -250,7 +247,6 @@ function RoomPage() {
               socket={socket}
               programmingLanguage={programmingLanguage}
               roomId={roomId}
-              getCodeRef={setCodeRef}
               initialCode={initialCode}
             />
           </GridItem>

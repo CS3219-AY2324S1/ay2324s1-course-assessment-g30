@@ -5,7 +5,6 @@ const EditorContainer = ({
   socket,
   programmingLanguage,
   roomId,
-  getCodeRef,
   initialCode,
 }) => {
   const editorRef = useRef(null);
@@ -15,25 +14,22 @@ const EditorContainer = ({
     editorRef.current.getModel().setValue(initialCode);
   }
 
-  function handleEditorChange(value, event) {
+  function handleEditorChange(code, event) {
     if (event.isFlush) {
-      // ignore remote updates to editor
+      // Ignore remote updates to editor
     } else {
-      // Push usr changes
+      // Push usr changes to server
       console.log("local changes pushed");
-      // const source = event.changes;
-      socket.emit("push-code", value, roomId);
+      socket.emit("push-code", code, roomId);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      console.log("socket");
       // Receiving change from other users
       socket.on("push-code", (code, id) => {
         console.log("Applying remote changes");
         editorRef.current.getModel().setValue(code);
-        // editorRef.current.getModel().applyEdits(changes);
       });
     }
   }, [socket]);

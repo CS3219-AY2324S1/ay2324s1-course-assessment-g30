@@ -19,9 +19,7 @@ const setUpRoom = async (socket, roomId, redis) => {
     // Fetch the initial editor state
     const editorKey = `editor:${roomId}`;
     const code = await redis.lindex(editorKey, 0);
-    if (code == null) {
-      socket.emit("sync-state", "", roomId);
-    } else {
+    if (code != null) {
       socket.emit("sync-state", code, roomId);
     }
 

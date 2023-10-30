@@ -11,7 +11,7 @@ const pushCode = async (socket, code, roomId, io, redis) => {
       code,
     })
   );
-  // We only save 3 versions onto redis
+  // We only save 3 versions of the code onto redis
   await redis.ltrim(editorKey, 0, 3);
   console.log("Changes saved to redis", code);
 };
