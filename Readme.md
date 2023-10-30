@@ -11,4 +11,4 @@
 * Delete the docker container and images and rebuild the container
 
 
-You can contact @hongshenggggg on telegram should you need more assistance! 
+You can email e0725346@u.nus.edu or contact @hongshenggggg on telegram should you need more assistance! 
