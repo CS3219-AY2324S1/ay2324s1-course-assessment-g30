@@ -64,8 +64,8 @@ const getRoomDetails = async (req, res) => {
 
     if (!room) {
       return res
-        .status(404)
-        .json({ error: "Room Details not found for " + roomId });
+          .status(404)
+          .json({ error: "Room Details not found for " + roomId });
     }
 
     res.status(200).json(room);
