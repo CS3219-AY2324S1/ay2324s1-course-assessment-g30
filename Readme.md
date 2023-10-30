@@ -7,7 +7,7 @@
 5. Once the container is built, the application should be running on localhost:3002
 
 # Help
-* Give the containers sometime to start up
+* Give the container sometime to start up
 * Delete the docker container and image and rebuild the container
 
 
