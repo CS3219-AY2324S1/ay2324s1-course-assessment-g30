@@ -7,12 +7,13 @@ const {
   disconnectFromRoom,
   leaveRoom,
   getRoomDetails,
+  saveStateToDb,
 } = require("./controllers/room-controller.js");
 const {
   broadcastJoin,
   sendMessage,
 } = require("./controllers/chat-controller.js");
-const { pushCode } = require("./controllers/editor-controller.js");
+const { pushCode, } = require("./controllers/editor-controller.js");
 const { connectToDB } = require("./model/db.js");
 const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
@@ -69,11 +70,6 @@ io.on("connection", (socket) => {
     pushCode(socket, code, roomId, io, redis);
   });
 
-  socket.on("request-state", (roomId) => {
-    // might add a timer to only allow a trigger once every min
-    // if perf is an issue
-    syncState(socket, roomId, io, redis);
-  });
 
   socket.on("disconnecting", async () => {
     disconnectFromRoom(socket, io);
@@ -81,6 +77,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     // Add event to save DB here
+    saveStateToDb(socket, roomId, redis)
   });
 
   socket.on("connect_error", (err) => {

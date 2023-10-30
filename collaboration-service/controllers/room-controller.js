@@ -15,7 +15,6 @@ const setUpRoom = async (socket, roomId, redis) => {
     }
 
     socket.join(roomId);
-
     // Fetch the initial editor state
     const editorKey = `editor:${roomId}`;
     const code = await redis.lindex(editorKey, 0);
@@ -73,4 +72,22 @@ const getRoomDetails = async (req, res) => {
   }
 };
 
-module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails };
+/**
+ * Saves the state of the editor to mongoDB
+ */
+const saveStateToDb = async (socket, redis) => {
+  console.log(`Saving editor state for room:${roomId}`);
+  const roomKeysIterator = socket.rooms.keys();
+
+  for (const roomId of roomKeysIterator) {
+    const editorKey = `editor:${roomId}`;
+    const code = await redis.lindex(editorKey, 0);
+    if (code != null) {
+      await Room.updateOne({ room_id: roomId }, { editor_state: JSON.parse(code)});
+    }
+    console.log("Editor sate saved to mongoDB");
+  }
+};
+
+
+module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails, saveStateToDb};
