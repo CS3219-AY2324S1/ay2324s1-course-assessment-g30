@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     // Add event to save DB here
-    saveStateToDb(socket, roomId, redis)
+    saveStateToDb(socket, roomId, redis);
   });
 
   socket.on("connect_error", (err) => {

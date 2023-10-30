@@ -76,10 +76,11 @@ const getRoomDetails = async (req, res) => {
  * Saves the state of the editor to mongoDB
  */
 const saveStateToDb = async (socket, redis) => {
-  console.log(`Saving editor state for room:${roomId}`);
   const roomKeysIterator = socket.rooms.keys();
 
+  // Save state for editor when client disconnects
   for (const roomId of roomKeysIterator) {
+    console.log(`Saving editor state for room:${roomId}`);
     const editorKey = `editor:${roomId}`;
     const code = await redis.lindex(editorKey, 0);
     if (code != null) {
