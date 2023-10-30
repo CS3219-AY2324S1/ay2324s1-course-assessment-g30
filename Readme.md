@@ -1,9 +1,14 @@
-To set up,
+# Setting up PeerPrep
 
-    Enter the /client directory from the terminal
-    Enter npm install
+1. Install docker desktop
+2. Use readme in /user-service to setup user service
+3. Use readme in /questionapi to setup question service
+4. Use readme in /client to setup client
+5. Once the container is built, the application should be running on localhost:3002
 
-To run,
+# Help
+* Give the containers sometime to start up
+* Delete the docker containers and images and rebuild the containers
 
-    Ensure that you are in the /client directory from the terminal
-    Enter npm start
+
+You can contact @hongshenggggg on telegram should you need more assistance! 

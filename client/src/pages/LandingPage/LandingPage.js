@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import * as React from 'react'
 import {
   Container,
   Stack,
@@ -14,13 +14,31 @@ import {
   VStack
 } from '@chakra-ui/react'
 import colors from '../../utils/Colors'
-import Table from '../../components/Table/Table'
+import { useNavigate } from 'react-router-dom';
+import checkAuth from '../../utils/checkAuth';
 
 export default function LandingPage() {
 
-  const [reload, setReload] = useState(false);
+  const [reload, setReload] = React.useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  React.useEffect(() => {
+    const isAuthenticated = checkAuth(); 
+    if (isAuthenticated) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      navigate('/dashboard');
+    }
+  }, [loggedIn, navigate]);
+  
+  React.useEffect(() => {
+
     if (reload) {
       window.location.reload()
       setReload(true)
@@ -62,10 +80,20 @@ export default function LandingPage() {
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-          Elevate Your Programming Skills with Peer Prep: Your Ultimate Destination for DSA Mastery! Dive into a world of challenging coding exercises, sharpen your problem-solving abilities, and prepare for coding interviews with our extensive collection of data structures and algorithms challenges. 
+          Elevate Your Programming Skills with PeerPrep: Your Ultimate Destination for DSA Mastery! Dive into a world of challenging coding exercises, sharpen your problem-solving abilities, and prepare for coding interviews with our extensive collection of data structures and algorithms challenges. 
           </Text>
           <Stack spacing={{ base: 4, sm: 6 }} direction={{ base: 'column', sm: 'row' }}>
-            
+            <Button
+              rounded={'full'}
+              size={'lg'}
+              fontWeight={'normal'}
+              px={6}
+              colorScheme={'red'}
+              bg={colors.primary}
+              onClick={() => navigate('/login')}
+              _hover={{ bg: colors.darkerPrimary }}>
+              Get started
+            </Button>
           </Stack>
         </Stack>
         <Flex
@@ -103,9 +131,7 @@ export default function LandingPage() {
       </Stack>
     </Container>
     <Spacer />
-    <Container maxW={'6xl'}>
-      <Table />
-    </Container>
+    
     </VStack>
     </>
   )
