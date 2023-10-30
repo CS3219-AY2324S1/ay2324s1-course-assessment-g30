@@ -230,17 +230,19 @@ function RoomPage() {
           >
             <Tabs minH={"auto"}>
               <TabList>
-                <Tab>One</Tab>
-                <Tab>Two</Tab>
+                <Tab>Chat</Tab>
+                <Tab>Hint</Tab>
               </TabList>
 
               <TabPanels>
                 <TabPanel>
+                <Box style={{ height: "270px" }}>
                   <ChatContainer
                     socket={socket}
                     roomId={roomId}
                     //   chatHistory={chatHistory}
                   />
+                  </Box>
                 </TabPanel>
                 <TabPanel>
                   <p>two!</p>
