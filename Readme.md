@@ -8,7 +8,7 @@
 
 # Help
 * Give the containers sometime to start up
-* Delete the docker container and images and rebuild the container
+* Delete the docker container and image and rebuild the container
 
 
 You can email e0725346@u.nus.edu or contact @hongshenggggg on telegram should you need more assistance! 
