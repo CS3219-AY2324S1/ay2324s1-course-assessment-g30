@@ -14,6 +14,11 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from "@chakra-ui/react";
 import { io } from "socket.io-client";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
@@ -223,11 +228,25 @@ function RoomPage() {
             boxShadow="lg"
             area={"chat"}
           >
-            <ChatContainer
-              socket={socket}
-              roomId={roomId}
-              //   chatHistory={chatHistory}
-            />
+            <Tabs minH={"auto"}>
+              <TabList>
+                <Tab>One</Tab>
+                <Tab>Two</Tab>
+              </TabList>
+
+              <TabPanels>
+                <TabPanel>
+                  <ChatContainer
+                    socket={socket}
+                    roomId={roomId}
+                    //   chatHistory={chatHistory}
+                  />
+                </TabPanel>
+                <TabPanel>
+                  <p>two!</p>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </GridItem>
           <GridItem
             pl="2"
