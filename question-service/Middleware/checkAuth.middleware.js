@@ -21,7 +21,6 @@ const checkAuth = async (req, res, next) => {
     const res = await axios(config);
     const data = res.data;
     const userRole = data.res.role;
-    console.log("userRole", userRole);
     if (userRole == "USER" || userRole == "MAINTAINER") {
       // Attach userRole to the req object
       req.userRole = userRole;
