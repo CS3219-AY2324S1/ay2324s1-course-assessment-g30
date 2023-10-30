@@ -1,8 +1,8 @@
 # Setting up PeerPrep
 
 1. Install docker desktop
-2. Run docker compose up -d in project root directory
-5. Once the container is built, the application should be running on localhost:3002
+2. In the root directory, run `docker-compose up -d --force-recreate --build`
+3. Once the container is built, the application should be running on localhost:3002
 
 
 # Help
