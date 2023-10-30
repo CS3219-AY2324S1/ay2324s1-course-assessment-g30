@@ -104,7 +104,7 @@ export default function Login() {
         minH={'100vh'}
         align={'center'}
         justify={'center'}
-        mt={-150}
+        mt={-130}
         backgroundColor={'gray.100'}
         >
         <Stack spacing={8} mx={'auto'} minW={'lg'} px={16}>

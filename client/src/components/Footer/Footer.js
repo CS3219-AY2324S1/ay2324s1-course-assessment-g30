@@ -69,6 +69,7 @@ export default function SmallWithLogoLeft() {
         align={{ base: 'center', md: 'center' }}>
         <Logo />
         <Text>© PeerPrep. All rights reserved</Text>
+        
       </Container>
     </Box>
   )
