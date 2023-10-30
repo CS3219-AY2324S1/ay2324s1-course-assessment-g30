@@ -124,6 +124,7 @@ function IndividualQuestionPage() {
           <Tabs>
             <TabList>
               <Tab>Description</Tab>
+              <Tab>Past Attempts</Tab>
             </TabList>
 
             <TabPanels>
@@ -137,6 +138,11 @@ function IndividualQuestionPage() {
                     ></div>
                   </div>
                 )}
+              </TabPanel>
+              <TabPanel>
+                <div style={{ overflow: "scroll", height: "80vh" }}>
+                  <div>Work in Progress</div>
+                </div>
               </TabPanel>
             </TabPanels>
           </Tabs>
