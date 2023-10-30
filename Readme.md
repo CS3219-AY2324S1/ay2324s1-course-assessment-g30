@@ -8,7 +8,7 @@
 
 # Help
 * Give the containers sometime to start up
-* Delete the docker containers and images and rebuild the containers
+* Delete the docker container and images and rebuild the container
 
 
 You can contact @hongshenggggg on telegram should you need more assistance! 
