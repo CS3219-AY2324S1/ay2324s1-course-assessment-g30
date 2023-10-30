@@ -12,7 +12,7 @@ const {
   broadcastJoin,
   sendMessage,
 } = require("./controllers/chat-controller.js");
-const { pushCode, syncState } = require("./controllers/editor-controller.js");
+const { pushCode } = require("./controllers/editor-controller.js");
 const { connectToDB } = require("./model/db.js");
 const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
@@ -79,7 +79,9 @@ io.on("connection", (socket) => {
     disconnectFromRoom(socket, io);
   });
 
-  socket.on("disconnect", () => {});
+  socket.on("disconnect", () => {
+    // Add event to save DB here
+  });
 
   socket.on("connect_error", (err) => {
     console.log(err instanceof Error); // true

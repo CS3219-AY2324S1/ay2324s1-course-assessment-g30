@@ -2,7 +2,7 @@ const { broadcastLeave } = require("./chat-controller.js");
 const Room = require("../model/room-model.js");
 
 /**
- * Connects socket to a room and fetches the state of chat and editor for user
+ * Connects socket to a room and fetches the state of editor for user
  */
 const setUpRoom = async (socket, roomId, redis) => {
   console.log(`Setting up room ${roomId} for user ${socket.username}`);
@@ -16,14 +16,14 @@ const setUpRoom = async (socket, roomId, redis) => {
 
     socket.join(roomId);
 
-    // Fetch the editor state for the room from redis and emit some event for user to receive the initial state
-    // const editorKey = `editor:${roomId}`;
-    // const initial_state = await redis.lrange(
-    //   editorKey,
-    //   0, -1)
-    // );
-
-    // socket.emit("receive-state", initial_state);
+    // Fetch the initial editor state
+    const editorKey = `editor:${roomId}`;
+    const code = await redis.lindex(editorKey, 0);
+    if (code == null) {
+      socket.emit("sync-state", "", roomId);
+    } else {
+      socket.emit("sync-state", code, roomId);
+    }
 
     socket.emit("room-is-ready");
   } else {
@@ -37,6 +37,7 @@ const setUpRoom = async (socket, roomId, redis) => {
  */
 const leaveRoom = async (socket, roomId, io) => {
   console.log(`User ${socket.username} left room ${roomId}`);
+  // Fetch from your redis server and store to DB here
   socket.leave(roomId);
   broadcastLeave(socket, roomId, io);
 };
@@ -64,8 +65,8 @@ const getRoomDetails = async (req, res) => {
 
     if (!room) {
       return res
-          .status(404)
-          .json({ error: "Room Details not found for " + roomId });
+        .status(404)
+        .json({ error: "Room Details not found for " + roomId });
     }
 
     res.status(200).json(room);

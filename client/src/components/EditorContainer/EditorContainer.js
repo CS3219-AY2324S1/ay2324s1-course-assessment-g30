@@ -1,27 +1,18 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 
 const EditorContainer = ({
-                           socket,
-                           programmingLanguage,
-                           roomId,
-                           getCodeRef
-                         }) => {
-  // initializing code editor
+  socket,
+  programmingLanguage,
+  roomId,
+  getCodeRef,
+  initialCode,
+}) => {
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
-    // Fetch saved state from editor (on redis) and apply to editor
-    //socket.emit("request-state", roomId);
-    console.log("Initial state requested");
-
-    // Change event for editor
-    // editorRef.current.getModel().onDidChangeContent((event) => {
-    //   // // console.log("usr made some changes", event);
-    //   // const source = event.changes;
-    //   // socket.emit("push-code", source, roomId);
-    //   // getCodeRef(source);
-    // });
+    // Setting initial editor state
+    editorRef.current.getModel().setValue(initialCode);
   }
 
   function handleEditorChange(value, event) {
@@ -36,7 +27,6 @@ const EditorContainer = ({
   }
 
   useEffect(() => {
-
     if (socket) {
       console.log("socket");
       // Receiving change from other users
@@ -45,26 +35,20 @@ const EditorContainer = ({
         editorRef.current.getModel().setValue(code);
         // editorRef.current.getModel().applyEdits(changes);
       });
-
-      // Fetch saved state from editor (on redis) and apply to editor
-      socket.on("sync-state", (code) => {
-        console.log("Local editor is synced to redis", code);
-        editorRef.current.getModel().setValue(JSON.parse(code)["code"]);
-      });
     }
   }, [socket]);
 
   return (
-      <div>
-        <Editor
-            height="90vh"
-            width="100%"
-            theme="vs-dark"
-            onMount={onEditorDidMount}
-            onChange={handleEditorChange}
-            defaultLanguage={programmingLanguage}
-        />
-      </div>
+    <div>
+      <Editor
+        height="90vh"
+        width="100%"
+        theme="vs-dark"
+        onMount={onEditorDidMount}
+        onChange={handleEditorChange}
+        defaultLanguage={programmingLanguage}
+      />
+    </div>
   );
 };
 
