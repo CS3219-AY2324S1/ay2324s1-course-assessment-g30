@@ -104,7 +104,7 @@ function AddQuestionForm() {
             Question Title
           </Text>
           <Input {...register("title", { required: true })} />
-          {errors.title && <p style={{ color: 'red' }}>This field is required</p>}
+          {errors.title && <p id='form error' style={{ color: 'red' }}>This field is required</p>}
           <Divider my={10} />
           <Text mb="20px" fontSize={'lg'} fontWeight={'semibold'}>
             Question Category
