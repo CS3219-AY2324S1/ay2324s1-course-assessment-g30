@@ -272,7 +272,7 @@ function RoomPage() {
 
           {/* handles chat and hints */}
           {<>
-          <Popover variant={'responsive'} isOpen={height < 504 ? false : isOpen} >
+          <Popover variant={'responsive'} isOpen={height < 504 ? false : isOpen} placement={'top'}>
           <PopoverTrigger>
             
             <IconButton
