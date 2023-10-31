@@ -1,34 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Box,
-  Heading,
-  Spinner,
+  Button,
+  Divider,
+  Flex,
   Grid,
   GridItem,
-  Text,
-  Flex,
-  Divider,
+  Heading,
   Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
+  ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  Spinner,
+  Text,
+  Portal,
+  useDisclosure,
+  Tabs, TabList, TabPanels, Tab, TabPanel
 } from "@chakra-ui/react";
-import { io } from "socket.io-client";
-import ChatContainer from "../../components/ChatContainer/ChatContainer";
-import EditorContainer from "../../components/EditorContainer/EditorContainer";
-import RoomPanel from "../../components/RoomPanel/RoomPanel";
 import Cookies from "js-cookie";
-import { collaborationServiceURL } from "../../api/config";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { io } from "socket.io-client";
 import { getUserProfile } from "../../api/Auth";
 import { getRoomDetails } from "../../api/RoomServices";
+import { collaborationServiceURL } from "../../api/config";
+import ChatContainer from "../../components/ChatContainer/ChatContainer";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
+import RoomPanel from "../../components/RoomPanel/RoomPanel";
+import OpenaiChat from "../../components/OpenaiChatContainer/OpenaiChatContainer";
+import useWindowDimensions from "../../utils/WindowDimensions";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -41,6 +49,8 @@ function RoomPage() {
   const [timer, setTimer] = useState("00:00:00");
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
+  const { isOpen, onToggle } = useDisclosure()
+  const { width, height} = useWindowDimensions(); //764
 
   useEffect(() => {
     let autoRedirectTimeout;
@@ -71,6 +81,8 @@ function RoomPage() {
         setIsInvalidRoom(true);
       }
     });
+
+    
 
     getUserProfile().then((data) => {
       const uuid = Cookies.get("uuid");
@@ -107,6 +119,7 @@ function RoomPage() {
     };
   }, []);
 
+  
   // Countdown timer
   function startTimer() {
     const timerInterval = setInterval(() => {
@@ -228,27 +241,11 @@ function RoomPage() {
             boxShadow="lg"
             area={"chat"}
           >
-            <Tabs minH={"auto"}>
-              <TabList>
-                <Tab>Chat</Tab>
-                <Tab>Hint</Tab>
-              </TabList>
-
-              <TabPanels>
-                <TabPanel>
-                <Box style={{ height: "270px" }}>
-                  <ChatContainer
-                    socket={socket}
-                    roomId={roomId}
-                    //   chatHistory={chatHistory}
-                  />
-                  </Box>
-                </TabPanel>
-                <TabPanel>
-                  <p>two!</p>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+            
+          
+              
+          
+                
           </GridItem>
           <GridItem
             pl="2"
@@ -282,8 +279,49 @@ function RoomPage() {
               </ModalBody>
             </ModalContent>
           </Modal>
+          {height > 690 && <>
+          <Popover variant={'responsive'} >
+          <PopoverTrigger>
+            <Button pos={'fixed'} bottom={{base: '20', lg: '20'}}  right={{base: '20', lg: '100'}}>Trigger</Button>
+          </PopoverTrigger>
+          <Portal>
+            <PopoverContent >
+              <PopoverArrow />
+              <PopoverHeader>Hint</PopoverHeader>
+              <PopoverCloseButton />
+              <PopoverBody h={'500px'}>
+              <Tabs>
+                <TabList>
+                  <Tab>Chat</Tab>
+                  <Tab>Hint</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <OpenaiChat />
+                  </TabPanel>
+                  <TabPanel>
+
+                  <ChatContainer
+                    socket={socket}
+                    roomId={roomId}
+                    //   chatHistory={chatHistory}
+                  />
+          
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+                
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
+        </Popover>
+            </>}
         </Grid>
+        
       )}
+      
+    
     </Box>
   );
 }

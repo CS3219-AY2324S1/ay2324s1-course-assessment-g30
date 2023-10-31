@@ -10,6 +10,8 @@ function ChatContainer({ socket, roomId }) {
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const uuid = Cookies.get("uuid");
 
+ 
+
   useEffect(() => {
     // To handle sent messages
     if (socket) {
@@ -62,7 +64,7 @@ function ChatContainer({ socket, roomId }) {
   };
 
   return (
-    <Flex gap={3} height="100%" flexDirection="column" width="100%">
+    <Flex gap={3} h="420px" flexDirection="column" width="100%">
       <Box overflowY="scroll" height="90%" textAlign="left">
         {messages.map((msg, index) => (
           <div
