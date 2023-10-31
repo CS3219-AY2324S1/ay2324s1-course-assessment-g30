@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Flex, Divider, Input, Button, Text } from "@chakra-ui/react";
 
-const OpenaiChat = () => {
+const OpenaiChat = ({height}) => {
     const [messages, setMessages] = useState([
       { from: "bot", text: "Hi there! Nice to meet you! My Name is AlgoGenius. I am here to help you with your coding journey! :)" },
       {from: "bot", text: "Currently, I can help you with the following: 1) Explain the question \n 2) Suggest optimal answer \n  3) Debug your code \n 4) Generate pseudocode"},
@@ -21,7 +21,7 @@ const OpenaiChat = () => {
     };
 
     return (
-      <Flex w="100%" h="420px" justify="center" align="center" zIndex={200}>
+      <Flex w="100%" h={height} justify="center" align="center" zIndex={200}>
         <Flex w="100%" h="90%" flexDir="column">
         <Divider />
         <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">

@@ -6,6 +6,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -16,14 +17,17 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
-  Spinner,
-  Text,
   Portal,
-  useDisclosure,
-  Tabs, TabList, TabPanels, Tab, TabPanel
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useDisclosure
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
@@ -33,10 +37,11 @@ import { getUserProfile } from "../../api/Auth";
 import { getRoomDetails } from "../../api/RoomServices";
 import { collaborationServiceURL } from "../../api/config";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
+import OpenaiChat from "../../components/OpenaiChatContainer/OpenaiChatContainer";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
 import RoomPanel from "../../components/RoomPanel/RoomPanel";
-import OpenaiChat from "../../components/OpenaiChatContainer/OpenaiChatContainer";
 import useWindowDimensions from "../../utils/WindowDimensions";
+import { ChatIcon } from "@chakra-ui/icons";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -214,7 +219,7 @@ function RoomPage() {
         <Grid
           templateAreas={`"question editor"
 							"chat editor"`}
-          gridTemplateRows={"60vh 40vh"}
+          gridTemplateRows={" 100vh"}
           gridTemplateColumns={"48vw 48vw"}
           bg="gray.50"
           gap={5}
@@ -231,22 +236,7 @@ function RoomPage() {
           >
             <QuestionContainer questionId={questionId} />
           </GridItem>
-          <GridItem
-            pl="2"
-            bg="white"
-            p={3}
-            ml={3}
-            mb={3}
-            rounded="lg"
-            boxShadow="lg"
-            area={"chat"}
-          >
-            
           
-              
-          
-                
-          </GridItem>
           <GridItem
             pl="2"
             bg="white"
@@ -279,17 +269,31 @@ function RoomPage() {
               </ModalBody>
             </ModalContent>
           </Modal>
-          {height > 690 && <>
-          <Popover variant={'responsive'} >
+
+          {/* handles chat and hints */}
+          {<>
+          <Popover variant={'responsive'} isOpen={height < 504 ? false : isOpen} >
           <PopoverTrigger>
-            <Button pos={'fixed'} bottom={{base: '20', lg: '20'}}  right={{base: '20', lg: '100'}}>Trigger</Button>
+            
+            <IconButton
+              aria-label='Call Segun'
+              width={'60px'}
+              height={'60px'}
+              pos={'fixed'} bottom={{base: '20', lg: '20'}}  right={{base: '30', lg: '120'}}
+              icon={<ChatIcon color={'white'}/>}
+              backgroundColor={"#E27d60"}
+              isRound={true}
+              isDisabled={height < 504 ? true : false}
+              onClick={onToggle}
+            />
           </PopoverTrigger>
+          
           <Portal>
-            <PopoverContent >
+            <PopoverContent w={'500px'} mr={'25px'}>
               <PopoverArrow />
-              <PopoverHeader>Hint</PopoverHeader>
+              <PopoverHeader h='40px'></PopoverHeader>
               <PopoverCloseButton />
-              <PopoverBody h={'500px'}>
+              <PopoverBody h={height > 690 ? '500px' : '300px'} >
               <Tabs>
                 <TabList>
                   <Tab>Chat</Tab>
@@ -298,16 +302,15 @@ function RoomPage() {
 
                 <TabPanels>
                   <TabPanel>
-                    <OpenaiChat />
-                  </TabPanel>
-                  <TabPanel>
-
                   <ChatContainer
                     socket={socket}
                     roomId={roomId}
+                    height={height > 690 ? '420px' : '210px'}
                     //   chatHistory={chatHistory}
                   />
-          
+                  </TabPanel>
+                  <TabPanel>
+                  <OpenaiChat height={height > 690 ? '420px' : '210px'} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -316,7 +319,8 @@ function RoomPage() {
             </PopoverContent>
           </Portal>
         </Popover>
-            </>}
+            </>
+          }
         </Grid>
         
       )}
