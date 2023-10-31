@@ -111,7 +111,6 @@ function ChatContainer({ socket, roomId, height }) {
           isActive={isButtonClicked}
           colorScheme="blue"
         />
-        <AlwaysScrollToBottom />
       </Flex>
       
     </Flex>
