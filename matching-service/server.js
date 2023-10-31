@@ -10,10 +10,7 @@ const {
   createRoomWithQuestion,
 } = require("./controllers/matchmaking-controller.js");
 const { connectToDB } = require("./model/db.js");
-const {
-  getJoinedRooms,
-  checkRoomsContainQuestionId,
-} = require("./controllers/room-controller.js");
+const { getJoinedRooms } = require("./controllers/room-controller.js");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
 
 const app = express();
@@ -61,7 +58,6 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/joinedRooms", auth, getJoinedRooms);
-app.post("/checkRoomContainsQuestionId", checkRoomsContainQuestionId);
 
 httpServer.listen(3003, () => {
   console.log("matching-service started on port 3003");
