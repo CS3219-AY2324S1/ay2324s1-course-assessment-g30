@@ -20,4 +20,28 @@ const getJoinedRooms = async (req, res) => {
   }
 };
 
-module.exports = { getJoinedRooms };
+const checkRoomsContainQuestionId = async (req, res) => {
+  try {
+    const questionId = req.body.question_id;
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+
+    const rooms = await Room.find({
+      date_created: { $gte: twoHoursAgo },
+      question_id: questionId,
+    });
+
+    if (rooms.length > 0) {
+      res.status(200).json({
+        exists: true,
+      });
+    } else {
+      res.status(200).json({
+        exists: false,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ exists: false });
+  }
+};
+
+module.exports = { getJoinedRooms, checkRoomsContainQuestionId };

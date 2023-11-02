@@ -1,13 +1,8 @@
 import { RequestHandler } from 'express';
 import User from '../models/User';
 import bcrypt from 'bcrypt';
-import {
-  REQUEST_ERROR_MESSAGES,
-  SALT_ROUNDS,
-  TOKEN_DURATION
-} from '../constants';
+import { REQUEST_ERROR_MESSAGES, TOKEN_DURATION } from '../constants';
 import jsonwebtoken, { Jwt, JwtPayload } from 'jsonwebtoken';
-import crypto from 'crypto';
 import {
   sendBadRequestResponse,
   sendForbiddenErrorResponse,
@@ -15,9 +10,9 @@ import {
   sendSuccessResponse,
   sendUnexpectedMissingUserResponse
 } from '../utils';
-import { UserRole } from '../types/roles';
 import { ValidationError } from 'sequelize';
 import { isValidPassword } from '../utils/validators';
+import { UserDb } from '../db/Users';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -51,37 +46,14 @@ const createUser: RequestHandler = async (req, res) => {
     return;
   }
 
-  let hashedPassword;
-  let salt;
-
   if (!isValidPassword(password)) {
     sendBadRequestResponse(res, 'Invalid password provided');
     return;
   }
 
   try {
-    salt = await bcrypt.genSalt(SALT_ROUNDS);
-    hashedPassword = await bcrypt.hash(password, salt);
-  } catch (error) {
-    sendInternalServerErrorResponse(
-      res,
-      REQUEST_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
-    );
-    return;
-  }
-
-  const newUser = User.build({
-    uuid: crypto.randomUUID(),
-    role: UserRole.registeredUser,
-    username: lowerCasedUsername,
-    firstName,
-    lastName,
-    hashedPassword,
-    email
-  });
-
-  try {
-    await newUser.save();
+    console.log('Adding to db');
+    await UserDb.createUser(username, firstName, lastName, password, email);
     res.json({ err: '', res: 'Account created successfully' });
   } catch (err) {
     if (err instanceof ValidationError) {

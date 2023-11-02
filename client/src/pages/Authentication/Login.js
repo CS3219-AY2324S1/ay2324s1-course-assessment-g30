@@ -104,7 +104,7 @@ export default function Login() {
         minH={'100vh'}
         align={'center'}
         justify={'center'}
-        mt={-150}
+        mt={-130}
         backgroundColor={'gray.100'}
         >
         <Stack spacing={8} mx={'auto'} minW={'lg'} px={16}>
@@ -158,7 +158,6 @@ export default function Login() {
                   direction={{ base: 'column', sm: 'row' }}
                   align={'start'}
                   justify={'space-between'}>
-                  <Link color={'blue.400'} href='/forgot_password'>Forgot password?</Link>
                 </Stack>
                 <Button
                   bg={colors.primary}

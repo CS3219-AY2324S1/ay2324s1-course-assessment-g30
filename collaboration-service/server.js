@@ -76,7 +76,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    // Add event to save DB here
     saveStateToDb(socket, roomId, redis);
   });
 
@@ -85,6 +84,7 @@ io.on("connection", (socket) => {
     console.log(err.message); // not authorized
     console.log(err.data); // { content: "Please retry later" }
   });
+
 });
 
 app.use(cors());

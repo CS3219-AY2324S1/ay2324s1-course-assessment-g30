@@ -1,5 +1,8 @@
 name: Deploy MultiDocker
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
       - master
@@ -26,15 +29,18 @@ jobs:
       - name: Build and test client
         working-directory: ./client
         run: |
-          npm install
+          npm ci
           npm test
       
       - name: Build and test question-service
         working-directory: ./question-service
         run: |
-          npm install
+          npm ci
           npm test
             
+      - name: Prevent PR merge
+        if: github.event.pull_request.merged == 'true'
+        run: echo "This PR cannot be merged. Please make necessary changes."
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
 
