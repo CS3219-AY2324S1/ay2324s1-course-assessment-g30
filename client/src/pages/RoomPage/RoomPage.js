@@ -50,6 +50,7 @@ function RoomPage() {
   const [isInvalidRoom, setIsInvalidRoom] = useState(false);
   const [programmingLanguage, setProgrammingLanguage] = useState("");
   const [questionId, setQuestionId] = useState("");
+  const [userCode, setUserCode] = useState("");
   const [remainingTime, setRemainingTime] = useState(0);
   const [timer, setTimer] = useState("00:00:00");
   const navigate = useNavigate();
@@ -99,6 +100,7 @@ function RoomPage() {
           token: token,
           username: data.username,
         },
+        // path: "/collaboration-service/socket.io/",
       });
       setSocket(socket);
 
@@ -310,7 +312,7 @@ function RoomPage() {
                   />
                   </TabPanel>
                   <TabPanel>
-                  <OpenaiChat height={height > 690 ? '420px' : '210px'} />
+                  <OpenaiChat height={height > 690 ? '420px' : '210px'} programmingLanguage={programmingLanguage} questionId={questionId} userCode={userCode} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>

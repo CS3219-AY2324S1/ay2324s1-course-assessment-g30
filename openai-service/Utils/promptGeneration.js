@@ -1,3 +1,21 @@
+function classifyQueryPrompt(query) {
+    const prompt = `Classify the following query, delimited by '@@,' into one of the following categories: explaining a question, suggesting optimal answers, debugging user code, generating pseudocode, or any other category.
+        For the category 'explaining a question,' an example query is: 'I do not understand the requirements and meaning of the question. Can you explain the question in simpler terms?'
+        For the category 'suggesting optimal answers,' an example query is: 'Are there better or more efficient solutions available to solve this particular question?'
+        For the category 'debugging user code,' an example query is: 'I am not sure why my code is not working. Can you help me debug my code?'
+        For the category 'generating pseudocode,' an example query is: 'Can you help me generate pseudocode or a solution for this question?'
+        For the category 'any,' if the query cannot be classified into the above four categories, then it should be classified as 'any.'
+
+        User Query:
+        @@${query}@@
+
+        Now, classify the provided query as one of the five categories: explaining a question (1), suggesting optimal answers (2), debugging user code (3), generating pseudocode (4), or any (5) and output the number next to the category accordingly.`
+    
+    return prompt;
+}
+
+
+
 function explainQuestionPrompt(question) {
     const prompt = `As a coding interviewee, I want to know how to approach the following question delimited by '@@':
 1. Summarize the context and concepts tested in the question concisely in less than 3 sentences.
@@ -76,7 +94,7 @@ function generatePseudocodePrompt(question, language) {
 Write pseudocode for the following problem delimited by '@@' and provide a concise explanation in ${language} programming sytax:
     
 Problem:
-${question}
+@@${question}@@
 
 Pseudocode:
 - Your pseudocode solution here
@@ -99,7 +117,23 @@ Explain the pseudocode logic here in at most 3 sentences.
     return prompt;
 }
 
+function generateResponsePrompt(language, question, userCode, pastMessages) {
+    const prompt = `Imagine you are an assistant reviewing a conversation history, and your role is to analyze and generate a response.
+     Here are the past messages:
+    @@${pastMessages}@@
+
+    Now, analyze the problem: "${question}" and the user's code in ${language} syntax:
+
+    User Code:
+    ${userCode}
+
+    Your task is to create a friendly response that is relevant to the user's query and enquiring on the intention of the user.
+    `;
+    return prompt;
+}
 
 
 
-module.exports = {explainQuestionPrompt, suggestOptimalAnsPrompt, generatePseudocodePrompt, debugUserCodePrompt}
+
+
+module.exports = {explainQuestionPrompt, suggestOptimalAnsPrompt, generatePseudocodePrompt, debugUserCodePrompt, classifyQueryPrompt, generateResponsePrompt}

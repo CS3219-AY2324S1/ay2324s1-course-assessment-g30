@@ -9,12 +9,6 @@ function ChatContainer({ socket, roomId, height }) {
   const [messages, setMessages] = useState([]);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const uuid = Cookies.get("uuid");
-
-  const AlwaysScrollToBottom = () => {
-    const elementRef = useRef();
-    useEffect(() => elementRef.current.scrollIntoView());
-    return <div ref={elementRef} />;
-     };
  
 
   useEffect(() => {

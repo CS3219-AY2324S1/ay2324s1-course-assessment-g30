@@ -24,6 +24,7 @@ const io = socketIO(httpServer, {
     origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
+  // path: "/collaboration-service/socket.io/",
 });
 
 // Middleware to authenticate user before allowing them to connect to socket.io server

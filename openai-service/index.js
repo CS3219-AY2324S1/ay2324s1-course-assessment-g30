@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require("cors");
 const openAIRouter = require("./Routes/openAI.routes");
-const port = 3006;
+const port = 3005;
 
 const app = express();
 app.use(express.json());

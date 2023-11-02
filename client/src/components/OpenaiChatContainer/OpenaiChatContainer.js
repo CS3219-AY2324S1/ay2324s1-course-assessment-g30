@@ -1,23 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Flex, Divider, Input, Button, Text } from "@chakra-ui/react";
+import { getQuestionsDescription } from "../../api/QuestionServices";
+import { callOpenAI } from "../../api/openAIServices";
+import { set } from "mongoose";
 
-const OpenaiChat = ({height}) => {
+
+const OpenaiChat = ({height, questionId, userCode, programmingLanguage}) => {
+  const [question, setQuestion] = useState([]);
+
+  useEffect(() => {
+      getQuestionsDescription(questionId)
+        .then((data) => {
+          if (data.question_description) {
+            setQuestion(data.question_description);
+          } else if (data.description !== null || data.description.length !== 0) {
+            setQuestion(data.description);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching question description:", error);
+        });
+      },[]);
+
     const [messages, setMessages] = useState([
-      { from: "bot", text: "Hi there! Nice to meet you! My Name is AlgoGenius. I am here to help you with your coding journey! :)" },
-      {from: "bot", text: "Currently, I can help you with the following: 1) Explain the question \n 2) Suggest optimal answer \n  3) Debug your code \n 4) Generate pseudocode"},
+      { role: "system", content: "Hi there! Nice to meet you! My Name is AlgoGenius. I am here to help you with your coding journey! :)" },
+      {role: "system", content: "Currently, I can help you with the following: 1) Explain the question \n 2) Suggest optimal answer \n  3) Debug your code \n 4) Generate pseudocode \n And many more...."},
     ]);
 
+    function renderTextWithLineBreaks(text) {
+      return {
+        __html: text.replace(/\n/g, '<br />'),
+      };
+    } 
+
     const [inputMessage, setInputMessage] = useState("");
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
       if (!inputMessage.trim().length) {
         return;
       }
       const data = inputMessage;
     
-      setMessages((old) => [...old, { from: "me", text: data }]);
+      setMessages((old) => [...old, { role: "user", content: data }]);
       setInputMessage("");
-    
-      // Call openai-service to generate bot response and plant it in
+      // Call openai-service to generate bot response and plant it into messages
+      const response = await callOpenAI(data, programmingLanguage, question, userCode, messages);
+      console.log("response",response);
+      setMessages((old) => [...old, { role: "system", content: response }]);
     };
 
     return (
@@ -26,7 +54,7 @@ const OpenaiChat = ({height}) => {
         <Divider />
         <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
           {messages.map((item, index) => {
-            if (item.from === "me") {
+            if (item.role === "user") {
               return (
                 <Flex key={index} w="100%" justify="flex-end">
                   <Flex
@@ -37,7 +65,7 @@ const OpenaiChat = ({height}) => {
                     my="1"
                     p="3"
                   >
-                    <Text>{item.text}</Text>
+                    <Text>{item.content}</Text>
                   </Flex>
                 </Flex>
               );
@@ -52,7 +80,7 @@ const OpenaiChat = ({height}) => {
                     my="1"
                     p="3"
                   >
-                    <Text>{item.text}</Text>
+                  <Text whiteSpace="pre-line" dangerouslySetInnerHTML={renderTextWithLineBreaks(item.content)}/>
                   </Flex>
                 </Flex>
               );
