@@ -14,8 +14,8 @@ function ChatContainer({ socket, roomId }) {
     // To handle sent messages
     if (socket) {
       socket.on("receive-message", (senderId, message, username) => {
-        setMessages([
-          ...messages,
+        setMessages((prevMessages) => [
+          ...prevMessages,
           { senderId, message, type: "chat", username },
         ]);
       });
@@ -24,8 +24,8 @@ function ChatContainer({ socket, roomId }) {
     // To handle welcome message
     if (socket) {
       socket.on("user-joined", ({ userId, message, username }) => {
-        setMessages([
-          ...messages,
+        setMessages((prevMessages) => [
+          ...prevMessages,
           { senderId: userId, message, type: "announcement", username },
         ]);
       });
@@ -34,13 +34,13 @@ function ChatContainer({ socket, roomId }) {
     // To handle user left message
     if (socket) {
       socket.on("user-left", ({ userId, message, username }) => {
-        setMessages([
-          ...messages,
+        setMessages((prevMessages) => [
+          ...prevMessages,
           { senderId: userId, message, type: "announcement", username },
         ]);
       });
     }
-  }, [socket, messages]);
+  }, [socket]);
 
   const handleSubmitMessageClick = () => {
     if (messageText !== "") {
