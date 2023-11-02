@@ -5,13 +5,14 @@ const EditorContainer = ({
   socket,
   programmingLanguage,
   roomId,
-  initialCode,
+  editorCode,
+  setEditorCode
 }) => {
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
     // Setting initial editor state
-    editorRef.current.getModel().setValue(initialCode);
+    editorRef.current.getModel().setValue(editorCode);
   }
 
   function handleEditorChange(code, event) {
@@ -21,12 +22,13 @@ const EditorContainer = ({
       // Push usr changes to server
       console.log("local changes pushed");
       socket.emit("push-code", code, roomId);
+      setEditorCode(code);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving change from other users
+      // Receiving changes from other users
       socket.on("push-code", (code, id) => {
         console.log("Applying remote changes");
         editorRef.current.getModel().setValue(code);

@@ -91,4 +91,18 @@ const saveStateToDb = async (socket, redis) => {
 };
 
 
-module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails, saveStateToDb};
+/**
+ * Fetch attempts based on question and user id
+ */
+const getRoomAttempts = async (uuid, qid) => {
+  console.log(`Fetching attempts of ${qid} by ${uuid}`);
+  return await Room.find({
+    question_id: qid, users: {
+      $in: [uuid
+      ]
+    }
+  }).toArray();
+
+};
+
+module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails, saveStateToDb, getRoomAttempts};

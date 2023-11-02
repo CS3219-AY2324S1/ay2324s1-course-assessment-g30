@@ -36,7 +36,7 @@ function RoomPage() {
   const [timer, setTimer] = useState("00:00:00");
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [initialCode, setInitialCode] = useState("");
+  const [editorCode, setEditorCode] = useState("");
 
   useEffect(() => {
     let autoRedirectTimeout;
@@ -84,7 +84,7 @@ function RoomPage() {
       socket.emit("set-up-room", roomId);
 
       socket.on("sync-state", (code) => {
-        setInitialCode(JSON.parse(code)["code"]);
+        setEditorCode(JSON.parse(code)["code"]);
       });
 
       socket.on("room-is-ready", () => {
@@ -247,7 +247,8 @@ function RoomPage() {
               socket={socket}
               programmingLanguage={programmingLanguage}
               roomId={roomId}
-              initialCode={initialCode}
+              editorCode={editorCode}
+              setEditorCode={setEditorCode()}
             />
           </GridItem>
           <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>
