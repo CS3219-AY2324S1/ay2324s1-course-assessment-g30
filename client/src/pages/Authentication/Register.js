@@ -14,17 +14,36 @@ import {
   useColorModeValue,
   Link,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useForm } from 'react-hook-form';
 import { createUser } from '../../api/Auth';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react'
 import colors from '../../utils/Colors';
+import checkAuth from '../../utils/checkAuth';
+import * as React from 'react';
+
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate();
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const isAuthenticated = checkAuth(); 
+
+    if (isAuthenticated) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/dashboard');
+    }
+  }, [loggedIn, navigate]);
 
   const toast = useToast()
 
@@ -35,7 +54,10 @@ export default function Register() {
   } = useForm({mode: 'onSubmit'});
 
 
+  const [regError, setRegError] = useState(null);
+
   const onSubmit = async (data) => {
+    setRegError(null);
     const info = {
       username: data.username,
       password: data.password,
@@ -54,22 +76,13 @@ export default function Register() {
         duration: 6000,
         isClosable: true
       })
-    }).then(
       setTimeout( () => {
         navigate('/')
       }, 6000)
-    )
+    })
     .catch(function (error) {
       if (error.response) {
-        // if (error.response.data.error ===  "Bad request. Check your inputs!") {
-        //   setFormMessage("Please enter a valid email address")
-        // } else {
-        //   setFormMessage(error.response.data.error)
-        // }
-        // setFormInvalid(true)
-        // setError("email")
-        // setError("password")
-        console.log(error)
+        setRegError(error.response.data.err);
       } else if (error.request) {
         // The request was made but no response was received
         console.log(error.request);
@@ -174,7 +187,7 @@ export default function Register() {
                 </FormControl>
               </Box>
               <Box>
-                <FormControl id="lastName">
+                <FormControl id="lastName" isRequired>
                   <FormLabel>Last Name</FormLabel>
                   <Input {...register('lastName', {
                     required: true,
@@ -212,6 +225,7 @@ export default function Register() {
               </InputGroup>
               <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>
             </FormControl>
+            {regError && <Text color={"#cc0000"}>{regError}</Text>}
             <Stack spacing={10} pt={2}>
               <Button
                 loadingText="Submitting"

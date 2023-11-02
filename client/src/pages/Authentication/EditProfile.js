@@ -1,23 +1,21 @@
-import React, { useState } from 'react'
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Input,
-  Divider,
-  Textarea,
-  useToast,
   Box,
   Button,
-  Text
-} from '@chakra-ui/react'
-import { Controller, useForm } from "react-hook-form";
+  Divider,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useToast
+} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from "react-hook-form";
 import { editProfile } from '../../api/Auth';
-import colors from '../../utils/Colors';
 
 
 function EditProfileModal(props) {
@@ -30,6 +28,14 @@ function EditProfileModal(props) {
     setError,
     formState: { errors }
   } = useForm({defaultValues: props.user});
+
+  const prevUsername = props.user.username;
+
+ 
+  
+  
+  
+  const [errMsg, setErrMsg] = useState(null);
 
   const toast = useToast()
   const onSubmit = (data) => {
@@ -46,6 +52,12 @@ function EditProfileModal(props) {
       setError('username')
       error = true
     }
+
+    if (data.username === prevUsername) {
+      delete data.username;
+    }
+
+
     if (!error) {
       editProfile(data).then(() => {
         toast({
@@ -54,14 +66,19 @@ function EditProfileModal(props) {
           status: 'success',
           duration: 3000,
         })
-        
-      }).then(() => {
         setTimeout( () => 
           window.location.reload(), 3000
         )
+      }).catch((e) => {
+        setErrMsg(e.response.data.err)
       })
     }
   }
+
+  useEffect(() => {
+    setUsernameInputValue(props.user.username);
+  }, [props.user.username]);
+
 
 
     //----------------------------------------------------------
@@ -69,12 +86,11 @@ function EditProfileModal(props) {
   const [errorUsername, setErrorUsername] = useState(null);
   const [usernameInputValue, setUsernameInputValue] = useState(props.user.username);
   const handleInputChange = (event) => {
+    setErrMsg(null);
     const newValue = event.target.value;
 
-    // Define a regular expression pattern to match your criteria
     const pattern = /^[a-z0-9._-]{1,30}$/;
 
-    // Test if the input value matches the pattern
     if (!pattern.test(newValue)) {
       setErrorUsername("Use only lowercase a-z, 0-9, ., _ or -");
       
@@ -109,7 +125,9 @@ function EditProfileModal(props) {
                   })} type="text" value={usernameInputValue} onChange={handleInputChange} maxLength={30} />
           {errors.username && <p style={{color: 'red'}}>This field is required</p>}
           <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorUsername}</Text>
+          {errMsg && <p style={{color: 'red', marginTop: 20}}>{errMsg}</p>}
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
+  
           </Box>
         </ModalBody>
         <ModalFooter>

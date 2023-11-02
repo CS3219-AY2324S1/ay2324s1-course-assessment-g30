@@ -17,6 +17,7 @@ const checkDuplicateQuestion = async (req, res, next) => {
       res.status(409).json({
         message: "Question title already exists",
       });
+      return;
     }
 
     if (reqQuestionLink !== "") {
@@ -31,12 +32,13 @@ const checkDuplicateQuestion = async (req, res, next) => {
         res.status(409).json({
           message: "Question link already exists",
         });
+        return;
       }
-    } else {
-      next();
     }
+
+    next();
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

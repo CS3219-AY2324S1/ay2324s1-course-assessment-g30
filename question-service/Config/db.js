@@ -5,8 +5,8 @@ const password = "QEFotfpoapHMLoUs";
 const cluster = "questioncluster.1tzld4l";
 const database = "Questions";
 
-const createDB = () => {
-  mongoose
+const createDB = async () => {
+  await mongoose
     .connect(
       `mongodb+srv://${admin}:${password}@${cluster}.mongodb.net/${database}?retryWrites=true&w=majority`,
     )

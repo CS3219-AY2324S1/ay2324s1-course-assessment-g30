@@ -1,9 +1,9 @@
-import axios from "axios";
+const axios = require("axios");
 
 const USER_SERVICE_BASE_URL =
   process.env.USER_SERVICE_URL || "http://localhost:3000/v1";
 
-export const auth = async (req, res, next) => {
+const auth = async (req, res, next) => {
   const URL = USER_SERVICE_BASE_URL + "/user/role";
   const config = {
     method: "post",
@@ -34,10 +34,38 @@ export const auth = async (req, res, next) => {
   }
 };
 
+const socketIOAuth = async (token, next) => {
+  const URL = USER_SERVICE_BASE_URL + "/user/role";
+  const config = {
+    method: "post",
+    url: URL,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      token: token,
+    }),
+  };
+
+  try {
+    const res = await axios(config);
+    const data = res.data;
+    const userRole = data.res.role;
+
+    if (userRole == "USER" || userRole == "MAINTAINER") {
+      return next();
+    } else {
+      console.error("User not authorised to Peerprep");
+    }
+  } catch (error) {
+    console.error("Error fetching user data:");
+  }
+};
+
 /**
  * Check if user is authenticated.
  */
-export const attemptToAuthenticate = async (socket, next) => {
+const attemptToAuthenticate = async (socket, next) => {
   const token = socket.handshake.query.token;
   socket.token = token;
 
@@ -45,17 +73,13 @@ export const attemptToAuthenticate = async (socket, next) => {
     return next(new Error("Authentication error"));
   }
 
-  const req = {
-    body: {
-      token: token,
-    },
-  };
-
-  await auth(req, null, async (error) => {
+  await socketIOAuth(token, async (error) => {
     if (error) {
       return next(new Error("Authentication error: " + error.message));
     }
-  });
 
-  next();
+    next();
+  });
 };
+
+module.exports = { auth, socketIOAuth, attemptToAuthenticate };

@@ -16,11 +16,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import MatchModal from "./MatchModal";
+import useWindowDimensions from "../../utils/WindowDimensions";
 
-function MatchMeButton({ socket, uuid }) {
+function MatchMeButton({ socket }) {
   const FINDING_MATCH_TIMEOUT = 30;
   const navigate = useNavigate();
   const toast = useToast();
+  const { width } = useWindowDimensions(); //764
 
   const [difficulty, setDifficulty] = useState("");
   const [programmingLanguage, setProgrammingLanguage] = useState("");
@@ -67,22 +69,11 @@ function MatchMeButton({ socket, uuid }) {
       return () => {
         clearInterval(timerInterval);
       };
+    } else {
+      // Timeout after FINDING_MATCH_TIMEOUT
+      cancelMatching(difficulty, programmingLanguage);
     }
   }, [remainingTime]);
-
-  // Timeout after FINDING_MATCH_TIMEOUT
-  useEffect(() => {
-    if (!matchingFailed && remainingTime === FINDING_MATCH_TIMEOUT) {
-      const matchingTimeout = setTimeout(() => {
-        cancelMatching(difficulty, programmingLanguage);
-      }, FINDING_MATCH_TIMEOUT * 1000);
-
-      return () => {
-        console.log("Clearing timeout");
-        clearTimeout(matchingTimeout);
-      };
-    }
-  }, [matchingFailed]);
 
   const handleMatchClick = () => {
     if (difficulty !== "" && programmingLanguage !== "") {
@@ -132,6 +123,7 @@ function MatchMeButton({ socket, uuid }) {
   };
 
   const cancelMatching = (difficulty, programmingLanguage) => {
+    console.log("Cancelling matching");
     setMatchingFailed(true);
     if (socket) {
       socket.emit("cancel-matching", difficulty, programmingLanguage);
@@ -155,7 +147,8 @@ function MatchMeButton({ socket, uuid }) {
         variant="solid"
         onClick={() => setShowModal(true)}
         w="100%"
-        h="50%"
+        h={"50%"}
+        p={width < 1000 ? "5" : null}
       >
         Match With Stranger!
       </Button>

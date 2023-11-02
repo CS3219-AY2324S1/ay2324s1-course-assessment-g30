@@ -19,6 +19,8 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import { getAuthToken } from '../../api/Auth';
 import colors from '../../utils/Colors';
+import checkAuth from '../../utils/checkAuth';
+import * as React from 'react';
 
 
 export default function Login() {
@@ -36,7 +38,22 @@ export default function Login() {
     formState: { errors }
   } = useForm({mode: 'onSubmit',});
 
+  const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const isAuthenticated = checkAuth(); 
+    
+
+    if (isAuthenticated) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigate('/dashboard');
+    }
+  }, [loggedIn, navigate]);
   
   const [formMessage, setFormMessage] = useState('')
   const [formInvalid, setFormInvalid] = useState(false)
@@ -87,7 +104,7 @@ export default function Login() {
         minH={'100vh'}
         align={'center'}
         justify={'center'}
-        mt={-150}
+        mt={-130}
         backgroundColor={'gray.100'}
         >
         <Stack spacing={8} mx={'auto'} minW={'lg'} px={16}>
@@ -105,47 +122,42 @@ export default function Login() {
                     
             <form onSubmit={handleSubmit((data) => onSubmit(data))}>
             <Stack spacing={4}>
-            <FormControl isInvalid={formInvalid}>
-              <FormControl isRequired id="email" isInvalid={errors?.email}>
-                <FormLabel>Email address</FormLabel>
-                <Input 
-                {...register('email', {
-                    required: true,
-                  })}
-                mb={'5'}
-                type="email"
-                onClick={() => {setFormInvalid(false);}}
-                maxLength={254}
-                
-                />
-                {!formInvalid && <FormErrorMessage mt={-3}>{errors?.email === "required"}{"Email is required"}</FormErrorMessage> }
-              </FormControl >
-              <FormControl isRequired id="password" isInvalid={errors?.password}>
-                <FormLabel>Password</FormLabel>
-                <InputGroup>
-                <Input 
+            <FormControl isRequired id="email">
+            <FormLabel>Email address</FormLabel>
+            <Input 
+              {...register('email', {
+                required: true,
+              })}
+              mb={'5'}
+              type="email"
+              onClick={() => {setFormInvalid(false);}}
+              maxLength={254}
+            />
+            {!formInvalid && <FormErrorMessage mt={-3}>{errors.email && "Email is required"}</FormErrorMessage> }
+          </FormControl>
+          <FormControl isRequired id="password">
+            <FormLabel>Password</FormLabel>
+            <InputGroup>
+              <Input 
                 {...register("password", { required: true})}
                 mb={'5'}
                 type={show ? 'text' : 'password'}
                 onClick={() => {setFormInvalid(false);}}
-                maxLength={128} 
-                />
-                <InputRightElement width='4.5rem'>
-                    <Button h='1.75rem' size='sm' onClick={handleShow}>
-                    {show ? 'Hide' : 'Show'}
-                    </Button>
-                </InputRightElement>
-                </InputGroup>
-                {!formInvalid && <FormErrorMessage mt={-3}>{errors?.password === "required"}{"Password is required"}</FormErrorMessage> }
-              </FormControl>
-              {<FormErrorMessage>{formMessage}</FormErrorMessage>}
-              </FormControl>
+                maxLength={128}
+              />
+              <InputRightElement width='4.5rem'>
+                <Button h='1.75rem' size='sm' onClick={handleShow}>
+                  {show ? 'Hide' : 'Show'}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            {!formInvalid && <FormErrorMessage mt={-3}>{errors.password && "Password is required"}</FormErrorMessage> }
+          </FormControl>
               <Stack spacing={10}>
                 <Stack
                   direction={{ base: 'column', sm: 'row' }}
                   align={'start'}
                   justify={'space-between'}>
-                  <Link color={'blue.400'} href='/forgot_password'>Forgot password?</Link>
                 </Stack>
                 <Button
                   bg={colors.primary}

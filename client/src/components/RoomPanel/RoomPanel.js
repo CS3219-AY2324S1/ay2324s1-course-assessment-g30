@@ -12,11 +12,13 @@ import {
   PopoverBody,
   Text,
   IconButton,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react";
-import { InfoIcon } from "@chakra-ui/icons";
+import { InfoIcon, TimeIcon } from "@chakra-ui/icons";
 import LeaveRoomModal from "./LeaveRoomModal";
 
-function RoomPanel({ roomId, socket }) {
+function RoomPanel({ roomId, socket, timer }) {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -32,6 +34,19 @@ function RoomPanel({ roomId, socket }) {
   return (
     <>
       <HStack spacing={2} justifyContent="right">
+        <Flex
+          ml={3}
+          p={2}
+          borderRadius={10}
+          bg="#e9ecf0"
+          fontWeight="bold"
+          gap={2}
+          alignItems={"center"}
+        >
+          <TimeIcon />
+          <Text>Time Left: {timer}</Text>
+        </Flex>
+        <Spacer />
         <Popover>
           <PopoverTrigger>
             <IconButton

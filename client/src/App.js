@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import Layout from "./components/layout/Layout";
 import AddQuestionForm from "./pages/AddQuestionForm/AddQuestionForm";
 import Login from "./pages/Authentication/Login";
@@ -13,6 +12,8 @@ import { ScrollToTop } from "./utils/ScrollToTop";
 import EditProfile from "./pages/Authentication/EditProfile";
 import ViewProfile from "./pages/Authentication/ViewProfile";
 import RoomPage from "./pages/RoomPage/RoomPage";
+import { useEffect } from "react";
+import { deleteToken } from "./api/Auth";
 
 function App() {
   // useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
 
   // }, [])
 
+
   return (
     <>
       <ScrollToTop />
@@ -35,7 +37,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/room/:roomId" element={<RoomPage />} />
+          
 
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -50,6 +52,7 @@ function App() {
             />
             <Route path="/edit_profile" element={<EditProfile />} />
             <Route path="/view_profile" element={<ViewProfile />} />
+            <Route path="/room/:roomId" element={<RoomPage />} />
             {/* <Route path="/forgot_password" element={<LoginForm />} /> */}
           </Route>
         </Routes>

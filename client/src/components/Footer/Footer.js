@@ -68,18 +68,8 @@ export default function SmallWithLogoLeft() {
         justify={{ base: 'center', md: 'space-between' }}
         align={{ base: 'center', md: 'center' }}>
         <Logo />
-        <Text>© Geekcode. All rights reserved</Text>
-        <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}>
-            <FaTwitter />
-          </SocialButton>
-          <SocialButton label={'YouTube'} href={'#'}>
-            <FaYoutube />
-          </SocialButton>
-          <SocialButton label={'Instagram'} href={'#'}>
-            <FaInstagram />
-          </SocialButton>
-        </Stack>
+        <Text>© PeerPrep. All rights reserved</Text>
+        
       </Container>
     </Box>
   )

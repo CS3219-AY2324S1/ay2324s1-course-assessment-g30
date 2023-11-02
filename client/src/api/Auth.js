@@ -22,31 +22,36 @@ function epochToDays(epochTimestamp) {
 }
 
 export const getAuthToken = async (email, password) => {
-    
-    const config = {
-        method: 'post',
-        url: baseURL + '/auth/login',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            email: email,
-            password: password,
+    try {
+        const config = {
+            method: 'post',
+            url: baseURL + '/auth/login',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                email: email,
+                password: password,
+            }
+        };
+        const response = await axios(config)
+        const data = response.data.res
+        if (response.status === 200) {
+            let curr_user_token = data.accessToken;
+            let uuid = data.uuid;
+            localStorage.setItem("notAuthenticated", false);
+            Cookies.set('uuid', uuid, {expires: epochToDays(data.exp)})
+            Cookies.set('token', curr_user_token, { expires: epochToDays(data.exp)})
+            return curr_user_token;
         }
-    };
-    const response = await axios(config)
-    console.log(response)
-    const data = response.data.res
-    if (response.status === 200) {
-        let curr_user_token = data.accessToken;
-        let uuid = data.uuid;
-        localStorage.setItem("notAuthenticated", false);
-        Cookies.set('uuid', uuid, {expires: epochToDays(data.exp)})
-        Cookies.set('token', curr_user_token, { expires: epochToDays(data.exp)})
-        return curr_user_token;
+        localStorage.setItem("notAuthenticated", true);
+        return "No token"
+    } catch(e) {
+        console.error("Error: Please ensure that backend is connected");
+        throw e;
     }
-    localStorage.setItem("notAuthenticated", true);
-    return "No token"
+    
+    
     // return dispatch(authTokenError('Failed to retrieve token.'))
 }
 
@@ -60,26 +65,31 @@ export const createUser = async (input) => {
     //     "lastName": "Simpson"
        
     //  }
-    const config = {
-        method: 'post',
-        url: baseURL + '/auth/register',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: {
-            username: input.username,
-            password: input.password,
-            email: input.email,
-            firstName: input.firstName,
-            lastName: input.lastName
-         }
-         
-    };
-    const response = await axios(config)
-    const data = response.data.res
-    if (response.status === 200) {
-        console.log(data);
+    try {
+        const config = {
+            method: 'post',
+            url: baseURL + '/auth/register',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                username: input.username,
+                password: input.password,
+                email: input.email,
+                firstName: input.firstName,
+                lastName: input.lastName
+             }
+             
+        };
+        const response = await axios(config)
+        const data = response.data.res
+        if (response.status === 200) {
+            console.log(data);
+        }
+    } catch (e) {
+        throw e;
     }
+    
 }
 
 export const deleteToken = async () => {
@@ -145,7 +155,8 @@ export const editProfile = async (input) => {
             console.error('Failed to retrieve user profile. Status:', response.status);
         }
     } catch (error) {
-        console.error('Error while fetching user profile:', error);
+        
+        throw error;
     }
 }
 

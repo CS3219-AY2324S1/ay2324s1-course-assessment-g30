@@ -1,7 +1,7 @@
-import Redis from "ioredis";
-import { v4 as uuidv4 } from "uuid";
-import Room from "../model/room-model.js";
-import axios from "axios";
+const Redis = require("ioredis");
+const { v4: uuidv4 } = require("uuid");
+const Room = require("../model/room-model.js");
+const axios = require("axios");
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -13,14 +13,18 @@ const redis = new Redis({
   port: redisPort,
 });
 
+redis.on("connect", () => {
+  console.log("Connected to the Redis server.");
+});
+
+redis.on("error", (err) => {
+  console.error("Redis connection error:", err);
+});
+
 /**
  * Removes a user from a matchmaking queue.
  */
-export const removeFromQueue = async (
-  socket,
-  difficulty,
-  programmingLanguage
-) => {
+const removeFromQueue = async (socket, difficulty, programmingLanguage) => {
   const queueName = `${difficulty}-${programmingLanguage}Queue`;
   const userId = socket.uuid + "|" + socket.id;
 
@@ -34,7 +38,7 @@ export const removeFromQueue = async (
 /**
  * Removes a user from all matchmaking queues.
  */
-export const removeFromAllQueues = async (socket) => {
+const removeFromAllQueues = async (socket) => {
   const queueNamePattern = "*Queue"; // Adjust the pattern as needed
   try {
     const queueNames = await redis.keys(queueNamePattern);
@@ -55,7 +59,7 @@ export const removeFromAllQueues = async (socket) => {
 /**
  * Pairs users from a matchmaking queue and performs necessary actions.
  */
-export const pairUsers = async (socket, difficulty, programmingLanguage) => {
+const pairUsers = async (socket, difficulty, programmingLanguage) => {
   try {
     const userId = socket.uuid + "|" + socket.id;
     console.log(
@@ -94,12 +98,7 @@ export const pairUsers = async (socket, difficulty, programmingLanguage) => {
 /**
  * Set up room and add it to the database
  */
-export const setUpRoom = async (
-  socket,
-  roomId,
-  difficulty,
-  programmingLanguage
-) => {
+const setUpRoom = async (socket, roomId, difficulty, programmingLanguage) => {
   try {
     const QUESTION_SERVICE_BASE_URL =
       process.env.QUESTION_SERVICE_URL || "http://localhost:3001/api";
@@ -139,7 +138,7 @@ export const setUpRoom = async (
 /**
  * Create a room for the user with a random question of said difficulty
  */
-export const createRoom = async (socket, difficulty, programmingLanguage) => {
+const createRoom = async (socket, difficulty, programmingLanguage) => {
   try {
     const roomId = await generateUniqueRoomId();
     await setUpRoom(socket, roomId, difficulty, programmingLanguage);
@@ -157,7 +156,7 @@ export const createRoom = async (socket, difficulty, programmingLanguage) => {
 /**
  * Create a room for the user with a specified question
  */
-export const createRoomWithQuestion = async (
+const createRoomWithQuestion = async (
   socket,
   questionId,
   programmingLanguage
@@ -185,7 +184,7 @@ export const createRoomWithQuestion = async (
 /**
  * Genenerate a unique room id
  */
-export const generateUniqueRoomId = async () => {
+const generateUniqueRoomId = async () => {
   let roomId;
   let isUnique = false;
 
@@ -199,4 +198,14 @@ export const generateUniqueRoomId = async () => {
     }
   }
   return roomId;
+};
+
+module.exports = {
+  removeFromQueue,
+  removeFromAllQueues,
+  pairUsers,
+  setUpRoom,
+  createRoom,
+  createRoomWithQuestion,
+  generateUniqueRoomId,
 };

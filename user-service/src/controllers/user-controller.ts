@@ -154,6 +154,19 @@ const updateUserProfile: RequestHandler = async (req, res) => {
 
     if (username && typeof username == 'string') {
       userData.username = username.toLowerCase();
+
+      const registeredUser = await User.findOne({
+        where: {
+          username: userData.username
+        }
+      });
+      if (registeredUser) {
+        sendBadRequestResponse(
+          res,
+          REQUEST_ERROR_MESSAGES.USERNAME_IN_USE_ERROR
+        );
+        return;
+      }
     }
 
     if (firstName && typeof firstName == 'string') {

@@ -26,13 +26,13 @@ services:
     restart: on-failure
 
   question-service:
-    build: ./questionapi
+    build: ./question-service
     ports:
       - "3001:3001"
     depends_on:
       - user-service
     env_file:
-      - ./questionapi/.env
+      - ./question-service/.env
     restart: on-failure
 
   redis:
@@ -60,23 +60,22 @@ services:
     env_file:
       - ./collaboration-service/.env
     depends_on:
-      - redis
       - user-service
     restart: on-failure
 
-  client:
-    build: ./client
-    ports:
-      - "3002:3002"
-    depends_on:
-      - user-service
-      - question-service
-      - matching-service
-      - collaboration-service
-    restart: on-failure
+  # client:
+  #   build: ./client
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - user-service
+  #     - question-service
+  #     - matching-service
+  #     - collaboration-service
+  #   restart: on-failure
 
   nginx-api-gateway:
-    build: ./nginx
+    build: ./etc/nginx
     ports:
       - "80:80"
     depends_on:
@@ -84,5 +83,4 @@ services:
       - question-service
       - matching-service
       - collaboration-service
-      - client
-    restart: on-failure
+
