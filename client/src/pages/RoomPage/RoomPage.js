@@ -294,7 +294,7 @@ function RoomPage() {
             <PopoverContent w={'500px'} mr={'25px'}>
               <PopoverArrow />
               <PopoverHeader h='40px'></PopoverHeader>
-              <PopoverCloseButton />
+              <PopoverCloseButton onClick={onToggle} />
               <PopoverBody h={height > 690 ? '500px' : '300px'} >
               <Tabs>
                 <TabList>
