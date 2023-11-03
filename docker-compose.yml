@@ -66,6 +66,19 @@ services:
       - redis
     restart: on-failure
 
+  openai-service:
+    build: ./openai-service
+    ports:
+      - "3005:3005"
+    env_file:
+      - ./openai-service/.env
+    depends_on:
+      - user-service
+      - question-service
+      - matching-service
+      - collaboration-service
+    restart: on-failure
+
   # client:
   #   build: ./client
   #   ports:
