@@ -207,7 +207,7 @@ function RoomPage() {
   }
 
   return (
-    <Box textAlign="center" display="flex" justifyContent="center">
+    <Box textAlign="center" display="flex" justifyContent="center"> 
       {isRoomBeingSetUp ? (
         <Box
           height="100vh"
