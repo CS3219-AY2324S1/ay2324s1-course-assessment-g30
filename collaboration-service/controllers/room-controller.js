@@ -18,8 +18,15 @@ const setUpRoom = async (socket, roomId, redis) => {
     // Fetch the initial editor state
     const editorKey = `editor:${roomId}`;
     const code = await redis.lindex(editorKey, 0);
+
     if (code != null) {
-      socket.emit("sync-state", code, roomId);
+      socket.emit("sync-editor-state", code, roomId);
+    } else {
+      if (existingRoom.editor_state) {
+        const editorState = JSON.stringify(existingRoom.editor_state);
+        await redis.rpush(editorKey, editorState);
+        socket.emit("sync-editor-state", editorState, roomId);
+      }
     }
 
     socket.emit("room-is-ready");
@@ -32,21 +39,23 @@ const setUpRoom = async (socket, roomId, redis) => {
 /**
  * Disconnects socket from room
  */
-const leaveRoom = async (socket, roomId, io) => {
+const leaveRoom = async (socket, roomId, io, redis) => {
   console.log(`User ${socket.username} left room ${roomId}`);
   // Fetch from your redis server and store to DB here
   socket.leave(roomId);
   broadcastLeave(socket, roomId, io);
+  saveStateToDb(roomId, redis);
 };
 
 /**
  * Disconnects socket from a room. Socket leaves room upon disconnect.
  */
-const disconnectFromRoom = async (socket, io) => {
+const disconnectFromRoom = async (socket, io, redis) => {
   const roomKeysIterator = socket.rooms.keys();
 
   for (const roomId of roomKeysIterator) {
     broadcastLeave(socket, roomId, io);
+    saveStateToDb(roomId, redis);
   }
 };
 
@@ -75,34 +84,46 @@ const getRoomDetails = async (req, res) => {
 /**
  * Saves the state of the editor to mongoDB
  */
-const saveStateToDb = async (socket, redis) => {
-  const roomKeysIterator = socket.rooms.keys();
-
-  // Save state for editor when client disconnects
-  for (const roomId of roomKeysIterator) {
+const saveStateToDb = async (roomId, redis) => {
+  const editorKey = `editor:${roomId}`;
+  const code = await redis.lindex(editorKey, 0);
+  if (code != null) {
     console.log(`Saving editor state for room:${roomId}`);
-    const editorKey = `editor:${roomId}`;
-    const code = await redis.lindex(editorKey, 0);
-    if (code != null) {
-      await Room.updateOne({ room_id: roomId }, { editor_state: JSON.parse(code)});
-    }
-    console.log("Editor sate saved to mongoDB");
+
+    await Room.updateOne(
+      { room_id: roomId },
+      { editor_state: JSON.parse(code) }
+    );
   }
 };
 
-
 /**
- * Fetch attempts based on question and user id
+ * Fetch past attempts based on question and user id
  */
-const getRoomAttempts = async (uuid, qid) => {
-  console.log(`Fetching attempts of ${qid} by ${uuid}`);
-  return await Room.find({
-    question_id: qid, users: {
-      $in: [uuid
-      ]
-    }
-  }).toArray();
+const getPastAttempts = async (req, res) => {
+  try {
+    const { questionId, uuid } = req.body;
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
 
+    console.log(`Fetching attempts of qid ${questionId} by ${uuid}`);
+
+    const rooms = await Room.find({
+      date_created: { $lt: twoHoursAgo },
+      question_id: questionId,
+      users: { $in: [uuid] },
+    }).sort({ date_created: -1 });
+
+    res.status(200).json(rooms);
+  } catch (err) {
+    res.status(500).json({ message: err.toString() });
+  }
 };
 
-module.exports = { setUpRoom, leaveRoom, disconnectFromRoom, getRoomDetails, saveStateToDb, getRoomAttempts};
+module.exports = {
+  setUpRoom,
+  leaveRoom,
+  disconnectFromRoom,
+  getRoomDetails,
+  saveStateToDb,
+  getPastAttempts,
+};

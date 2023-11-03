@@ -26,12 +26,16 @@ import {
   getQuestionsDescription,
   testUpdateQuestion,
 } from "../../api/QuestionServices";
+import { getPastAttempts } from "../../api/RoomServices";
+import Cookies from "js-cookie";
+import HistoryList from "../../components/HistoryList/HistoryList";
 
 function IndividualQuestionPage() {
   const url = window.location.pathname;
   const question_idx = Number(url.match(/\/(\d+)$/)[1]);
 
   const [question, setQuestion] = useState([]);
+  const [pastAttempts, setPastAttempts] = useState([]);
 
   const [info, setInfo] = useState([]);
 
@@ -112,6 +116,24 @@ function IndividualQuestionPage() {
       });
   };
 
+  function fetchPastQuestions() {
+    const uuid = Cookies.get("uuid");
+
+    getPastAttempts(question.question_id, uuid)
+      .then((data) => {
+        setPastAttempts(data);
+      })
+      .catch((e) => {
+        toast({
+          title: "Could not get any past attempts",
+          description: e.response.data.message,
+          status: "warning",
+          duration: 4000,
+          isClosable: true,
+        });
+      });
+  }
+
   return (
     <>
       <HStack maxW={"100%"}>
@@ -124,7 +146,7 @@ function IndividualQuestionPage() {
           <Tabs>
             <TabList>
               <Tab>Description</Tab>
-              <Tab>Past Attempts</Tab>
+              <Tab onClick={() => fetchPastQuestions()}>Past Attempts</Tab>
             </TabList>
 
             <TabPanels>
@@ -140,8 +162,8 @@ function IndividualQuestionPage() {
                 )}
               </TabPanel>
               <TabPanel>
-                <div style={{ overflow: "scroll", height: "80vh" }}>
-                  <div>Work in Progress</div>
+                <div style={{ height: "80vh" }}>
+                  <HistoryList pastAttempts={pastAttempts} />
                 </div>
               </TabPanel>
             </TabPanels>

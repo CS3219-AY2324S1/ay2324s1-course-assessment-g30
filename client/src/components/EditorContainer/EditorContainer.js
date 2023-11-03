@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { Box } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
 const EditorContainer = ({
@@ -6,7 +7,6 @@ const EditorContainer = ({
   programmingLanguage,
   roomId,
   editorCode,
-  setEditorCode
 }) => {
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
@@ -22,14 +22,13 @@ const EditorContainer = ({
       // Push usr changes to server
       console.log("local changes pushed");
       socket.emit("push-code", code, roomId);
-      setEditorCode(code);
     }
   }
 
   useEffect(() => {
     if (socket) {
       // Receiving changes from other users
-      socket.on("push-code", (code, id) => {
+      socket.on("receive-code", (code) => {
         console.log("Applying remote changes");
         editorRef.current.getModel().setValue(code);
       });
@@ -37,16 +36,16 @@ const EditorContainer = ({
   }, [socket]);
 
   return (
-    <div>
+    <Box padding={1}>
       <Editor
         height="90vh"
         width="100%"
-        theme="vs-dark"
+        theme="vs"
         onMount={onEditorDidMount}
         onChange={handleEditorChange}
         defaultLanguage={programmingLanguage}
       />
-    </div>
+    </Box>
   );
 };
 

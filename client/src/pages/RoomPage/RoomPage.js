@@ -88,7 +88,7 @@ function RoomPage() {
 
       socket.emit("set-up-room", roomId);
 
-      socket.on("sync-state", (code) => {
+      socket.on("sync-editor-state", (code) => {
         setEditorCode(JSON.parse(code)["code"]);
       });
 
@@ -233,7 +233,6 @@ function RoomPage() {
             boxShadow="lg"
             area={"chat"}
           >
-
             <Tabs minH={"auto"}>
               <TabList>
                 <Tab>Chat</Tab>
@@ -242,11 +241,8 @@ function RoomPage() {
 
               <TabPanels>
                 <TabPanel>
-                <Box style={{ height: "270px" }}>
-                  <ChatContainer
-                    socket={socket}
-                    roomId={roomId}
-                  />
+                  <Box style={{ height: "270px" }}>
+                    <ChatContainer socket={socket} roomId={roomId} />
                   </Box>
                 </TabPanel>
                 <TabPanel>
@@ -273,7 +269,6 @@ function RoomPage() {
               programmingLanguage={programmingLanguage}
               roomId={roomId}
               editorCode={editorCode}
-              setEditorCode={setEditorCode()}
             />
           </GridItem>
           <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>

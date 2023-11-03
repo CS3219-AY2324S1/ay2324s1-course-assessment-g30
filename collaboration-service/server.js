@@ -7,13 +7,13 @@ const {
   disconnectFromRoom,
   leaveRoom,
   getRoomDetails,
-  saveStateToDb,
+  getPastAttempts,
 } = require("./controllers/room-controller.js");
 const {
   broadcastJoin,
   sendMessage,
 } = require("./controllers/chat-controller.js");
-const { pushCode, } = require("./controllers/editor-controller.js");
+const { pushCode } = require("./controllers/editor-controller.js");
 const { connectToDB } = require("./model/db.js");
 const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave-room", (roomId) => {
-    leaveRoom(socket, roomId, io);
+    leaveRoom(socket, roomId, io, redis);
   });
 
   socket.on("send-message", (message, roomId) => {
@@ -67,30 +67,21 @@ io.on("connection", (socket) => {
   socket.on("push-code", (code, roomId) => {
     // might add a timer to only allow a trigger once every min
     // if perf is an issue
-    pushCode(socket, code, roomId, io, redis);
+    pushCode(socket, code, roomId, redis);
   });
-
 
   socket.on("disconnecting", async () => {
-    disconnectFromRoom(socket, io);
+    disconnectFromRoom(socket, io, redis);
   });
 
-  socket.on("disconnect", () => {
-    saveStateToDb(socket, roomId, redis);
-  });
-
-  socket.on("connect_error", (err) => {
-    console.log(err instanceof Error); // true
-    console.log(err.message); // not authorized
-    console.log(err.data); // { content: "Please retry later" }
-  });
-
+  socket.on("disconnect", () => {});
 });
 
 app.use(cors());
 app.use(express.json());
 
 app.post("/roomDetails", auth, getRoomDetails);
+app.post("/getPastAttempts", auth, getPastAttempts);
 
 httpServer.listen(3004, () => {
   console.log("collaboration-service started on port 3004");
