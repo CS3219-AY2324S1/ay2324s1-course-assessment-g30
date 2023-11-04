@@ -1,8 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-import { questionServiceURL } from "./config";
 
-const BASE_URL = questionServiceURL;
+const BASE_URL = process.env.REACT_APP_QUESTION_SERVICE_URL;
+
 
 export const getQuestions = async () => {
   const url = BASE_URL + "/readQuestions/";

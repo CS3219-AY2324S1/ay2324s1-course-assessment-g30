@@ -1,7 +1,6 @@
 import axios from "axios";
-import { openaiServiceURL } from "./config";
 
-const BASE_URL = openaiServiceURL;
+const BASE_URL = process.env.REACT_APP_OPENAI_SERVICE_URL;
 
 export const classifyQuery = async (query) => {
     const url = BASE_URL + "/classifyQuery/";

@@ -1,5 +1,3 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Divider,
@@ -31,18 +29,19 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
+import { ChatIcon } from "@chakra-ui/icons";
 import { io } from "socket.io-client";
 import { getUserProfile } from "../../api/Auth";
 import { getRoomDetails } from "../../api/RoomServices";
-import { collaborationServiceURL } from "../../api/config";
-import EditorContainer from "../../components/EditorContainer/EditorContainer";
 import ChatContainer from "../../components/ChatContainer/ChatContainer";
+import EditorContainer from "../../components/EditorContainer/EditorContainer";
 import OpenaiChat from "../../components/OpenaiChatContainer/OpenaiChatContainer";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
 import RoomPanel from "../../components/RoomPanel/RoomPanel";
 import useWindowDimensions from "../../utils/WindowDimensions";
-import { ChatIcon } from "@chakra-ui/icons";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -95,7 +94,7 @@ function RoomPage() {
       const uuid = Cookies.get("uuid");
       const token = Cookies.get("token");
 
-      const socket = io(collaborationServiceURL, {
+      const socket = io(process.env.REACT_APP_COLLABORATION_SERVICE_URL, {
         query: {
           uuid: uuid,
           token: token,
