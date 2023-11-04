@@ -70,12 +70,13 @@ jobs:
         if: github.event.pull_request.merged == 'true'
         run: echo "This PR cannot be merged. Please make necessary changes."
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Set up pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GH_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "pre-release"
           prerelease: true
-          title: "Latest Build"
+          title: "Pre-release build"
             
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
