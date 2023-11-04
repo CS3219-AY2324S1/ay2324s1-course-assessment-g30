@@ -220,7 +220,6 @@ function UpdateQuestionPage() {
           </Box>
         </form>
       </Container>
-    
 
     </Box>
   )

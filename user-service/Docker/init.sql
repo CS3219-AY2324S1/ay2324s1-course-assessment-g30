@@ -1,2 +1,1 @@
-CREATE DATABASE userservice;
-CREATE DATABASE test;
+CREATE DATABASE userservice

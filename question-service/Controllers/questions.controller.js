@@ -1,6 +1,5 @@
 const { QuestionDescriptionModel } = require("../Models/QuestionDescription");
 const { QuestionModel } = require("../Models/Question");
-const axios = require("axios");
 
 const {
   webScrapperQuestionDescription,
@@ -208,28 +207,6 @@ const testUpdateQuestionController = async (req, res, next) => {
 const deleteQuestionController = async (req, res, next) => {
   const question_id = req.body.question_id;
   try {
-    const MATCHING_SERVICE_BASE_URL =
-      process.env.MATCHING_SERVICE_URL || "http://localhost:3003";
-    const url = MATCHING_SERVICE_BASE_URL + "/checkRoomContainsQuestionId";
-
-    const config = {
-      method: "post",
-      url: url,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify({
-        question_id: question_id,
-      }),
-    };
-    const matchingServiceRes = await axios(config);
-    if (matchingServiceRes.data.exists) {
-      res
-        .status(400)
-        .json({ message: "Question is associated with a room. Can't delete." });
-      return;
-    }
-
     await QuestionModel.deleteOne({ question_id: question_id });
     await QuestionDescriptionModel.deleteOne({ question_id: question_id });
     // The query to find documents with question id greater than question_id
@@ -239,7 +216,7 @@ const deleteQuestionController = async (req, res, next) => {
     await QuestionDescriptionModel.updateMany(query, decrement);
     res.status(200).json({ message: "Question deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.toString() });
+    res.status(500).json({ message: err.toString() });
   }
 };
 

@@ -3,7 +3,6 @@ WORKDIR /userservice
 COPY package*.json ./
 RUN npm i
 COPY app.ts ./
-COPY server.ts ./
 COPY tsconfig.json ./
 WORKDIR /userservice/src
 COPY src ./

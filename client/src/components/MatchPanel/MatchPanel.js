@@ -2,9 +2,10 @@ import { Card } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import useWindowDimensions from "../../utils/WindowDimensions";
+import { matchingServiceURL } from "../../api/config";
 import CreateRoomButton from "./CreateRoomButton";
 import MatchMeButton from "./MatchMeButton";
+import useWindowDimensions from "../../utils/WindowDimensions";
 
 function MatchPanel() {
   const [socket, setSocket] = useState(null);
@@ -14,12 +15,11 @@ function MatchPanel() {
     // Connect to common lobby
     const uuid = Cookies.get("uuid");
     const token = Cookies.get("token");
-    const socket = io(process.env.REACT_APP_MATCHING_SERVICE_URL, {
+    const socket = io(matchingServiceURL, {
       query: {
         uuid: uuid,
         token: token,
       },
-      // path: "/matching-service/socket.io/"
     });
     setSocket(socket);
 

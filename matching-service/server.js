@@ -10,10 +10,7 @@ const {
   createRoomWithQuestion,
 } = require("./controllers/matchmaking-controller.js");
 const { connectToDB } = require("./model/db.js");
-const {
-  getJoinedRooms,
-  checkRoomsContainQuestionId,
-} = require("./controllers/room-controller.js");
+const { getJoinedRooms } = require("./controllers/room-controller.js");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
 
 const app = express();
@@ -23,7 +20,6 @@ const io = socketIO(httpServer, {
     origin: "http://localhost:3002",
     methods: ["GET", "POST"],
   },
-  // path: "/matching-service/socket.io/",
 });
 
 // Middleware to authenticate user before allowing them to connect to socket.io server
@@ -62,12 +58,6 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/joinedRooms", auth, getJoinedRooms);
-app.post("/checkRoomContainsQuestionId", checkRoomsContainQuestionId);
-
-app.get("/", (req, res) => {
-  res.send("You are on the hehe api service!");
-});
-
 
 httpServer.listen(3003, () => {
   console.log("matching-service started on port 3003");
