@@ -1,4 +1,4 @@
-name: Deploy MultiDocker
+name: Pre-release build test
 on:
   pull_request:
     branches:
