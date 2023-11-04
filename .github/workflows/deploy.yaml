@@ -16,14 +16,13 @@ jobs:
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        
       - name: Create env file for userservice test
         run: echo -e "${{ secrets.USER_SERVICE_TEST_ENV_FILE}}" > ./user-service/.env
-        
+
       - name: Build PostgreSQL Docker image
         run: |
-          docker build -f Dockerfile.postgres-db -t user-service-psql .
-
-      
+          docker build -f ./Dockerfile.postgres-db -t user-service-psql .
 
       - name: Start PostgreSQL Docker container
         run: |
