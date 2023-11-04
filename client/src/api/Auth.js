@@ -1,8 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { authServiceURL } from "./config";
 
-const baseURL = authServiceURL;
+const baseURL = process.env.REACT_APP_USER_SERVICE_URL;
 
 
 function epochToDays(epochTimestamp) {
@@ -101,34 +100,6 @@ export const deleteToken = async () => {
 export const getUserProfile = async () => {
     var curr_user_token = Cookies.get('token');
     var uuid = Cookies.get('uuid');
-
-    const config = {
-        method: 'post',
-        url: baseURL + '/user',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${curr_user_token}`
-        },
-        data: {
-            uuid: uuid
-        }
-    };
-
-    try {
-        const response = await axios(config);
-        if (response.status === 200) {
-            const data = response.data.res;
-            return data;
-        } else {
-            console.error('Failed to retrieve user profile. Status:', response.status);
-        }
-    } catch (error) {
-        console.error('Error while fetching user profile:', error);
-    }
-}
-
-export const getSpecificUserProfile = async (uuid) => {
-    var curr_user_token = Cookies.get('token');
 
     const config = {
         method: 'post',
