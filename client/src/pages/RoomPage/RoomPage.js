@@ -1,29 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Box,
-  Heading,
-  Spinner,
+  Divider,
+  Flex,
   Grid,
   GridItem,
-  Text,
-  Flex,
-  Divider,
+  Heading,
+  IconButton,
   Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
+  ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  useDisclosure
 } from "@chakra-ui/react";
-import { io } from "socket.io-client";
-import ChatContainer from "../../components/ChatContainer/ChatContainer";
-import EditorContainer from "../../components/EditorContainer/EditorContainer";
-import RoomPanel from "../../components/RoomPanel/RoomPanel";
 import Cookies from "js-cookie";
-import { collaborationServiceURL } from "../../api/config";
+
+import { io } from "socket.io-client";
 import { getUserProfile } from "../../api/Auth";
 import { getRoomDetails } from "../../api/RoomServices";
+import { collaborationServiceURL } from "../../api/config";
+import EditorContainer from "../../components/EditorContainer/EditorContainer";
+import ChatContainer from "../../components/ChatContainer/ChatContainer";
+import OpenaiChat from "../../components/OpenaiChatContainer/OpenaiChatContainer";
 import QuestionContainer from "../../components/QuestionContainer/QuestionContainer";
+import RoomPanel from "../../components/RoomPanel/RoomPanel";
+import useWindowDimensions from "../../utils/WindowDimensions";
+import { ChatIcon } from "@chakra-ui/icons";
 
 function RoomPage() {
   const { roomId } = useParams();
@@ -36,6 +55,9 @@ function RoomPage() {
   const [timer, setTimer] = useState("00:00:00");
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [editorCode, setEditorCode] = useState("");
+  const { isOpen, onToggle } = useDisclosure()
+  const { width, height} = useWindowDimensions(); //764
 
   useEffect(() => {
     let autoRedirectTimeout;
@@ -67,6 +89,8 @@ function RoomPage() {
       }
     });
 
+    
+
     getUserProfile().then((data) => {
       const uuid = Cookies.get("uuid");
       const token = Cookies.get("token");
@@ -77,10 +101,15 @@ function RoomPage() {
           token: token,
           username: data.username,
         },
+        // path: "/collaboration-service/socket.io/",
       });
       setSocket(socket);
 
       socket.emit("set-up-room", roomId);
+
+      socket.on("sync-editor-state", (code) => {
+        setEditorCode(JSON.parse(code)["code"]);
+      });
 
       socket.on("room-is-ready", () => {
         setTimeout(() => {
@@ -102,6 +131,7 @@ function RoomPage() {
     };
   }, []);
 
+  
   // Countdown timer
   function startTimer() {
     const timerInterval = setInterval(() => {
@@ -177,7 +207,7 @@ function RoomPage() {
   }
 
   return (
-    <Box textAlign="center" display="flex" justifyContent="center">
+    <Box textAlign="center" display="flex" justifyContent="center"> 
       {isRoomBeingSetUp ? (
         <Box
           height="100vh"
@@ -196,7 +226,7 @@ function RoomPage() {
         <Grid
           templateAreas={`"question editor"
 							"chat editor"`}
-          gridTemplateRows={"60vh 40vh"}
+          gridTemplateRows={" 100vh"}
           gridTemplateColumns={"48vw 48vw"}
           bg="gray.50"
           gap={5}
@@ -213,22 +243,7 @@ function RoomPage() {
           >
             <QuestionContainer questionId={questionId} />
           </GridItem>
-          <GridItem
-            pl="2"
-            bg="white"
-            p={3}
-            ml={3}
-            mb={3}
-            rounded="lg"
-            boxShadow="lg"
-            area={"chat"}
-          >
-            <ChatContainer
-              socket={socket}
-              roomId={roomId}
-              //   chatHistory={chatHistory}
-            />
-          </GridItem>
+          
           <GridItem
             pl="2"
             bg="white"
@@ -242,11 +257,12 @@ function RoomPage() {
           >
             <RoomPanel roomId={roomId} socket={socket} timer={timer} />
             <Divider borderWidth="1px" borderColor="gray.100" mt={2} mb={2} />
-            {/* <EditorContainer
+            <EditorContainer
+              socket={socket}
               programmingLanguage={programmingLanguage}
               roomId={roomId}
-            /> */}
-            Work In Progress
+              editorCode={editorCode}
+            />
           </GridItem>
           <Modal closeOnOverlayClick={false} isOpen={isModalOpen} isCentered>
             <ModalOverlay backdropFilter="blur(10px)" />
@@ -261,8 +277,63 @@ function RoomPage() {
               </ModalBody>
             </ModalContent>
           </Modal>
+
+          {/* handles chat and hints */}
+          {<>
+          <Popover variant={'responsive'} isOpen={height < 504 ? false : isOpen} placement={'top'}>
+          <PopoverTrigger>
+            
+            <IconButton
+              aria-label='Call Segun'
+              width={'60px'}
+              height={'60px'}
+              pos={'fixed'} bottom={{base: '20', lg: '20'}}  right={{base: '30', lg: '120'}}
+              icon={<ChatIcon color={'white'}/>}
+              backgroundColor={"#E27d60"}
+              isRound={true}
+              isDisabled={height < 504 ? true : false}
+              onClick={onToggle}
+            />
+          </PopoverTrigger>
+          
+          <Portal>
+            <PopoverContent w={'500px'} mr={'25px'}>
+              <PopoverArrow />
+              <PopoverHeader h='40px'></PopoverHeader>
+              <PopoverCloseButton onClick={onToggle} />
+              <PopoverBody h={height > 690 ? '500px' : '300px'} >
+              <Tabs>
+                <TabList>
+                  <Tab>Chat</Tab>
+                  <Tab>Hint</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                  <ChatContainer
+                    socket={socket}
+                    roomId={roomId}
+                    height={height > 690 ? '420px' : '210px'}
+                    //   chatHistory={chatHistory}
+                  />
+                  </TabPanel>
+                  <TabPanel>
+                  <OpenaiChat height={height > 690 ? '420px' : '210px'} programmingLanguage={programmingLanguage} questionId={questionId} userCode={editorCode} />
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+                
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
+        </Popover>
+            </>
+          }
         </Grid>
+        
       )}
+      
+    
     </Box>
   );
 }

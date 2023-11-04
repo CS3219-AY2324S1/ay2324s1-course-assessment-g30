@@ -20,6 +20,7 @@ function MatchPanel() {
         uuid: uuid,
         token: token,
       },
+      // path: "/matching-service/socket.io/"
     });
     setSocket(socket);
 

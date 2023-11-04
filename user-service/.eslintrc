@@ -6,5 +6,16 @@
 	"tsconfigRootDir": "user-service",
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"]
+  "plugins": ["@typescript-eslint"],
+  "overrides": [
+    {
+      "files": ["__test__/**"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended"],
+      "rules": { "jest/prefer-expect-assertions": "off" }
+    }
+  ],
+  "rules": {
+    "indent": ["error", 2]
+  }
 }
