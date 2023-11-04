@@ -21,10 +21,12 @@ jobs:
         run: echo -e "${{ secrets.USER_SERVICE_TEST_ENV_FILE}}" > ./user-service/.env
 
       - name: Build PostgreSQL Docker image
+        working-directory: ./user-service
         run: |
           docker build -f Dockerfile.postgres-db -t user-service-psql .
 
       - name: Start PostgreSQL Docker container
+        working-directory: ./user-service
         run: |
           docker run -p 1111:5432 -e POSTGRES_PASSWORD=123 --name user-service-db -d user-service-psql
           sleep 10
