@@ -22,7 +22,7 @@ jobs:
 
       - name: Build PostgreSQL Docker image
         run: |
-          docker build -f ./Dockerfile.postgres-db -t user-service-psql .
+          docker build -f Dockerfile.postgres-db -t user-service-psql .
 
       - name: Start PostgreSQL Docker container
         run: |
