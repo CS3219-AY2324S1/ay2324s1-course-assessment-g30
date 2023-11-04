@@ -53,10 +53,24 @@ jobs:
         run: |
           npm ci
           npm test
+
+      - name: Build and test matching-service
+        working-directory: ./matching-service
+        run: |
+          npm ci
+          npm run test
+            
+      - name: Build and test collaboration-service
+        working-directory: ./collaboration-service
+        run: |
+          npm ci
+          npm run test
             
       - name: Prevent PR merge
         if: github.event.pull_request.merged == 'true'
         run: echo "This PR cannot be merged. Please make necessary changes."
+
+        
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
 
@@ -77,3 +91,4 @@ jobs:
       #     region: ap-southeast-1
       #     version_label: ${{ github.sha }}
       #     deployment_package: deploy.zip
+
