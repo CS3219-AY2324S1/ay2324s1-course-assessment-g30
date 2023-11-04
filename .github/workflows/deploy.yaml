@@ -70,12 +70,12 @@ jobs:
         if: github.event.pull_request.merged == 'true'
         run: echo "This PR cannot be merged. Please make necessary changes."
 
-      - name: ReportGenerator
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.1.26
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          reports: 'testReport.xml'
-          targetdir: 'testReport'
-
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Latest Build"
             
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
