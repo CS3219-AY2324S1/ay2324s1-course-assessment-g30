@@ -17,15 +17,25 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Create env file for user service
-        run: echo -e "${{ secrets.USER_SERVICE_ENV_FILE }}" > ./user-service/.env
+      - name: Create env file for userservice test
+        run: echo -e "${{ secrets.USER_SERVICE_TEST_ENV_FILE}}" > ./user-service/.env
 
-      - name: Create env file for matching service
-        run: echo -e "${{ secrets.MATCHING_SERVICE_ENV_FILE }}" > ./matching-service/.env
+      - name: Start PostgreSQL Docker container
+        run: |
+          docker run -p 1111:5432 -e POSTGRES_PASSWORD=123 --name user-service-db -d user-service-psql
+          sleep 10
 
-      - name: Create env file for collaboration service
-        run: echo -e "${{ secrets.COLLABORATION_SERVICE_ENV_FILE }}" > ./collaboration-service/.env
+      - name: Build and test user-service
+        working-directory: ./user-service
+        run: |
+          npm ci
+          npm run test
 
+      - name: Stop and remove PostgreSQL Docker container
+        run: |
+          docker stop user-service-db
+          docker rm user-service-db
+    
       - name: Build and test client
         working-directory: ./client
         run: |
