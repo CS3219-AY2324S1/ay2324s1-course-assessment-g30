@@ -44,7 +44,7 @@ function UpdateQuestionPage() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [questionLink, setQuestionLink] = useState(prev_data.question_link.length === 0 ? '' : prev_data.question_link);
-  const [questionDescription, setQuestionDescription] = useState(prev_data.description.length === 0 ? '' : prev_data.description);
+  const [questionDescription, setQuestionDescription] = useState(prev_data.description.length === 0 ? '' : prev_data.question_description);
 
 
   let navigator = useNavigate()
@@ -79,6 +79,7 @@ function UpdateQuestionPage() {
     } else {
       clearErrors("link");
       clearErrors("description");
+
       updateQuestion(trimmedData)
       .then((data) => {navigator('/dashboard'); console.log("submitted"); setLoading(false);})
       .catch((e) => {

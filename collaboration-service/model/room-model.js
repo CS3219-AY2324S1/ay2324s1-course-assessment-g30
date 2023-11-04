@@ -27,9 +27,6 @@ const roomSchema = new mongoose.Schema({
     required: true,
     default: Date.now,
   },
-  editor_state: {
-    type: Object
-  }
 });
 
 const Room = mongoose.model("Room", roomSchema);

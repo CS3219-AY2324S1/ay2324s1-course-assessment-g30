@@ -2,7 +2,6 @@ import jsonwebtoken from 'jsonwebtoken';
 import { JwtToken } from '../types/auth';
 import { NextFunction, Response, Request } from 'express';
 import { HTTP_ERROR_CODES } from '../constants';
-import { sendForbiddenErrorResponse } from '../utils';
 
 const authJwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
@@ -15,7 +14,7 @@ const authJwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
       (err, token) => {
         if (err || !token) {
           console.log(err);
-          return sendForbiddenErrorResponse(res, 'Invalid Token');
+          return res.sendStatus(HTTP_ERROR_CODES.FORBIDDEN);
         }
 
         token = token as JwtToken;

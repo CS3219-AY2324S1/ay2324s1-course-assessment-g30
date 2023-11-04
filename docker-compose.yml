@@ -16,8 +16,6 @@ services:
     build:
       context: ./user-service
       dockerfile: Dockerfile.postgres-db
-    ports:
-      - "1111:5432"
     env_file:
       - ./user-service/.env
     healthcheck:
@@ -63,15 +61,12 @@ services:
       - ./collaboration-service/.env
     depends_on:
       - user-service
-      - redis
     restart: on-failure
 
-  openai-service:
-    build: ./openai-service
+  client:
+    build: ./client
     ports:
-      - "3005:3005"
-    env_file:
-      - ./openai-service/.env
+      - "3002:3002"
     depends_on:
       - user-service
       - question-service
@@ -79,24 +74,14 @@ services:
       - collaboration-service
     restart: on-failure
 
-  # client:
-  #   build: ./client
+  # nginx-api-gateway:
+  #   build: ./nginx
   #   ports:
-  #     - "3002:3002"
+  #     - "80:80"
   #   depends_on:
   #     - user-service
   #     - question-service
   #     - matching-service
   #     - collaboration-service
+  #     - client
   #   restart: on-failure
-
-  nginx-api-gateway:
-    build: ./etc/nginx
-    ports:
-      - "80:80"
-    depends_on:
-      - user-service
-      - question-service
-      - matching-service
-      - collaboration-service
-

@@ -6,7 +6,7 @@ import {
   Model
 } from 'sequelize';
 import { sequelizeConnection } from '../db/init';
-import { UserRole } from '../types/roles';
+import { UserRole } from 'types/roles';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare uuid: string;
