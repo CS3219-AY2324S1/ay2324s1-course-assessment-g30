@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Box } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
@@ -8,6 +8,7 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
+  const [codeRef, setCodeRef] = useState(editorCode)
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -16,21 +17,20 @@ const EditorContainer = ({
   }
 
   function handleEditorChange(code, event) {
-    if (event.isFlush) {
-      // Ignore remote updates to editor
-    } else {
-      // Push usr changes to server
+    if (codeRef !== code) {
+      // Code is different from the reference (redis)
       console.log("local changes pushed");
-      socket.emit("push-code", code, roomId);
+      socket.emit("push-changes", event.changes, code, roomId);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving changes from other users
-      socket.on("receive-code", (code) => {
+      // Receiving changes from other server
+      socket.on("receive-changes", (changes, code) => {
+        setCodeRef(code);
         console.log("Applying remote changes");
-        editorRef.current.getModel().setValue(code);
+        editorRef.current.getModel().applyEdits(changes);
       });
     }
   }, [socket]);
@@ -50,3 +50,4 @@ const EditorContainer = ({
 };
 
 export default EditorContainer;
+
