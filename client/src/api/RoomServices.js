@@ -1,5 +1,4 @@
 import axios from "axios";
-import { matchingServiceURL, collaborationServiceURL } from "./config";
 import Cookies from "js-cookie";
 
 export const getJoinedRooms = async () => {
@@ -52,7 +51,7 @@ export const getRoomDetails = async (roomId) => {
 };
 
 export const getPastAttempts = async (questionId, uuid) => {
-  const url = collaborationServiceURL + "/getPastAttempts";
+  const url = process.env.REACT_APP_COLLABORATION_SERVICE_URL + "/getPastAttempts";
 
   try {
     const config = {
