@@ -8,13 +8,12 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const [codeRef, setCodeRef] = useState("")
+  const [codeRef, setCodeRef] = useState(editorCode)
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
     // Setting initial editor state
     editorRef.current.getModel().setValue(editorCode);
-    setCodeRef(editorCode);
   }
 
   function handleEditorChange(code, event) {
