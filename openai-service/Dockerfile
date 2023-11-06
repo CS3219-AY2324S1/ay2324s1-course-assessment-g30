@@ -6,6 +6,5 @@ WORKDIR '/openai-service'
 COPY package*.json ./
 RUN npm install
 COPY . .
-COPY .env .env
 EXPOSE 3005
 CMD [ "nodemon", "index.js" ]
