@@ -28,8 +28,11 @@ const roomSchema = new mongoose.Schema({
     default: Date.now,
   },
   editor_state: {
-    type: Object
-  }
+    type: Object,
+    default: {
+      code: "",
+    },
+  },
 });
 
 const Room = mongoose.model("Room", roomSchema);
