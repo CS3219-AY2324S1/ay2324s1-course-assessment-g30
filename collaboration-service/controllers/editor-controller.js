@@ -1,18 +1,17 @@
 /**
  *  Broadcasts changes to code to users in a room
  */
-const pushCode = async (socket, code, roomId, redis) => {
-  //   console.log(`User ${socket.username} pushed code to room:${roomId}`);
-  socket.to(roomId).emit("receive-code", code);
+const pushChanges = async (socket, changes, code, roomId, redis) => {
+  socket.to(roomId).emit("receive-changes", changes, code);
   const editorKey = `editor:${roomId}`;
+  // Push to redis
   await redis.lpush(
     editorKey,
     JSON.stringify({
       code,
     })
   );
-  // We only save 3 versions of the code onto redis
-  await redis.ltrim(editorKey, 0, 3);
+  await redis.ltrim(editorKey, 0, 1);
 };
 
-module.exports = { pushCode };
+module.exports = { pushChanges };
