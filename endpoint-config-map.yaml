@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: endpoints
+data:
+  user-service: "http://34.143.201.80/v1"
+  question-service: "http://35.240.231.32/api"
+  matching-service: "http://35.240.192.157"
+  collaboration-service: "http://34.124.187.87"
+  openai-service: "http://35.240.229.181/openai"
+  client: "http://35.198.195.72"

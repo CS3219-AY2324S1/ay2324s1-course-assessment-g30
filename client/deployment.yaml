@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  selector:
+    matchLabels:
+      app: client
+      environment: production
+      tier: frontend
+      app.kubernetes.io/component: frontend
+      app.kubernetes.io/part-of: peerprep
+  template:
+    metadata:
+      labels:
+        app: client
+        environment: production
+        tier: frontend
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/part-of: peerprep
+      annotations:
+        commit: 7322af717ee4ae86491c0105077936e77c6fb022
+    spec:
+      containers:
+        - name: client
+          image: asia-southeast1-docker.pkg.dev/cs3219-402913/peerprep/client_prod:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: REACT_APP_USER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: user-service
+            - name: REACT_APP_QUESTION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: question-service
+            - name: REACT_APP_MATCHING_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: matching-service
+            - name: REACT_APP_COLLABORATION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: collaboration-service
+            - name: REACT_APP_OPENAI_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: endpoints
+                  key: openai-service

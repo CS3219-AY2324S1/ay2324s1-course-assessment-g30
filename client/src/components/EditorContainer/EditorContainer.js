@@ -21,17 +21,15 @@ const EditorContainer = ({
       // Code is different from the reference (redis)
       console.log("local changes pushed");
       socket.emit("push-changes", event.changes, code, roomId);
-      // socket.emit("push-code", code, roomId);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving changes from other users
+      // Receiving changes from other server
       socket.on("receive-changes", (changes, code) => {
         setCodeRef(code);
         console.log("Applying remote changes");
-        // editorRef.current.getModel().setValue(code);
         editorRef.current.getModel().applyEdits(changes);
       });
     }
@@ -52,3 +50,4 @@ const EditorContainer = ({
 };
 
 export default EditorContainer;
+

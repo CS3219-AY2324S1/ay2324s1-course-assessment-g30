@@ -50,6 +50,7 @@ function UpdateQuestionPage() {
   let navigator = useNavigate()
     
   const onSubmit = (data, event) => {
+    console.log(data)
     setLoading(true);
 
     const trimmedData = {
@@ -57,7 +58,7 @@ function UpdateQuestionPage() {
       question_title: data.question_title.trim(),
       question_complexity: data.question_complexity.trim(),
       question_link: data.question_link.trim().length === 0 ? "" : `https://leetcode.com/problems/${data.question_link.trim()}`,
-      question_description: data.question_description.trim(),
+      question_description: data.description.trim(),
       question_categories: data.question_categories
       .split(',')
       .map((category) => category.trim())
@@ -79,6 +80,7 @@ function UpdateQuestionPage() {
     } else {
       clearErrors("link");
       clearErrors("description");
+
       updateQuestion(trimmedData)
       .then((data) => {navigator('/dashboard'); console.log("submitted"); setLoading(false);})
       .catch((e) => {

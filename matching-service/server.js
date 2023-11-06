@@ -20,9 +20,10 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = socketIO(httpServer, {
   cors: {
-    origin: "http://localhost:3002",
+    origin: process.env.CLIENT_URL || "http://localhost:3002",
     methods: ["GET", "POST"],
   },
+  // path: "/matching-service/socket.io/",
 });
 
 // Middleware to authenticate user before allowing them to connect to socket.io server
@@ -62,6 +63,11 @@ app.use(express.json());
 
 app.post("/joinedRooms", auth, getJoinedRooms);
 app.post("/checkRoomContainsQuestionId", checkRoomsContainQuestionId);
+
+app.get("/", (req, res) => {
+  res.send("You are on the hehe api service!");
+});
+
 
 httpServer.listen(3003, () => {
   console.log("matching-service started on port 3003");

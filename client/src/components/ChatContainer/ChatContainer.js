@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Input, IconButton, Flex } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import "./ChatContainer.css";
 import Cookies from "js-cookie";
 
-function ChatContainer({ socket, roomId }) {
+function ChatContainer({ socket, roomId, height }) {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [isButtonClicked, setIsButtonClicked] = useState(false);
   const uuid = Cookies.get("uuid");
+ 
 
   useEffect(() => {
     // To handle sent messages
@@ -62,7 +63,8 @@ function ChatContainer({ socket, roomId }) {
   };
 
   return (
-    <Flex gap={3} height="100%" flexDirection="column" width="100%">
+    <Flex gap={3} h={height} flexDirection="column" width="100%">
+      
       <Box overflowY="scroll" height="90%" textAlign="left">
         {messages.map((msg, index) => (
           <div
@@ -104,6 +106,7 @@ function ChatContainer({ socket, roomId }) {
           colorScheme="blue"
         />
       </Flex>
+      
     </Flex>
   );
 }

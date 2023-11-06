@@ -1,4 +1,4 @@
-name: Deploy MultiDocker
+name: Pre-release build test
 on:
   pull_request:
     branches:
@@ -16,16 +16,32 @@ jobs:
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        
+      - name: Create env file for userservice test
+        run: echo -e "${{ secrets.USER_SERVICE_TEST_ENV_FILE}}" > ./user-service/.env
 
-      - name: Create env file for user service
-        run: echo -e "${{ secrets.USER_SERVICE_ENV_FILE }}" > ./user-service/.env
+      - name: Build PostgreSQL Docker image
+        working-directory: ./user-service
+        run: |
+          docker build -f Dockerfile.postgres-db -t user-service-psql .
 
-      - name: Create env file for matching service
-        run: echo -e "${{ secrets.MATCHING_SERVICE_ENV_FILE }}" > ./matching-service/.env
+      - name: Start PostgreSQL Docker container
+        working-directory: ./user-service
+        run: |
+          docker run -p 1111:5432 -e POSTGRES_PASSWORD=123 --name user-service-db -d user-service-psql
+          sleep 10
 
-      - name: Create env file for collaboration service
-        run: echo -e "${{ secrets.COLLABORATION_SERVICE_ENV_FILE }}" > ./collaboration-service/.env
+      - name: Build and test user-service
+        working-directory: ./user-service
+        run: |
+          npm ci
+          npm run test
 
+      - name: Stop and remove PostgreSQL Docker container
+        run: |
+          docker stop user-service-db
+          docker rm user-service-db
+    
       - name: Build and test client
         working-directory: ./client
         run: |
@@ -37,10 +53,31 @@ jobs:
         run: |
           npm ci
           npm test
+
+      - name: Build and test matching-service
+        working-directory: ./matching-service
+        run: |
+          npm ci
+          npm run test
+            
+      - name: Build and test collaboration-service
+        working-directory: ./collaboration-service
+        run: |
+          npm ci
+          npm run test
             
       - name: Prevent PR merge
         if: github.event.pull_request.merged == 'true'
         run: echo "This PR cannot be merged. Please make necessary changes."
+
+      - name: Set up pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "pre-release"
+          prerelease: true
+          title: "Pre-release build"
+            
       # - name: Build Docker containers
       #   run: docker-compose -f docker-compose.yml build
 
@@ -61,3 +98,4 @@ jobs:
       #     region: ap-southeast-1
       #     version_label: ${{ github.sha }}
       #     deployment_package: deploy.zip
+

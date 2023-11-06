@@ -3,7 +3,7 @@ import { matchingServiceURL, collaborationServiceURL } from "./config";
 import Cookies from "js-cookie";
 
 export const getJoinedRooms = async () => {
-  const url = matchingServiceURL + "/joinedRooms";
+  const url = process.env.REACT_APP_MATCHING_SERVICE_URL + "/joinedRooms";
 
   try {
     const config = {
@@ -27,7 +27,7 @@ export const getJoinedRooms = async () => {
 };
 
 export const getRoomDetails = async (roomId) => {
-  const url = collaborationServiceURL + "/roomDetails";
+  const url = process.env.REACT_APP_COLLABORATION_SERVICE_URL + "/roomDetails";
 
   try {
     const config = {

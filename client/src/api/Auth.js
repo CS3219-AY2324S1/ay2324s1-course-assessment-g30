@@ -1,8 +1,7 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { authServiceURL } from "./config";
 
-const baseURL = authServiceURL;
+const baseURL = process.env.REACT_APP_USER_SERVICE_URL;
 
 
 function epochToDays(epochTimestamp) {
