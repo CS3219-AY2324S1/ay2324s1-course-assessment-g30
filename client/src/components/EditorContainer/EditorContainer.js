@@ -8,7 +8,8 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const [codeRef, setCodeRef] = useState(editorCode)
+  const codeRef = useRef(editorCode);
+  const cursorRef = useRef({ lineNumber: 1, column: 1 });
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -19,17 +20,20 @@ const EditorContainer = ({
   function handleEditorChange(code, event) {
     if (codeRef !== code) {
       // Code is different from the reference (redis)
-      console.log("local changes pushed");
+      console.log("local changes pushed", codeRef, code);
       socket.emit("push-changes", event.changes, code, roomId);
+    } else {
+      editorRef.current.getModel().setPosition(cursorRef);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving changes from other server
+      // Receiving changes from server
       socket.on("receive-changes", (changes, code) => {
-        setCodeRef(code);
-        console.log("Applying remote changes");
+        codeRef.current = code;
+        cursorRef.current = editorRef.current.getModel().getCursorPos();
+        console.log("Applying remote changes", codeRef, code);
         editorRef.current.getModel().applyEdits(changes);
       });
     }
