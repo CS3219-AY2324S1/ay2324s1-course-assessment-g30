@@ -8,8 +8,9 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const codeRef = useRef(editorCode)
+  const codeRef = useRef(editorCode);
   const editorRef = useRef(null);
+  const cursorRef = useRef(null)
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
     // Setting initial editor state
@@ -17,9 +18,10 @@ const EditorContainer = ({
   }
 
   function handleEditorChange(code, event) {
+    console.log(event);
     if (codeRef.current !== code) {
       // Code is different from the reference (redis)
-      console.log("local changes pushed", codeRef.current, code);
+      console.log("local changes pushed");
       socket.emit("push-changes", event.changes, code, roomId);
     }
   }
@@ -29,8 +31,17 @@ const EditorContainer = ({
       // Receiving changes from other server
       socket.on("receive-changes", (changes, code) => {
         codeRef.current = code;
-        console.log("Applying remote changes", codeRef.current, code);
+        console.log("Applying remote changes");
+        cursorRef.current = editorRef.current.getModel().getPosition();
+        console.log("saving pos", pos);
         editorRef.current.getModel().applyEdits(changes);
+        if (editorRef.current.getModel().getValue() !== code) {
+          console.log("Client is out of sync");
+          editorRef.current.getModel().setValue(code);
+          // TODO: calculate pos for better precision
+          editorRef.current.getModel().setPosition(cursorRef.current);
+          console.log("Forced sync completed");
+        }
       });
     }
   }, [socket]);
