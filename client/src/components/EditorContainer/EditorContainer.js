@@ -33,7 +33,7 @@ const EditorContainer = ({
         codeRef.current = code;
         console.log("Applying remote changes");
         cursorRef.current = editorRef.current.getModel().getPosition();
-        console.log("saving pos", pos);
+        console.log("saving cursor", cursorRef.current);
         editorRef.current.getModel().applyEdits(changes);
         if (editorRef.current.getModel().getValue() !== code) {
           console.log("Client is out of sync");
