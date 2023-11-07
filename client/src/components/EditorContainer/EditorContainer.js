@@ -8,7 +8,7 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const [codeRef, setCodeRef] = useState(editorCode)
+  const codeRef = useRef(editorCode)
   const editorRef = useRef(null);
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
@@ -17,9 +17,9 @@ const EditorContainer = ({
   }
 
   function handleEditorChange(code, event) {
-    if (codeRef !== code) {
+    if (codeRef.current !== code) {
       // Code is different from the reference (redis)
-      console.log("local changes pushed");
+      console.log("local changes pushed", codeRef.current, code);
       socket.emit("push-changes", event.changes, code, roomId);
     }
   }
@@ -28,8 +28,8 @@ const EditorContainer = ({
     if (socket) {
       // Receiving changes from other server
       socket.on("receive-changes", (changes, code) => {
-        setCodeRef(code);
-        console.log("Applying remote changes");
+        codeRef.current = code;
+        console.log("Applying remote changes", codeRef.current, code);
         editorRef.current.getModel().applyEdits(changes);
       });
     }
