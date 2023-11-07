@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
           maxH={'20'}
         >
           <Flex ml={'10'}>
-          <Box boxSize={'120'} pt={3} >
+          <Box  pt={3} >
             <Logo onClick={() => {navigator('/')}} />
           </Box>
           </Flex>
