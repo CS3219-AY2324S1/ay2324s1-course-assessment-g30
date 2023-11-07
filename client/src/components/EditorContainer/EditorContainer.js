@@ -32,14 +32,12 @@ const EditorContainer = ({
       socket.on("receive-changes", (changes, code) => {
         codeRef.current = code;
         console.log("Applying remote changes");
-        cursorRef.current = editorRef.current.getModel().getPosition();
-        console.log("saving cursor", cursorRef.current);
         editorRef.current.getModel().applyEdits(changes);
         if (editorRef.current.getModel().getValue() !== code) {
           console.log("Client is out of sync");
           editorRef.current.getModel().setValue(code);
           // TODO: calculate pos for better precision
-          editorRef.current.getModel().setPosition(cursorRef.current);
+
           console.log("Forced sync completed");
         }
       });
