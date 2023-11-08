@@ -26,7 +26,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
@@ -55,8 +55,8 @@ function RoomPage() {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
   const [editorCode, setEditorCode] = useState("");
-  const { isOpen, onToggle } = useDisclosure()
-  const { width, height} = useWindowDimensions(); //764
+  const { isOpen, onToggle } = useDisclosure();
+  const { width, height } = useWindowDimensions(); //764
 
   useEffect(() => {
     let autoRedirectTimeout;
@@ -88,8 +88,6 @@ function RoomPage() {
       }
     });
 
-    
-
     getUserProfile().then((data) => {
       const uuid = Cookies.get("uuid");
       const token = Cookies.get("token");
@@ -114,7 +112,7 @@ function RoomPage() {
         setTimeout(() => {
           setIsRoomBeingSetUp(false);
           socket.emit("join-room", roomId);
-        }, 3000);
+        }, 0);
       });
 
       socket.on("invalid-room", () => {
@@ -130,7 +128,6 @@ function RoomPage() {
     };
   }, []);
 
-  
   // Countdown timer
   function startTimer() {
     const timerInterval = setInterval(() => {
@@ -206,7 +203,7 @@ function RoomPage() {
   }
 
   return (
-    <Box textAlign="center" display="flex" justifyContent="center"> 
+    <Box textAlign="center" display="flex" justifyContent="center">
       {isRoomBeingSetUp ? (
         <Box
           height="100vh"
@@ -242,7 +239,7 @@ function RoomPage() {
           >
             <QuestionContainer questionId={questionId} />
           </GridItem>
-          
+
           <GridItem
             pl="2"
             bg="white"
@@ -278,61 +275,68 @@ function RoomPage() {
           </Modal>
 
           {/* handles chat and hints */}
-          {<>
-          <Popover variant={'responsive'} isOpen={height < 504 ? false : isOpen} placement={'top'}>
-          <PopoverTrigger>
-            
-            <IconButton
-              aria-label='Call Segun'
-              width={'60px'}
-              height={'60px'}
-              pos={'fixed'} bottom={{base: '20', lg: '20'}}  right={{base: '30', lg: '120'}}
-              icon={<ChatIcon color={'white'}/>}
-              backgroundColor={"#E27d60"}
-              isRound={true}
-              isDisabled={height < 504 ? true : false}
-              onClick={onToggle}
-            />
-          </PopoverTrigger>
-          
-          <Portal>
-            <PopoverContent w={'500px'} mr={'25px'}>
-              <PopoverArrow />
-              <PopoverHeader h='40px'></PopoverHeader>
-              <PopoverCloseButton onClick={onToggle} />
-              <PopoverBody h={height > 690 ? '500px' : '300px'} >
-              <Tabs>
-                <TabList>
-                  <Tab>Chat</Tab>
-                  <Tab>Hint</Tab>
-                </TabList>
-
-                <TabPanels>
-                  <TabPanel>
-                  <ChatContainer
-                    socket={socket}
-                    roomId={roomId}
-                    height={height > 690 ? '420px' : '210px'}
-                    //   chatHistory={chatHistory}
+          {
+            <>
+              <Popover
+                variant={"responsive"}
+                isOpen={height < 504 ? false : isOpen}
+                placement={"top"}
+              >
+                <PopoverTrigger>
+                  <IconButton
+                    aria-label="Call Segun"
+                    width={"60px"}
+                    height={"60px"}
+                    pos={"fixed"}
+                    bottom={{ base: "20", lg: "20" }}
+                    right={{ base: "30", lg: "120" }}
+                    icon={<ChatIcon color={"white"} />}
+                    backgroundColor={"#E27d60"}
+                    isRound={true}
+                    isDisabled={height < 504 ? true : false}
+                    onClick={onToggle}
                   />
-                  </TabPanel>
-                  <TabPanel>
-                  <OpenaiChat height={height > 690 ? '420px' : '210px'} programmingLanguage={programmingLanguage} questionId={questionId} userCode={editorCode} />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-                
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
-        </Popover>
+                </PopoverTrigger>
+
+                <Portal>
+                  <PopoverContent w={"500px"} mr={"25px"}>
+                    <PopoverArrow />
+                    <PopoverHeader h="40px"></PopoverHeader>
+                    <PopoverCloseButton onClick={onToggle} />
+                    <PopoverBody h={height > 690 ? "500px" : "300px"}>
+                      <Tabs>
+                        <TabList>
+                          <Tab>Chat</Tab>
+                          <Tab>Hint</Tab>
+                        </TabList>
+
+                        <TabPanels>
+                          <TabPanel>
+                            <ChatContainer
+                              socket={socket}
+                              roomId={roomId}
+                              height={height > 690 ? "420px" : "210px"}
+                              //   chatHistory={chatHistory}
+                            />
+                          </TabPanel>
+                          <TabPanel>
+                            <OpenaiChat
+                              height={height > 690 ? "420px" : "210px"}
+                              programmingLanguage={programmingLanguage}
+                              questionId={questionId}
+                              userCode={editorCode}
+                            />
+                          </TabPanel>
+                        </TabPanels>
+                      </Tabs>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Portal>
+              </Popover>
             </>
           }
         </Grid>
-        
       )}
-      
-    
     </Box>
   );
 }

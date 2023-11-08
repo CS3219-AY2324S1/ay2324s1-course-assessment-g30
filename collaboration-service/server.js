@@ -13,7 +13,7 @@ const {
   broadcastJoin,
   sendMessage,
 } = require("./controllers/chat-controller.js");
-const { pushChanges } = require("./controllers/editor-controller.js");
+const { pushCode } = require("./controllers/editor-controller.js");
 const { connectToDB } = require("./model/db.js");
 const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
@@ -65,10 +65,8 @@ io.on("connection", (socket) => {
     sendMessage(socket, message, roomId, io);
   });
 
-  socket.on("push-changes", (changes, code, roomId) => {
-    // might add a timer to only allow a trigger once every min
-    // if perf is an issue
-    pushChanges(socket, changes, code, roomId, redis);
+  socket.on("push-code", (changes, code, roomId) => {
+    pushCode(socket, changes, code, roomId, redis);
   });
 
   socket.on("disconnecting", async () => {

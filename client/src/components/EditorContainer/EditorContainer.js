@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
@@ -8,38 +8,35 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const codeRef = useRef(editorCode);
   const editorRef = useRef(null);
-  const cursorRef = useRef(null)
+  let isSocketChange = useRef(false);
+
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
     // Setting initial editor state
+    isSocketChange.current = true;
+    console.log("Fetch initial code from redis");
     editorRef.current.getModel().setValue(editorCode);
+    isSocketChange.current = false;
   }
 
   function handleEditorChange(code, event) {
-    console.log(event);
-    if (codeRef.current !== code) {
-      // Code is different from the reference (redis)
+    console.log(isSocketChange);
+    if (!isSocketChange.current) {
       console.log("local changes pushed");
-      socket.emit("push-changes", event.changes, code, roomId);
+      socket.emit("push-code", event.changes, code, roomId);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving changes from other server
-      socket.on("receive-changes", (changes, code) => {
-        codeRef.current = code;
+      // Receiving changes from other users
+      socket.on("receive-code", (changes) => {
         console.log("Applying remote changes");
+        isSocketChange.current = true;
         editorRef.current.getModel().applyEdits(changes);
-        if (editorRef.current.getModel().getValue() !== code) {
-          console.log("Client is out of sync");
-          editorRef.current.getModel().setValue(code);
-          // TODO: calculate pos for better precision
-
-          console.log("Forced sync completed");
-        }
+        // editorRef.current.getModel().setValue(code);
+        isSocketChange.current = false;
       });
     }
   }, [socket]);
@@ -59,4 +56,3 @@ const EditorContainer = ({
 };
 
 export default EditorContainer;
-
