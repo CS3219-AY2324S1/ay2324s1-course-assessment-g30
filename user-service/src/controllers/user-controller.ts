@@ -22,24 +22,15 @@ const createUser: RequestHandler = async (req, res) => {
     return;
   }
 
-  const lowerCasedUsername = (username as string).toLowerCase();
   // Check if username exists
-  let registeredUser = await User.findOne({
-    where: {
-      username: lowerCasedUsername
-    }
-  });
+  let registeredUser = await UserDb.getRegisteredUserByUsername(username);
   if (registeredUser) {
     sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.USERNAME_IN_USE_ERROR);
     return;
   }
 
   // Check if email exists
-  registeredUser = await User.findOne({
-    where: {
-      email
-    }
-  });
+  registeredUser = await UserDb.getRegisteredUserByEmail(email);
 
   if (registeredUser) {
     sendBadRequestResponse(res, REQUEST_ERROR_MESSAGES.EMAIL_IN_USE_ERROR);
@@ -72,11 +63,7 @@ const loginUser: RequestHandler = async (req, res) => {
   }
 
   // Fetch username, and hash password
-  const registeredUser = await User.findOne({
-    where: {
-      email
-    }
-  });
+  const registeredUser = await UserDb.getRegisteredUserByEmail(email);
 
   if (!registeredUser) {
     sendForbiddenErrorResponse(res, 'User does not exist');
