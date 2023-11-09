@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { UserDb } from '../../src/db/Users';
+import { UserDb, UserDbTest } from '../../src/db/Users';
 
 const adminEmail = 'testAdmin1@test.com';
 const adminUsername = 'testAdmin1';
@@ -25,7 +25,7 @@ describe('User DB Unit test', () => {
       adminEmail
     );
 
-    const searchResult = UserDb.getUser({
+    const searchResult = UserDbTest.getUser({
       email: adminEmail,
       username: adminUsername,
       firstName: adminFirstName,

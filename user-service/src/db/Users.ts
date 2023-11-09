@@ -37,7 +37,7 @@ const createUser = async (
   console.log({
     uuid: crypto.randomUUID(),
     role: UserRole.registeredUser,
-    username: username.toLowerCase(),
+    username: username,
     firstName,
     lastName,
     hashedPassword,
@@ -66,25 +66,33 @@ const createAccount = async (
     uuid: crypto.randomUUID(),
     role,
     username: username.toLowerCase(),
-    firstName,
-    lastName,
+    firstName: firstName.toLowerCase(),
+    lastName: lastName.toLowerCase(),
     hashedPassword,
-    email
+    email: email.toLowerCase()
   });
   await User.create({
     uuid: crypto.randomUUID(),
     role,
     username: username.toLowerCase(),
-    firstName,
-    lastName,
+    firstName: firstName.toLowerCase(),
+    lastName: lastName.toLowerCase(),
     hashedPassword,
-    email
+    email: email.toLowerCase()
   });
 };
 
 const getOneAdmin = async () => {
   return await User.findOne({ where: { role: UserRole.maintainer } });
 };
+
+const getRegisteredUserByEmail  = async (email: string) => {
+  return await getUser({email: email.toLowerCase()})
+}
+
+const getRegisteredUserByUsername  = async (username: string) => {
+  return await getUser({username: username.toLowerCase()})
+}
 
 const getUser = async (filterCriteria: any) => {
   return await User.findOne({ where: filterCriteria });
@@ -107,9 +115,23 @@ const UserDb = {
   dropUserTable,
   createAdmin,
   createUser,
-  getUser,
+  getRegisteredUserByEmail,
+  getRegisteredUserByUsername,
   getOneAdmin,
   deleteUser
 };
 
-export { UserDb };
+// All commands for testing purposes
+const UserDbTest = {
+  getUser,
+  initializeUserDatabase,
+  dropUserTable,
+  createAdmin,
+  createUser,
+  getRegisteredUserByEmail,
+  getRegisteredUserByUsername,
+  getOneAdmin,
+  deleteUser
+}
+
+export { UserDb, UserDbTest };

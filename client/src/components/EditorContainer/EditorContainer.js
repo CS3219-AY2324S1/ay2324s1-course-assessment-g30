@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef } from "react";
 import { Box } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 
@@ -8,33 +8,36 @@ const EditorContainer = ({
   roomId,
   editorCode,
 }) => {
-  const codeRef = useRef(editorCode);
-  const cursorRef = useRef({ lineNumber: 1, column: 1 });
+
   const editorRef = useRef(null);
+  let isSocketChange = useRef(false);
+
   function onEditorDidMount(editor, monaco) {
     editorRef.current = editor;
     // Setting initial editor state
+    isSocketChange.current = true;
+    console.log("Fetch initial code from redis");
     editorRef.current.getModel().setValue(editorCode);
+    isSocketChange.current = false;
   }
 
   function handleEditorChange(code, event) {
-    if (codeRef !== code) {
-      // Code is different from the reference (redis)
-      console.log("local changes pushed", codeRef, code);
-      socket.emit("push-changes", event.changes, code, roomId);
-    } else {
-      editorRef.current.getModel().setPosition(cursorRef);
+    console.log(isSocketChange);
+    if (!isSocketChange.current) {
+      console.log("local changes pushed");
+      socket.emit("push-code", event.changes, code, roomId);
     }
   }
 
   useEffect(() => {
     if (socket) {
-      // Receiving changes from server
-      socket.on("receive-changes", (changes, code) => {
-        codeRef.current = code;
-        cursorRef.current = editorRef.current.getModel().getCursorPos();
-        console.log("Applying remote changes", codeRef, code);
+      // Receiving changes from other users
+      socket.on("receive-code", (changes) => {
+        console.log("Applying remote changes");
+        isSocketChange.current = true;
         editorRef.current.getModel().applyEdits(changes);
+        // editorRef.current.getModel().setValue(code);
+        isSocketChange.current = false;
       });
     }
   }, [socket]);
@@ -54,4 +57,3 @@ const EditorContainer = ({
 };
 
 export default EditorContainer;
-
