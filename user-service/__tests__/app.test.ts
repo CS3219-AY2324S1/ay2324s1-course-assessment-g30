@@ -23,6 +23,9 @@ const adminFirstName = 'adminTester';
 const unusedUsername = 'testUser2';
 const unusedEmail = 'testUser2@test.com';
 
+const invalidPassword = '1235';
+const validPassword = 'Test@12345678'
+
 const createTestUser = async () => {
   await UserDb.createUser(username, firstName, lastName, password, email);
 };
@@ -155,10 +158,23 @@ describe('update profile endpoint', () => {
     const response = await request(app)
       .put('/v1/user')
       .auth(token, { type: 'bearer' })
-      .send({ uuid, username: newUsername });
+      .send({ uuid, username: newUsername, password: validPassword });
 
     expect(response.statusCode).toBe(200);
     expect(response.body.res).toHaveProperty('username', newUsername);
+  });
+
+  test('Receive error for invalid update password', async () => {
+    await createTestUser();
+    const token = await getUserJwtToken();
+    const uuid = await getUserUUID();
+    const response = await request(app)
+      .put('/v1/user')
+      .auth(token, { type: 'bearer' })
+      .send({ uuid, password: invalidPassword});
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.err).toBe('Invalid password provided');
   });
 
   test('Disallows unauthorised user to update profile', async () => {
