@@ -21,7 +21,7 @@ const REQUEST_ERROR_MESSAGES = {
 
 // JWT Related
 const SALT_ROUNDS = 10;
-const TOKEN_DURATION = '7 days';
+const TOKEN_DURATION = '1h';
 
 export {
   HTTP_ERROR_CODES,
