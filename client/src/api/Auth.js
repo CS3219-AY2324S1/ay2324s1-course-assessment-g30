@@ -141,7 +141,8 @@ export const editProfile = async (input) => {
             uuid: uuid,
             firstName: input.firstName,
             lastName: input.lastName,
-            username: input.username
+            username: input.username,
+            password: input.password
         }
     };
 

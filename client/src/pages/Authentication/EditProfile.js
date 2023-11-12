@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   Input,
+  InputGroup,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,11 +12,13 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useToast
+  useToast,
+  InputRightElement
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { editProfile } from '../../api/Auth';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 
 function EditProfileModal(props) {
@@ -57,8 +60,11 @@ function EditProfileModal(props) {
       delete data.username;
     }
 
-
-    if (!error) {
+    if (data.password.length === 0) {
+      delete data.password;
+    }
+    
+    if (!error && errorPassword == null) {
       editProfile(data).then(() => {
         toast({
           title: 'Profile Edited',
@@ -101,6 +107,45 @@ function EditProfileModal(props) {
     setUsernameInputValue(newValue);
   };
 
+    //----------------------------------------------------------
+  //for password
+  const [showPassword, setShowPassword] = useState(false)
+  const [errorPassword, setErrorPassword] = useState(null);
+  const [passwordInputValue, setPasswordInputValue] = useState('');
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+
+    const minLength = 8;
+    const hasLowerCase = /[a-z]/.test(newPassword);
+    const hasUpperCase = /[A-Z]/.test(newPassword);
+    const hasDigit = /\d/.test(newPassword);
+    const hasSpecialChar = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/.test(newPassword);
+
+    
+    if (newPassword.length === 0) {
+      setErrorPassword(null);
+    } else if (
+      (newPassword.length < minLength) ||
+      !hasLowerCase ||
+      !hasUpperCase ||
+      !hasDigit ||
+      !hasSpecialChar
+    ) {
+      const passwordCriteriaMessage = "Password must be at least 8 characters long. \n"
+      + "Contain at least one lowercase letter. \n"
+      + "Contain one uppercase letter. \n"
+      + "Contain one digit. \n"
+      + "Contain one special character.";
+      setErrorPassword(
+        passwordCriteriaMessage
+      );
+      setError('password');
+    } else {
+      setErrorPassword(null);
+    }
+    setPasswordInputValue(newPassword);
+  };
+
 
   return (
     <>
@@ -114,10 +159,12 @@ function EditProfileModal(props) {
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>First Name</Text>
           <Input defaultValue={props.user.firstName} {...register("firstName")} maxLength={20}/>
           {errors.firstName && <p style={{color: 'red'}}>This field is required</p>}
+
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Last Name</Text>
           <Input defaultValue={props.user.lastName} {...register("lastName")} maxLength={20}/>
           {errors.lastName && <p style={{color: 'red'}}>This field is required</p>}
+          
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Username</Text>
           <Input {...register('username', {
@@ -126,8 +173,23 @@ function EditProfileModal(props) {
           {errors.username && <p style={{color: 'red'}}>This field is required</p>}
           <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorUsername}</Text>
           {errMsg && <p style={{color: 'red', marginTop: 20}}>{errMsg}</p>}
+
+          <Divider my={10} />
+          <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Password</Text>
+          <InputGroup>
+          <Input {...register('password', {
+                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={handlePasswordChange} maxLength={128} />
+          <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() => setShowPassword((showPassword) => !showPassword)}>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+          </InputRightElement>
+          </InputGroup>
+          {passwordInputValue.length > 0 && <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>}
+          <p style={{ color: 'gray', fontSize: '14px', marginTop: 20}}>Note: If you wish to keep the password unchanged, please leave the password field blank.</p>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
-  
           </Box>
         </ModalBody>
         <ModalFooter>
