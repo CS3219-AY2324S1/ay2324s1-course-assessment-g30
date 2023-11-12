@@ -5,11 +5,11 @@ import {
   getUserProfile,
   loginUser,
   updateUserProfile
-} from './src/controllers/user-controller';
+} from './controllers/user-controller';
 import express from 'express';
-import authJwtMiddleware from './src/middleware/auth';
+import authJwtMiddleware from './middleware/auth';
 import cors from 'cors';
-import { getUserRole } from './src/controllers/auth-controller';
+import { getUserRole } from './controllers/auth-controller';
 
 const app = express();
 const version = 'v1';
