@@ -219,7 +219,7 @@ describe('delete profile endpoint', () => {
   });
 });
 
-describe('Verify JWT endpoint', () => {
+describe('Get role endpoint', () => {
   test('return role for admin user', async () => {
     await createTestAdmin();
     const token = await getAdminJwtToken();

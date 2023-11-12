@@ -94,6 +94,10 @@ const getRegisteredUserByUsername  = async (username: string) => {
   return await getUser({username: username.toLowerCase()})
 }
 
+const getRegisteredUserByUuid  = async (uuid: string) => {
+  return await getUser({ uuid })
+}
+
 const getUser = async (filterCriteria: any) => {
   return await User.findOne({ where: filterCriteria });
 };
@@ -117,6 +121,7 @@ const UserDb = {
   createUser,
   getRegisteredUserByEmail,
   getRegisteredUserByUsername,
+  getRegisteredUserByUuid,
   getOneAdmin,
   deleteUser
 };
@@ -130,6 +135,7 @@ const UserDbTest = {
   createUser,
   getRegisteredUserByEmail,
   getRegisteredUserByUsername,
+  getRegisteredUserByUuid,
   getOneAdmin,
   deleteUser
 }
