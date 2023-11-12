@@ -1,5 +1,6 @@
 function classifyQueryPrompt(query) {
-    const prompt = `Classify the following query, delimited by '@@,' into one of the following categories: explaining a question, suggesting optimal answers, debugging user code, generating pseudocode, or any other category.
+    const prompt = `Take on the role of an assistant called AlgoGenius.
+    Classify the following query, delimited by '@@,' into one of the following categories: explaining a question, suggesting optimal answers, debugging user code, generating pseudocode, or any other category.
         For the category 'explaining a question,' an example query is: 'I do not understand the requirements and meaning of the question. Can you explain the question in simpler terms?'
         For the category 'suggesting optimal answers,' an example query is: 'Are there better or more efficient solutions available to solve this particular question?'
         For the category 'debugging user code,' an example query is: 'I am not sure why my code is not working. Can you help me debug my code?'
@@ -17,7 +18,8 @@ function classifyQueryPrompt(query) {
 
 
 function explainQuestionPrompt(question) {
-    const prompt = `As a coding interviewee, I want to know how to approach the following question delimited by '@@':
+    const prompt = `Take on the role of an assistant called AlgoGenius.
+    As a coding interviewee, I want to know how to approach the following question delimited by '@@':
 1. Summarize the context and concepts tested in the question concisely in less than 3 sentences.
 
 2. Understand each test case found inside the question and outline any edge cases.
@@ -33,7 +35,7 @@ Question:
 }
 
 function suggestOptimalAnsPrompt(question) {
-    const prompt = `
+    const prompt = `Take on the role of an assistant called AlgoGenius.
 Act as an algorithm expert and brainstorm all possible unique coding solutions to the following question delimited by '@@'. Consider a range of factors, including time and space complexity. Use the results here for the following parts:
 
 Consider the solution that optimizes both time and space complexity and provide a comprehensive analysis.
@@ -59,7 +61,7 @@ Question:
 }
 
 function debugUserCodePrompt(language, question, userCode) {
-    const prompt = `
+    const prompt = `Take on the role of an assistant called AlgoGenius.
 Follow these steps to debug and improve your code:
 
 Step 1:
@@ -90,7 +92,7 @@ User's Code:
 
 
 function generatePseudocodePrompt(question, language) {
-    const prompt = `
+    const prompt = `Take on the role of an assistant called AlgoGenius.
 Write pseudocode for the following problem delimited by '@@' and provide a concise explanation in ${language} programming sytax:
     
 Problem:
@@ -118,7 +120,8 @@ Explain the pseudocode logic here in at most 3 sentences.
 }
 
 function generateResponsePrompt(language, question, userCode, pastMessages) {
-    const prompt = `Imagine you are an assistant reviewing a conversation history, and your role is to analyze and generate a response.
+    const prompt = `Take on the role of an assistant called AlgoGenius.
+    Imagine you are an assistant reviewing a conversation history, and your role is to analyze and generate a response.
      Here are the past messages:
     @@${pastMessages}@@
 

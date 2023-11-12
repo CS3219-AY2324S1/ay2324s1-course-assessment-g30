@@ -262,6 +262,69 @@ const readRandomQuestionController = async (req, res, next) => {
   }
 };
 
+const testAddQuestionController = async (req, res, next) => {
+  // Arguments: title (String), category ([String]), complexity (String), link (String)
+  const id = req.body.question_id;
+  const title = req.body.title;
+  const category = req.body.category;
+  const complexity = req.body.complexity;
+  const link = req.body.link;
+  let description = req.body.description;
+  const uuid = req.body.uuid;
+  if (description != "") {
+    description = "<p>" + description + "</p>";
+    description = "<div>" + description + "</div>";
+  }
+  let newQuestionDescription = "";
+  try {
+    if (link !== "") {
+      newQuestionDescription = await webScrapperQuestionDescription(link);
+    }
+  } catch (err) {
+    console.log(err);
+    res
+      .status(400)
+      .json({ message: "URL is invalid! Please use the URL as specified." });
+    return;
+  }
+  try {
+    const newIndex = id;
+    const newQuestionDocument = new QuestionModel({
+      question_id: newIndex,
+      question_title: title,
+      question_categories: category,
+      question_complexity: complexity,
+      question_link: link,
+      uuid: uuid,
+    });
+    const newQuestionDescriptionDocument = new QuestionDescriptionModel({
+      question_id: newIndex,
+      question_description: description == "" ? newQuestionDescription : "",
+      description: description,
+    });
+    console.log("Before question save");
+    await newQuestionDocument.save();
+    console.log("Before description save");
+    await newQuestionDescriptionDocument.save();
+    console.log("after description save");
+    res.status(200).json({ message: "Question added successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.toString() });
+  }
+};
+
+const testDeleteQuestionController = async (req, res, next) => {
+  const question_id = req.body.question_id;
+  try {
+    await QuestionModel.deleteOne({ question_id: question_id });
+    await QuestionDescriptionModel.deleteOne({ question_id: question_id });
+    res.status(200).json({ message: "Question deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.toString() });
+  }
+};
+
 module.exports = {
   readQuestionDescriptionController,
   readQuestionsController,
@@ -270,4 +333,6 @@ module.exports = {
   updateQuestionController,
   testUpdateQuestionController,
   readRandomQuestionController,
+  testAddQuestionController,
+  testDeleteQuestionController,
 };
