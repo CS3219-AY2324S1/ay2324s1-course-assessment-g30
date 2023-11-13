@@ -12,7 +12,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await UserDb.dropUserTable();
+  await UserDbTest.dropUserTable();
 });
 
 describe('User DB Unit test', () => {

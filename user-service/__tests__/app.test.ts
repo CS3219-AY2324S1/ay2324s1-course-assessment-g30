@@ -1,13 +1,13 @@
 import request from 'supertest';
 import { app } from '../src/app';
-import { UserDb } from '../src/db/Users';
+import { UserDb, UserDbTest } from '../src/db/Users';
 
 beforeEach(async () => {
-  await UserDb.initializeUserDatabase();
+  await UserDbTest.initializeUserDatabase();
 });
 
 afterEach(async () => {
-  await UserDb.dropUserTable();
+  await UserDbTest.dropUserTable();
 });
 
 const password = 'Testpassword1@';
