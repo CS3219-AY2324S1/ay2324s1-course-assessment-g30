@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { createDB } = require("./Config/db.js");
 const questionRouter = require("./Routes/questions.routes.js");
+const testQuestionRouter = require("./Routes/testquestions.routes.js");
 
 const initializeApp = async (port_no) => {
   await createDB();
@@ -12,6 +13,7 @@ const initializeApp = async (port_no) => {
   app.use(cors());
 
   app.use("/api", questionRouter);
+  app.use("/test", testQuestionRouter);
 
   app.get("/", (req, res) => {
     res.send("You are on the question api service!");

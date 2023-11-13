@@ -1,9 +1,18 @@
 const mongoose = require("mongoose");
 
 const questionDescriptionSchema = new mongoose.Schema({
-  question_id: Number,
-  question_description: String,
-  description: String,
+  question_id: {
+    type: Number,
+    required: true,
+  },
+  // webscrapped leetcode question description
+  question_description: {
+    type: String,
+  },
+  // user’s inputted question description
+  description: {
+    type: String,
+  },
 });
 
 const QuestionDescriptionModel = mongoose.model(
