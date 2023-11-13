@@ -116,13 +116,11 @@ const dropUserTable = async () => {
 
 const UserDb = {
   initializeUserDatabase,
-  dropUserTable,
   createAdmin,
   createUser,
   getRegisteredUserByEmail,
   getRegisteredUserByUsername,
   getRegisteredUserByUuid,
-  getOneAdmin,
   deleteUser
 };
 
