@@ -26,7 +26,7 @@ import * as React from 'react';
 
 
 export default function Register() {
-  const [showPassword, setShowPassword] = useState(false)
+
   const navigate = useNavigate();
 
   const [loggedIn, setLoggedIn] = useState(false);
@@ -66,7 +66,7 @@ export default function Register() {
       lastName: data.lastName
    }
    
-   if (errorUsername == null && errorPassword == null) {
+   if (errorUsername == null && errorPassword == null && errorPasswordConfirmation == null) {
     await createUser(info)
     .then((obj) => {
       toast({
@@ -119,8 +119,14 @@ export default function Register() {
   //----------------------------------------------------------
   //for password
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmShowPassword, setConfirmShowPassword] = useState(false);
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  
   const [errorPassword, setErrorPassword] = useState(null);
-  const [passwordInputValue, setPasswordInputValue] = useState("");
+  const [errorPasswordConfirmation, setErrorPasswordConfirmation] = useState(null);
+  const [passwordInputValue, setPasswordInputValue] = useState('');
 
   const handlePasswordChange = (event) => {
     const newPassword = event.target.value;
@@ -131,7 +137,9 @@ export default function Register() {
     const hasDigit = /\d/.test(newPassword);
     const hasSpecialChar = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/.test(newPassword);
 
-    if (
+    if (newPassword.length === 0) {
+      setErrorPassword(null);
+    } else if (
       newPassword.length < minLength ||
       !hasLowerCase ||
       !hasUpperCase ||
@@ -152,6 +160,31 @@ export default function Register() {
 
     setPasswordInputValue(newPassword);
   };
+
+  const handlePasswordConfirmChange = (event) => {
+    const newPassword = event.target.value;
+    console.log(event.target.id)
+
+    const passwordCriteriaMessage = "Please ensure both passwords are the same";
+    
+    if (newPassword !== passwordInputValue && event.target.id === 'passwordConfirm') {
+      setErrorPasswordConfirmation(
+        passwordCriteriaMessage
+      );
+    } else if (newPassword !== passwordConfirm && event.target.id === 'password') {
+      setErrorPasswordConfirmation(
+        passwordCriteriaMessage
+      );
+    } else {
+      setErrorPasswordConfirmation(null);
+    }
+
+    if (event.target.id === 'passwordConfirm') {
+      setPasswordConfirm(newPassword);
+    }
+  };
+
+ 
 
     
   return (
@@ -214,7 +247,7 @@ export default function Register() {
               <InputGroup>
                 <Input {...register('password', {
                     required: true,
-                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={handlePasswordChange} maxLength={128} />
+                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={(e) => {handlePasswordChange(e); handlePasswordConfirmChange(e)}} maxLength={128} />
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -223,8 +256,24 @@ export default function Register() {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              </FormControl>
               <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>
-            </FormControl>
+              {<>
+              <FormControl id="passwordConfirm" isRequired>
+                  <FormLabel>Confirm password</FormLabel>
+                <InputGroup >
+                <Input type={confirmShowPassword ? 'text' : 'password'} 
+                        onChange={handlePasswordConfirmChange} value={passwordConfirm} maxLength={128} />
+                <InputRightElement h={'full'}>
+                        <Button
+                          variant={'ghost'}
+                          onClick={() => setConfirmShowPassword((showPassword) => !showPassword)}>
+                          {confirmShowPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                </InputRightElement>
+                </InputGroup></FormControl></>}
+                {errorPasswordConfirmation !== null && <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPasswordConfirmation}</Text>}
+            
             {regError && <Text color={"#cc0000"}>{regError}</Text>}
             <Stack spacing={10} pt={2}>
               <Button

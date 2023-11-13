@@ -63,8 +63,8 @@ function EditProfileModal(props) {
     if (data.password.length === 0) {
       delete data.password;
     }
-    
-    if (!error && errorPassword == null) {
+    console.log(errorPasswordConfirmation)
+    if (!error && errorPassword == null && (errorPasswordConfirmation == null || passwordInputValue.length === 0)) {
       editProfile(data).then(() => {
         toast({
           title: 'Profile Edited',
@@ -109,8 +109,13 @@ function EditProfileModal(props) {
 
     //----------------------------------------------------------
   //for password
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmShowPassword, setConfirmShowPassword] = useState(false);
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+
+  
   const [errorPassword, setErrorPassword] = useState(null);
+  const [errorPasswordConfirmation, setErrorPasswordConfirmation] = useState(null);
   const [passwordInputValue, setPasswordInputValue] = useState('');
   const handlePasswordChange = (event) => {
     const newPassword = event.target.value;
@@ -121,9 +126,10 @@ function EditProfileModal(props) {
     const hasDigit = /\d/.test(newPassword);
     const hasSpecialChar = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/.test(newPassword);
 
-    
     if (newPassword.length === 0) {
       setErrorPassword(null);
+      setPasswordConfirm('');
+      setErrorPasswordConfirmation(null);
     } else if (
       (newPassword.length < minLength) ||
       !hasLowerCase ||
@@ -142,8 +148,33 @@ function EditProfileModal(props) {
       setError('password');
     } else {
       setErrorPassword(null);
+      setErrorPasswordConfirmation(null);
     }
+
     setPasswordInputValue(newPassword);
+  };
+
+  const handlePasswordConfirmChange = (event) => {
+    const newPassword = event.target.value;
+    console.log(event.target.id)
+
+    const passwordCriteriaMessage = "Please ensure both passwords are the same";
+    
+    if (newPassword !== passwordInputValue && event.target.id === 'passwordConfirm') {
+      setErrorPasswordConfirmation(
+        passwordCriteriaMessage
+      );
+    } else if (newPassword !== passwordConfirm && event.target.id === 'password') {
+      setErrorPasswordConfirmation(
+        passwordCriteriaMessage
+      );
+    } else {
+      setErrorPasswordConfirmation(null);
+    }
+
+    if (event.target.id === 'passwordConfirm') {
+      setPasswordConfirm(newPassword);
+    }
   };
 
 
@@ -177,8 +208,8 @@ function EditProfileModal(props) {
           <Divider my={10} />
           <Text mb='20px' fontSize={'lg'} fontWeight={'semibold'}>Password</Text>
           <InputGroup>
-          <Input {...register('password', {
-                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={handlePasswordChange} maxLength={128} />
+          <Input id='password' {...register('password', {
+                  })} type={showPassword ? 'text' : 'password'} value={passwordInputValue} onChange={(e) => {handlePasswordChange(e); handlePasswordConfirmChange(e)}} maxLength={128} />
           <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
@@ -188,6 +219,19 @@ function EditProfileModal(props) {
           </InputRightElement>
           </InputGroup>
           {passwordInputValue.length > 0 && <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPassword}</Text>}
+          {passwordInputValue.length > 0 && errorPassword == null && <><Text mb='20px' pt={10} fontSize={'lg'} fontWeight={'semibold'}>Confirm Password</Text>
+          <InputGroup >
+          <Input id='passwordConfirm' type={confirmShowPassword ? 'text' : 'password'} 
+                  onChange={handlePasswordConfirmChange} value={passwordConfirm} maxLength={128} />
+          <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() => setConfirmShowPassword((showPassword) => !showPassword)}>
+                    {confirmShowPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+          </InputRightElement>
+          </InputGroup></>}
+          {passwordInputValue.length > 0 && errorPasswordConfirmation !== null && <Text color={"#cc0000"} whiteSpace={'pre-wrap'}>{errorPasswordConfirmation}</Text>}
           <p style={{ color: 'gray', fontSize: '14px', marginTop: 20}}>Note: If you wish to keep the password unchanged, please leave the password field blank.</p>
           <Box display={'flex'} justifyContent={'flex-end'} py={16}>
           </Box>
