@@ -28,6 +28,9 @@ const EditorContainer = ({
       socket.emit("push-code", event.changes, code, roomId);
     }
   }
+  function executeCode() {
+    socket.emit("execute-code", roomId, editorRef.current.getModel().getValue(), "", programmingLanguage);
+  }
 
   useEffect(() => {
     if (socket) {
@@ -39,11 +42,16 @@ const EditorContainer = ({
         // editorRef.current.getModel().setValue(code);
         isSocketChange.current = false;
       });
+
+      socket.on("get-result", (result) => {
+        console.log("result", result);
+      });
     }
   }, [socket]);
 
   return (
     <Box padding={1}>
+      <button onClick={executeCode}>Run</button>
       <Editor
         height="90vh"
         width="100%"

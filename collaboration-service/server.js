@@ -13,10 +13,41 @@ const {
   broadcastJoin,
   sendMessage,
 } = require("./controllers/chat-controller.js");
-const { pushCode } = require("./controllers/editor-controller.js");
+const { pushCode, executeCode } = require("./controllers/editor-controller.js");
 const { connectToDB } = require("./model/db.js");
 const Redis = require("ioredis");
 const { attemptToAuthenticate, auth } = require("./middleware/auth.js");
+const {options} = require("axios");
+
+const rapidApiKey = process.env.RAPID_API_KEY;
+const rapidApiHost = process.env.RAPID_API_HOST || "judge0-ce.p.rapidapi.com";
+
+const rapid_post_options = {
+  method: 'POST',
+  hostname: rapidApiHost,
+  port: null,
+  path: '/submissions?base64_encoded=true&fields=*',
+  headers: {
+    'content-type': 'application/json',
+    'Content-Type': 'application/json',
+    'X-RapidAPI-Key': rapidApiKey,
+    'X-RapidAPI-Host': rapidApiHost
+  }
+};
+
+const rapid_get_options = (token) => {
+  return {
+    method: 'GET',
+    hostname: rapidApiHost,
+    port: null,
+    path: `/submissions/${token}?base64_encoded=true&fields=*`,
+    headers: {
+      'X-RapidAPI-Key': rapidApiKey,
+      'X-RapidAPI-Host': rapidApiHost
+    }
+  };
+}
+
 
 // Connect to the default Redis server running on localhost and default port 6379
 // Run redis-server locally
@@ -69,6 +100,10 @@ io.on("connection", (socket) => {
     pushCode(socket, changes, code, roomId, redis);
   });
 
+  socket.on("execute-code", (roomId, code, stdin, language) => {
+    executeCode(socket, roomId, http, rapid_post_options, rapid_get_options, code, stdin, language);
+  });
+
   socket.on("disconnecting", async () => {
     disconnectFromRoom(socket, io, redis);
   });
@@ -86,3 +121,6 @@ httpServer.listen(3004, () => {
   console.log("collaboration-service started on port 3004");
   connectToDB();
 });
+
+
+
