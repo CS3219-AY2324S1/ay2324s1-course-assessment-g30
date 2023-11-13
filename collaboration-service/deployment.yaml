@@ -46,3 +46,20 @@ spec:
                 configMapKeyRef:
                   name: endpoints
                   key: client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collaboration-service-load-balancer
+spec:
+  selector:
+    app: collaboration-service
+    environment: production
+    tier: backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: peerprep
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3004
+  type: LoadBalancer

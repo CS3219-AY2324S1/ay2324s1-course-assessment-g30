@@ -2,8 +2,7 @@
   "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
   "include": [
     "src/*/**.ts",
-    "app.ts",
-    "server.ts",
+    "src/*.ts",
     "jest.config.ts",
     "__tests__/**.test.ts",
     "__tests__/db/Users.test.ts"

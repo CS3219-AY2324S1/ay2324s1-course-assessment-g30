@@ -13,6 +13,7 @@ import {
 import { ValidationError } from 'sequelize';
 import { isValidPassword } from '../utils/validators';
 import { UserDb } from '../db/Users';
+import { hashPassword } from '../utils/auth';
 
 const createUser: RequestHandler = async (req, res) => {
   const { username, password, email, firstName, lastName } = req.body;
@@ -138,6 +139,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
   const userData = await User.findByPk(user.uuid);
   if (userData) {
     let { username, firstName, lastName } = req.body;
+    const {password } = req.body;
 
     if (username && typeof username == 'string') {
       userData.username = username.toLowerCase();
@@ -162,6 +164,14 @@ const updateUserProfile: RequestHandler = async (req, res) => {
 
     if (lastName && typeof lastName == 'string') {
       userData.lastName = lastName;
+    }
+
+    if (password && typeof password == 'string') {
+      if (!isValidPassword(password)) {
+        sendBadRequestResponse(res, 'Invalid password provided');
+        return;
+      }
+      userData.hashedPassword = await hashPassword(password);
     }
 
     try {

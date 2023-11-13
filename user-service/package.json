@@ -2,7 +2,7 @@
   "name": "user-service",
   "version": "1.0.0",
   "description": "",
-  "main": "server.ts",
+  "main": "src/server.ts",
   "scripts": {
     "build": "npm run tsc",
     "tsc": "tsc",

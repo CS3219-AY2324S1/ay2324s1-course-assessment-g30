@@ -32,3 +32,20 @@ spec:
                 secretKeyRef:
                   name: openai-service-secrets
                   key: api-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openai-service-load-balancer
+spec:
+  selector:
+    app: openai-service
+    environment: production
+    tier: backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: peerprep
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3005
+  type: LoadBalancer

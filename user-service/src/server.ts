@@ -1,5 +1,5 @@
 import { app } from './app';
-import { initalize as initalize_db } from './src/db/init';
+import { initalize as initalize_db } from './db/init';
 
 const port = process.env.PORT || 3000;
 
