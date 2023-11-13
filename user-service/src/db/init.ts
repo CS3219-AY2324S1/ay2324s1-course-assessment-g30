@@ -31,7 +31,7 @@ const seedAdmin = async () => {
 };
 
 // Initalises user model
-const initalize = async () => {
+const initialize = async () => {
   try {
     await sequelizeConnection.authenticate();
     console.log('Connection has been established successfully.');
@@ -44,4 +44,4 @@ const initalize = async () => {
   }
 };
 
-export { sequelizeConnection, initalize };
+export { sequelizeConnection, initialize };
