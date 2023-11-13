@@ -6,7 +6,7 @@ const {
   webScrapperQuestionDescription,
 } = require("../Utils/webScrapperQuestionDescription.js");
 
-const readQuestionDescriptionController = async (req, res, next) => {
+const readQuestionDescriptionController = async (req, res) => {
   // Arguments: question_id (int)
   const reqQuestionid = req.body.question_id;
   try {
@@ -25,7 +25,7 @@ const readQuestionDescriptionController = async (req, res, next) => {
   }
 };
 
-const readQuestionsController = async (req, res, next) => {
+const readQuestionsController = async (req, res) => {
   try {
     const documents = await QuestionModel.find({}).sort({ question_id: 1 });
     if (documents == null) {
@@ -38,7 +38,7 @@ const readQuestionsController = async (req, res, next) => {
   }
 };
 
-const addQuestionController = async (req, res, next) => {
+const addQuestionController = async (req, res) => {
   // Arguments: title (String), category ([String]), complexity (String), link (String)
   const title = req.body.title;
   const category = req.body.category;
@@ -96,7 +96,7 @@ const addQuestionController = async (req, res, next) => {
   }
 };
 
-const updateQuestionController = async (req, res, next) => {
+const updateQuestionController = async (req, res) => {
   try {
     const question_id = req.body.question_id;
     const original_document = await QuestionModel.findOne({
@@ -197,7 +197,7 @@ const updateQuestionController = async (req, res, next) => {
   }
 };
 
-const testUpdateQuestionController = async (req, res, next) => {
+const testUpdateQuestionController = async (req, res) => {
   try {
     res.status(200).json({ message: "true" });
   } catch (err) {
@@ -205,7 +205,7 @@ const testUpdateQuestionController = async (req, res, next) => {
   }
 };
 
-const deleteQuestionController = async (req, res, next) => {
+const deleteQuestionController = async (req, res) => {
   const question_id = req.body.question_id;
   try {
     const MATCHING_SERVICE_BASE_URL =
@@ -243,7 +243,7 @@ const deleteQuestionController = async (req, res, next) => {
   }
 };
 
-const readRandomQuestionController = async (req, res, next) => {
+const readRandomQuestionController = async (req, res) => {
   const question_complexity = req.body.question_complexity;
   try {
     const documents = await QuestionModel.find({
@@ -262,7 +262,7 @@ const readRandomQuestionController = async (req, res, next) => {
   }
 };
 
-const testAddQuestionController = async (req, res, next) => {
+const testAddQuestionController = async (req, res) => {
   // Arguments: title (String), category ([String]), complexity (String), link (String)
   const id = req.body.question_id;
   const title = req.body.title;
@@ -314,7 +314,7 @@ const testAddQuestionController = async (req, res, next) => {
   }
 };
 
-const testDeleteQuestionController = async (req, res, next) => {
+const testDeleteQuestionController = async (req, res) => {
   const question_id = req.body.question_id;
   try {
     await QuestionModel.deleteOne({ question_id: question_id });
