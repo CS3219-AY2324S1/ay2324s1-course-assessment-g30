@@ -251,6 +251,7 @@ export default function Register() {
                 <InputRightElement h={'full'}>
                   <Button
                     variant={'ghost'}
+                    id='showBtn'
                     onClick={() => setShowPassword((showPassword) => !showPassword)}>
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
