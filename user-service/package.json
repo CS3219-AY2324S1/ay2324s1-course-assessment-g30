@@ -4,8 +4,7 @@
   "description": "",
   "main": "src/server.ts",
   "scripts": {
-    "build": "npm run tsc",
-    "tsc": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "start:prod": "node build/server.js",
     "start:dev": "export NODE_ENV=development; nodemon",
 	  "start:dev-w": "set NODE_ENV=development && nodemon",

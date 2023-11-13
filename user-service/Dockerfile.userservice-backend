@@ -2,7 +2,7 @@ FROM node:18
 WORKDIR /userservice
 COPY package*.json ./
 RUN npm i
-COPY tsconfig.json ./
+COPY tsconfig.*json ./
 WORKDIR /userservice/src
 COPY src ./
 EXPOSE 3000
