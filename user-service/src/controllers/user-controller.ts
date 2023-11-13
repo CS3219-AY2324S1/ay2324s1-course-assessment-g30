@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-import User from '../models/User';
 import bcrypt from 'bcrypt';
 import { REQUEST_ERROR_MESSAGES, TOKEN_DURATION } from '../constants';
 import jsonwebtoken, { Jwt, JwtPayload } from 'jsonwebtoken';
@@ -113,7 +112,7 @@ const getUserProfile: RequestHandler = async (req, res) => {
     return;
   }
 
-  const userData = await User.findByPk(user.uuid);
+  const userData = await UserDb.getRegisteredUserByUuid(user.uuid);
   if (userData) {
     const { username, email, firstName, lastName } = userData;
     const nonSensitiveUserData = { email, username, firstName, lastName };
@@ -136,7 +135,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     return;
   }
 
-  const userData = await User.findByPk(user.uuid);
+  const userData = await UserDb.getRegisteredUserByUuid(user.uuid);
   if (userData) {
     let { username, firstName, lastName } = req.body;
     const {password } = req.body;
@@ -144,11 +143,7 @@ const updateUserProfile: RequestHandler = async (req, res) => {
     if (username && typeof username == 'string') {
       userData.username = username.toLowerCase();
 
-      const registeredUser = await User.findOne({
-        where: {
-          username: userData.username
-        }
-      });
+      const registeredUser = await UserDb.getRegisteredUserByUsername(userData.username);
       if (registeredUser) {
         sendBadRequestResponse(
           res,
@@ -213,7 +208,7 @@ const deleteUserProfile: RequestHandler = async (req, res) => {
     return;
   }
 
-  const userData = await User.findByPk(user.uuid);
+  const userData = await UserDb.getRegisteredUserByUuid(user.uuid);
   if (userData) {
     await userData.destroy();
     sendSuccessResponse(res, 'User account has been deleted');
