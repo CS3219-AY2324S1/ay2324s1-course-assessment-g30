@@ -73,3 +73,20 @@ spec:
             requests:
               memory: "2Gi"
               cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-load-balancer
+spec:
+  selector:
+    app: user-service
+    environment: production
+    tier: backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: peerprep
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

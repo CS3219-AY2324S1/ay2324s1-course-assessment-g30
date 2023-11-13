@@ -52,3 +52,20 @@ spec:
                 configMapKeyRef:
                   name: endpoints
                   key: openai-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-load-balancer
+spec:
+  selector:
+    app: client
+    environment: production
+    tier: frontend
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: peerprep
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+  type: LoadBalancer

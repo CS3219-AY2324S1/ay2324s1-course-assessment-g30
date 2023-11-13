@@ -38,3 +38,20 @@ spec:
                 configMapKeyRef:
                   name: endpoints
                   key: matching-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: question-service-load-balancer
+spec:
+  selector:
+    app: question-service
+    environment: production
+    tier: backend
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: peerprep
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+  type: LoadBalancer
